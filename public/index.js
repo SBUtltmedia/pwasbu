@@ -14,15 +14,52 @@
 // require("firebase/firestore");
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
+
+
+    var uiConfig = {
+      
+
+
+      'callbacks': {
+        // Called when the user has been successfully signed in.
+        'signInSuccessWithAuthResult': function(authResult, redirectUrl) {
+          if (authResult.user) {
+            handleSignedInUser(authResult);
+          }
+          
+          // Do not redirect.
+          return false;
+        }
+      },
+
+      
+
+
+
+      signInOptions: [
+        firebase.auth.GoogleAuthProvider.PROVIDER_ID
+        
+      ]
+    };
+    
+    // Initialize the FirebaseUI widget using Firebase.
+    var ui = new firebaseui.auth.AuthUI(firebase.auth());
+    ui.start('#firebaseui-auth-container', uiConfig);
     
     var fs= firebase.firestore()
     fs.enablePersistence().then(init);
 
 
-
+function handleSignedInUser(authResult){
+  console.log(authResult)
+  document.getElementById('firebaseui-auth-container').style.display = 'none';
+  document.getElementById('signed-in').style.display = 'block';
+}
 
 function init(){
-  
+  var docRef = fs.collection("users")
+  var data = docRef.get().then((docs)=>{docs.forEach((doc)=>console.log(doc.data()))})
+
 }
 
 document.addEventListener("DOMContentLoaded", function(){
