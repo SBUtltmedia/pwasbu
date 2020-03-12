@@ -1,4 +1,5 @@
 // Your web app's Firebase configuration
+const router = new Router(routes);
 var firebaseConfig = {
     apiKey: "AIzaSyApt83e-9UQl2qm0pWT_qTLHttcJvxVHhk",
     authDomain: "pwasbu.firebaseapp.com",
@@ -60,31 +61,43 @@ function handleSignedInUser(authResult) {
 
 function init() {
     var docRef = fs.collection("users")
-    var data = docRef.get().then((docs) => { docs.forEach((doc) => console.log(doc.data())) })
+    var data = docRef.get().then(loopOverDocs)
+
+}
+
+function loopOverDocs(docs){
+docs.forEach(loopOverKeys)
+}
+
+function loopOverKeys(doc){
+
+  Object.keys(doc).forEach(key=>{
+
+  var newDiv = document.createElement('div')
+  newDiv.setAttribute('id',key);
+  document.body.appendChild(newDiv);
+})
 
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-    console.log("f")
-
-
-    const selectElement = document.querySelector('.ice-cream');
-
-    selectElement.addEventListener('change', (event) => {
-        const result = document.querySelector('.result');
-        result.textContent = `You like ${event.target.value}`;
-        console.log(event)
-        var payload = {
-            first: event.target.value,
-            last: "Lovelace",
-            born: 1815
-        }
-
-        saveData(payload)
 
 
 
-    });
+    // const selectElement = document.querySelector('.ice-cream');
+    //
+    // selectElement.addEventListener('change', (event) => {
+    //     const result = document.querySelector('.result');
+    //     result.textContent = `You like ${event.target.value}`;
+    //     console.log(event)
+    //     var payload = {
+    //         first: event.target.value,
+    //         last: "Lovelace",
+    //         born: 1815
+    //     }
+    //
+    //     saveData(payload)
+    // });
 
 
 
@@ -115,7 +128,7 @@ function saveData(payload, key = "users") {
 
 }
 
-// 
+//
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker
         .register('sw.js')
