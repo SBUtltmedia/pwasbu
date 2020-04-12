@@ -128,12 +128,12 @@ function saveData(payload, key = "users") {
 
 }
 
-//
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker
-        .register('sw.js')
-        .then(function () { console.log('Service Worker Registered'); });
-}
+// Disabling the service worker for now
+// if ('serviceWorker' in navigator) {
+//     navigator.serviceWorker
+//         .register('sw.js')
+//         .then(function () { console.log('Service Worker Registered'); });
+// }
 
 // Code to handle install prompt on desktop
 
