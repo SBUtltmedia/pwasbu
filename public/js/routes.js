@@ -12,8 +12,8 @@ const routes = [
     getTemplate: (params) => template.load('Contact'),
   },
   {
-    path: '/usersettings',
-    getTemplate: (params) => template.load('UserSettings'),
+    path: '/editprofile',
+    getTemplate: (params) => template.load('EditProfile'),
   },
   {
     path: '/products/:productId',

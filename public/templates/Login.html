@@ -24,7 +24,8 @@
                 </div>
                 <div class="signup-form">
                 <input type="text" onkeydown="emailSignOnChange()" placeholder="Your Email Address" class="input" id="signup-email"><br />
-                <input type="text" placeholder="Your Full Name" class="input" id="signup-user"><br />
+                <input type="date" id="birthdate" name="birthdate" min="1900-01-01" max="new Date().toDateInputValue()"><br />
+                <input type="text" placeholder="Your Full Name" class="input" id="signup-user" max=><br />   
                 <input type="password" onkeydown="passSignOnChange()" placeholder="Choose a Password" class="input" id="signup-pass"><br />
                 <div id="pass_tip">A valid password is at least 8 characters in length!</div>
                 <div class="btn" onclick="signup()">Create Account</div>

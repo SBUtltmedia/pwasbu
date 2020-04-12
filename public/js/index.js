@@ -1,3 +1,8 @@
+Date.prototype.toDateInputValue = (function() {
+    var local = new Date(this);
+    local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
+    return local.toJSON().slice(0,10);
+});
 // Your web app's Firebase configuration
 const router = new Router(routes);
 var firebaseConfig = {
@@ -110,7 +115,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // })
 });
-function saveUserData(payload, key = "users") {
+function saveData(payload, key = "users") {
     fs.collection(key).add(payload)
         .then(function (docRef) {
             console.log("Document written with ID: ", docRef.id);
@@ -167,18 +172,61 @@ window.addEventListener('beforeinstallprompt', (e) => {
         });
     });
 });
+/*
+ * Firestore User Queries
+ */
+// Returns True if user is found, otherwise false;
+function userExist(uid){
+    fs.collection("users").doc(uid).get().then(function(doc) {
+        if (doc.exists) {
+            console.log("Retrieved Document data:", doc.data());
+            return true;
+        } else {
+            return false;
+        }
+    }).catch(function(error) {
+        console.log("Error getting document:", error);
+        return false;
+    });
+}
+function getUserData(uid){
+    fs.collection("users").doc(uid).get().then(function(doc) {
+        if (doc.exists) {
+            return doc.data();
+        } else {
+            return null;
+        }
+    }).catch(function(error) {
+        console.log("Error getting document:", error);
+        return null;
+    });
+}
 /***
  * Firebase auth Functions
  */
 function getUserInfo() {
     let user = firebase.auth().currentUser;
     if (user != null) {
-        return {email: user.email, name: user.displayName};
+        return {email: user.email, name: user.displayName, userData: getUserData(user.uid)};
     } else {
-        return {email: "error loading user", name: "error loading user"};
+        return {email: "error loading user", name: "error loading user", userData: "error loading user"};
     }
 }
-
+/**
+ * This function returns a JSON Object for adding a user to the "users" collection
+ * @param {*} email The email of the user. Cannot be a duplicate of an email already in use.
+ */
+function generateUser(email, name, uid){
+    return {
+        uid: uid,
+        email: email,
+        birthdate : "1999-07-04",
+        creationDate : new Date().toDateInputValue(),
+        firstName: name,
+        lastName : "Null", // Needs to be implemented with field
+        gender: "Female" // Needs to be implemented with field`
+    };   
+}
 function signIn(email, password){
     console.log("Attempting to sign in");
     firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
@@ -236,11 +284,7 @@ function signup() {
         firebase.auth().createUserWithEmailAndPassword(email, password)
             .then(() => {
                 console.log("Attempting to register user into DB");
-                db.collection("user").add(generateUser(email, name)).then(function(docRef){
-                    console.log("Added User info for " + email + " successfully with ID : " + docRef.id);
-                }).catch(function(err){
-                    console.log(err.message);
-                });
+                saveData(generateUser(email, name, firebase.auth().currentUser.uid));
                 firebase.auth().currentUser.updateProfile({
                     displayName: name,
                 }).then(function() {
@@ -278,6 +322,9 @@ function googleSignIn(){
         // The signed-in user info.
         let user = result.user;
         // Not using all of the fields above yet
+        if(!userExist(user.uid)){
+            saveData(generateUser(user.email, user.display, user.uid));
+        }
         router.loadRoute('menu');
     }).catch(function(error) {
         $(".btn").show();
@@ -294,3 +341,4 @@ function googleSignIn(){
         $("#pass_error").show();
     });
 }
+

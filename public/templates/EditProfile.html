@@ -1,0 +1,34 @@
+<template>
+    <div>
+        <link rel="stylesheet" href="css/app.css">
+        <link rel="stylesheet" id="app-style" href="css/menu.css">
+        <link rel="stylesheet" id="app-style" href="css/editProfile.css">
+        <div id = "user">Edit Profile</div>
+        <div>Name: </div>
+        <input type="text" onkeydown="emptyCheck('user-name')" class="input" id="user-name"><br />
+        <div>Gender: </div>
+        <input type="text" onkeydown="emptyCheck('user-gender')" class="input" id="user-gender"><br />
+        <div>Date of Birth : </div>
+        <input type="date" id="birthdate" name="birthdate" min="1900-01-01"><br />
+        <div id="profile-error">One or more of the above fields are in the wrong format or empty!</div>
+        <button type="button" class="btn btn-secondary btn-lg btn-space" onclick="resetProfileFields()">Reset Profile Fields</button>
+        <button type="button" class="btn btn-secondary btn-lg btn-space" onclick="">Submit Changes</button>
+        <button type="button" class="btn btn-secondary btn-lg btn-space" onclick="router.loadRoute('menu')">Back to Menu</button>
+    </div>
+    <script>
+        //Date is in YYYY-MM-DD Format
+        let initEditProfile = () => {
+            birthdateField = document.getElementById("birthdate");
+            birthdateField.max = new Date().toDateInputValue();
+        };
+        let validString = id => {
+            field = document.getElementById(id);
+            textInput = field.value;
+            if(textInput.length <= 0 || textInput == null) {
+                $("#profile-error").show();
+            } else {
+                $("#profile-error").hide();
+            }
+        };
+    </script>
+</template>
