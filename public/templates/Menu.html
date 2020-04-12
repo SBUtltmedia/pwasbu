@@ -1,0 +1,20 @@
+<template>    
+    <div>
+        <link rel="stylesheet" href="css/app.css">
+        <link rel="stylesheet" id="app-style" href="css/menu.css">
+        <div class="menu">
+            <div id="menu-user"></div>
+            <button type="button" class="btn btn-secondary btn-lg btn-space" onclick="">Bluetooth</button>
+            <button type="button" class="btn btn-secondary btn-lg btn-space">View / Record Data</button>
+            <button type="button" class="btn btn-secondary btn-lg btn-space" onclick="">User Settings</button>
+            <button type="button" class="btn btn-secondary btn-lg btn-space" id="menu-signout" onclick="signout()">Sign Out</button>
+        </div>
+        <script>
+            try {
+                document.getElementById("menu-user").innerHTML = "Welcome " + getUserInfo()["name"];
+            } catch (e) {
+                document.getElementById("menu-user").innerHTML = e.message;
+            }
+        </script>
+    </div>
+</template>

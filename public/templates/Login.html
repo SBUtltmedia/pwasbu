@@ -1,0 +1,65 @@
+<template>
+    <div>
+        <link rel="stylesheet" href="css/app.css">
+        <link rel="stylesheet" id="app-style" href="css/login.css">
+        <div>
+            <img id="login_logo" src="img/logobackground.png">
+        </div>
+        <div class="wrapper">
+        <div class="container">
+            <div id="app">
+                <div class="login">Log In</div>
+                <div class="signup">Sign Up</div>
+
+                <div class="login-form">
+                <input type="text" onkeydown="hideLoginError()" placeholder="Email" class="input" id="login-email"><br />
+                <input type="password" onkeydown="hideLoginError()" placeholder="Password" class="input" id="login-pass"><br />
+                <div class="btn" onclick="login()">Log In</div>
+                <a id="google-button" class="btn btn-block btn-social btn-google" onclick="googleSignIn()">
+                    <i class="fa fa-google"></i> Sign in with Google
+                </a>
+                <div class="loader"></div>
+                <div id="login_error"></div>
+                <div id="forgot_pass"><span ><a href="#">Forgot Username or Password</a></span> </div>
+                </div>
+                <div class="signup-form">
+                <input type="text" onkeydown="emailSignOnChange()" placeholder="Your Email Address" class="input" id="signup-email"><br />
+                <input type="text" placeholder="Your Full Name" class="input" id="signup-user"><br />
+                <input type="password" onkeydown="passSignOnChange()" placeholder="Choose a Password" class="input" id="signup-pass"><br />
+                <div id="pass_tip">A valid password is at least 8 characters in length!</div>
+                <div class="btn" onclick="signup()">Create Account</div>
+                <div id="pass_error"></div>
+                <div class="loader"></div>
+                </div>
+                <div id="app-warning"></div>
+            </div>
+        </div>
+        </div>
+        <script>
+            $(".signup-form").hide();
+            $(".loader").hide();
+            $(".signup").css("background", "none");
+            $("#pass_tip").hide();
+            $("#pass_error").hide();
+            $("#login_error").hide();
+            
+            $(".login").click(function(){
+                $(".signup-form").hide();
+                $(".login-form").show();
+                $(".signup").css("background", "none");
+                $(".login").css("background", "#fff");
+            });
+            
+            $(".signup").click(function(){
+                $(".signup-form").show();
+                $(".login-form").hide();
+                $(".login").css("background", "none");
+                $(".signup").css("background", "#fff");
+            });
+            
+            $(".btn").click(function(){
+                $(".input").val("");
+            });
+            </script>
+    </div>
+</template>
