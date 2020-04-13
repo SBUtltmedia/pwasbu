@@ -1,0 +1,22 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+body {
+    background: #e9eaea;
+    font-family: "Arial Black";
+    user-select: none;
+}
+#login_logo {
+    margin-top: 30px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 425px;
+    height: 92px;
+}
+
+#app-warning {
+    text-align: center;
+    color: #dc3545;
+}
