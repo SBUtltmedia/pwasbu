@@ -10,11 +10,16 @@ function updateProfile(){
         $("#profile-error").hide();
         birthdate = document.getElementById("birthdate").value;
         userPayload = JSON.parse(localStorage.getItem("userData"));
-        userPayload['firstName'] = name;
-        userPayload['gender'] = gender;
-        userPayload['birthdate'] = birthdate;
-        console.log("The data has been updated to :" + JSON.stringify(userPayload));
-        addUser(userPayload['email'], userPayload);
+        try{   
+            userPayload['firstName'] = name;
+            userPayload['gender'] = gender;
+            userPayload['birthdate'] = birthdate;
+            console.log("The data has been updated to :" + JSON.stringify(userPayload));   
+            addUser(userPayload['email'], userPayload);
+        } catch(error) {
+            let user = firebase.auth().currentUser;
+            addUser(user.email, generateUser(user.email, name));
+        }
     }
     
 }

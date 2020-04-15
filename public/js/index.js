@@ -54,7 +54,7 @@ firebase.auth().onAuthStateChanged((user) => {
     }
 });
 
-var fs = firebase.firestore()
+const fs = firebase.firestore()
 fs.enablePersistence()
     .catch(function(err) {
         if (err.code == 'failed-precondition') {
@@ -135,7 +135,18 @@ function saveData(payload, key = "users") {
     // }
 
 }
-
+function saveCurrentUserData(){
+    let user = firebase.auth().currentUser;
+    let payload = generateUser(user.email, user.displayName);
+    fs.collection("users").doc(user.email).set(payload)
+        .then(function() {
+            console.log("User does not exist in the database ... adding user now");
+            localStorage.setItem("userData", JSON.stringify(payload));
+        })
+        .catch(function(error) {
+            console.error("Error writing document: ", error);
+        });
+}
 // Disabling the service worker for now
 // if ('serviceWorker' in navigator) {
 //     navigator.serviceWorker
