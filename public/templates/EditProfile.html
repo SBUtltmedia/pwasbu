@@ -11,24 +11,13 @@
         <div>Date of Birth : </div>
         <input type="date" id="birthdate" name="birthdate" min="1900-01-01"><br />
         <div id="profile-error">One or more of the above fields are in the wrong format or empty!</div>
-        <button type="button" class="btn btn-secondary btn-lg btn-space" onclick="resetProfileFields()">Reset Profile Fields</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-space" onclick="">Submit Changes</button>
+        <button type="button" class="btn btn-secondary btn-lg btn-space" onclick="initEditProfile()">Reset Profile Fields</button>
+        <button type="button" class="btn btn-secondary btn-lg btn-space" onclick="updateProfile()">Submit Changes</button>
         <button type="button" class="btn btn-secondary btn-lg btn-space" onclick="router.loadRoute('menu')">Back to Menu</button>
-    </div>
     <script>
         //Date is in YYYY-MM-DD Format
-        let initEditProfile = () => {
-            birthdateField = document.getElementById("birthdate");
-            birthdateField.max = new Date().toDateInputValue();
-        };
-        let validString = id => {
-            field = document.getElementById(id);
-            textInput = field.value;
-            if(textInput.length <= 0 || textInput == null) {
-                $("#profile-error").show();
-            } else {
-                $("#profile-error").hide();
-            }
-        };
+        console.log("loading in fields");
+        initEditProfile();
     </script>
+    </div>
 </template>

@@ -116,6 +116,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // })
 });
 function saveData(payload, key = "users") {
+    console.log("Attempting to write store: " + JSON.stringify(payload, null, 2));
     fs.collection(key).add(payload)
         .then(function (docRef) {
             console.log("Document written with ID: ", docRef.id);
@@ -175,55 +176,43 @@ window.addEventListener('beforeinstallprompt', (e) => {
 /*
  * Firestore User Queries
  */
-// Returns True if user is found, otherwise false;
-function userExist(uid){
-    fs.collection("users").doc(uid).get().then(function(doc) {
+// Not working right now
+function getUserData(email, _callback = ()=>{}){
+    fs.collection("users").doc(email).get().then(function(doc) {
         if (doc.exists) {
-            console.log("Retrieved Document data:", doc.data());
-            return true;
+            console.log("Successfully retrieved user data for " + doc.data()['email']);
+            localStorage.setItem("userData", JSON.stringify(doc.data()));
+            _callback();
         } else {
-            return false;
+            console.log("The user of " + email + " does not exist");
         }
     }).catch(function(error) {
         console.log("Error getting document:", error);
-        return false;
     });
 }
-function getUserData(uid){
-    fs.collection("users").doc(uid).get().then(function(doc) {
-        if (doc.exists) {
-            return doc.data();
-        } else {
-            return null;
-        }
-    }).catch(function(error) {
-        console.log("Error getting document:", error);
-        return null;
+// Also used for setting the user
+function addUser(email, payload){
+    fs.collection("users").doc(email).set(payload)
+    .then(function() {
+        console.log("Document successfully written!");
+        localStorage.setItem("userData", JSON.stringify(payload));
+    })
+    .catch(function(error) {
+        console.error("Error writing document: ", error);
     });
 }
-/***
- * Firebase auth Functions
- */
-function getUserInfo() {
-    let user = firebase.auth().currentUser;
-    if (user != null) {
-        return {email: user.email, name: user.displayName, userData: getUserData(user.uid)};
-    } else {
-        return {email: "error loading user", name: "error loading user", userData: "error loading user"};
-    }
-}
+
 /**
  * This function returns a JSON Object for adding a user to the "users" collection
  * @param {*} email The email of the user. Cannot be a duplicate of an email already in use.
  */
-function generateUser(email, name, uid){
+function generateUser(email, name){
     return {
-        uid: uid,
         email: email,
         birthdate : "1999-07-04",
         creationDate : new Date().toDateInputValue(),
         firstName: name,
-        lastName : "Null", // Needs to be implemented with field
+        lastName : "", // Needs to be implemented with field
         gender: "Female" // Needs to be implemented with field`
     };   
 }
@@ -234,7 +223,7 @@ function signIn(email, password){
             firebase.auth().signInWithEmailAndPassword(email, password)
                 .then(() => {
                     console.log("Attempting to load menu");
-                    router.loadRoute('menu');
+                    getUserData(firebase.auth().currentUser.email);
                 })
                 .catch(function (error) {
                     $(".btn").show();
@@ -284,7 +273,7 @@ function signup() {
         firebase.auth().createUserWithEmailAndPassword(email, password)
             .then(() => {
                 console.log("Attempting to register user into DB");
-                saveData(generateUser(email, name, firebase.auth().currentUser.uid));
+                addUser(email, generateUser(email, name));
                 firebase.auth().currentUser.updateProfile({
                     displayName: name,
                 }).then(function() {
@@ -307,8 +296,10 @@ function signout() {
     console.log("Attempting to signout");
     firebase.auth().signOut().then(function() {
         //loadLogin();
+        localStorage.clear();
         console.log("User has signed out successfully");
     }).catch(function(error) {
+        localStorage.clear();
         //loadLogin();
         console.log(error.message + " with error code : " + error.code);
     });
@@ -322,10 +313,20 @@ function googleSignIn(){
         // The signed-in user info.
         let user = result.user;
         // Not using all of the fields above yet
-        if(!userExist(user.uid)){
-            saveData(generateUser(user.email, user.display, user.uid));
-        }
-        router.loadRoute('menu');
+        fs.collection("users").doc(user.email).get().then(function(doc) {
+            if (doc.exists) {
+                console.log("User exist in the database!");
+                getUserData(user.email);
+            } else {
+                console.log("User does not exist in the database. Adding the user now");
+                addUser(user.email, generateUser(user.email, user.displayName));
+            }
+        }).catch(function(error) {
+            console.log("Error getting document:", error);
+            console.log("User does not exist in the database. Adding the user now");
+            addUser(user.email, generateUser(user.email, user.displayName));
+        });
+        
     }).catch(function(error) {
         $(".btn").show();
         $(".loader").hide();
