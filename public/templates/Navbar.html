@@ -1,0 +1,20 @@
+<template>
+    <div>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+          <a class="navbar-brand" href="#">Menu</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <div class="navbar-nav">
+              <a class="nav-item nav-link active" onclick="router.loadRoute('menu')">Home </a>
+              <a class="nav-item nav-link" href="#">View Data</a>
+              <a class="nav-item nav-link" onclick="router.loadRoute('editprofile')">Edit Profile</a>
+              <a class="nav-item nav-link" href="#">Account Settings</a>
+              <button class="nav-item btn-danger" onclick="signout()">Log Out</button>
+              <a class="nav-item nav-link " onclick='scanDevices()'>Bluetooth Connect</a>
+            </div>
+          </div>
+        </nav>
+    </div>
+</template>

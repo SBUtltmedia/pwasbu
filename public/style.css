@@ -8,20 +8,8 @@ body {
   margin: 0;
 }
 
-img {
-  display: block;
-  width: 100%;
-}
-
 .add-button {
   position: absolute;
   top: 1px;
   left: 1px;
-}
-
-@media (orientation: landscape) {
-  img {
-    height: 100%;
-    object-fit: cover;
-  }
 }

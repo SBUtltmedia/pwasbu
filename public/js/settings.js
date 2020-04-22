@@ -1,3 +1,16 @@
+let clearProfilePictures = (email, callback) => {
+    listRef = storageRef.child(`users/${email}/profile-picture/`);    
+    listRef.listAll().then(function(res) {
+        res.items.forEach(function(itemRef) {
+          itemRef.delete().then(()=>{console.log("deleted " + itemRef);})
+          .catch((err)=>{console.log(err)});})
+          .then(() => {callback();});
+      }).catch(function(error) {
+        console.log(error);
+        callback();
+      });
+
+};
 function updateProfile(){
     name = document.getElementById("user-name").value;
     gender = document.getElementById("user-gender").value;
@@ -20,9 +33,30 @@ function updateProfile(){
             let user = firebase.auth().currentUser;
             addUser(user.email, generateUser(user.email, name));
         }
+        clearProfilePictures(user.email,
+        storageRef.child(`users/${user.email}/profile-picture/`).put(documnet.getElementById("profile-pic").src)
+        .catch((err)=>{console.log(err);}));
     }
     
 }
+let loadProfilePicture = () => {
+    let user = firebase.auth().currentUser;
+    let profilePicName = "";
+    let listRef = storageRef.child(`users/${user.email}/profile-picture/`);
+    listRef.listAll().then(function(res) {
+        let profilePic = res.items[0];
+        storageRef.child(`users/${user.email}/profile-picture/${profilePic}`).getDownloadURL().then(function(url) {
+            console.log("Loading " + url + " as profile image");
+            document.getElementById("profile-pic").src = url;
+        }).catch(function(error) {
+            console.log(error);
+            document.getElementById("profile-pic").src = '../img/user/default/user-480.png';
+        });
+      }).catch(function(error) {
+        console.log(error);
+        document.getElementById("profile-pic").src = '../img/user/default/user-480.png';
+      });
+};
 let initEditProfile = () => {
     birthdateField = document.getElementById("birthdate");
     birthdateField.max = new Date().toDateInputValue();
@@ -30,6 +64,7 @@ let initEditProfile = () => {
     birthdateField.value = userData['birthdate'];
     document.getElementById("user-name").value = userData['firstName'];
     document.getElementById("user-gender").value = userData['gender'];
+    loadProfilePicture();
 };
 let validString = id => {
     field = document.getElementById(id);

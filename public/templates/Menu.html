@@ -1,17 +1,20 @@
 <template>    
     <div>
-        <link rel="stylesheet" href="css/app.css">
-        <link rel="stylesheet" id="app-style" href="css/menu.css">
         <div class="menu">
             <div id="menu-user"></div>
-            <button type="button" class="btn btn-secondary btn-lg btn-space" onclick="">Bluetooth</button>
+            <img id="profile-pic" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left" width="200" height="200">
+            <div id="pic-error" class="error-msg"></div>
+
+
+            <!-- <button type="button" class="btn btn-secondary btn-lg btn-space" onclick="">Bluetooth</button>
             <button type="button" class="btn btn-secondary btn-lg btn-space">View / Record Data</button>
             <button type="button" class="btn btn-secondary btn-lg btn-space" onclick="router.loadRoute('editprofile')">Edit Profile</button>
             <button type="button" class="btn btn-secondary btn-lg btn-space" onclick="addDumbData()">Send Data</button>
             <button type="button" class="btn btn-secondary btn-lg btn-space" onclick="">Account Settings</button>
-            <button type="button" class="btn btn-secondary btn-lg btn-space" id="menu-signout" onclick="signout()">Sign Out</button>
+            <button type="button" class="btn btn-secondary btn-lg btn-space" id="menu-signout" onclick="signout()">Sign Out</button>  -->
         </div>
-        <script>
+        <script defer>
+            loadProfilePicture();
             function addDumbData(){
                 fs.collection("bad egg").add({data:"I have sent dummy data", dateAdded: new Date().toDateInputValue()}).then(()=>{
                     alert("data has been sent!");

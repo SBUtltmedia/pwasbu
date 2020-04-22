@@ -48,9 +48,11 @@ firebase.auth().onAuthStateChanged((user) => {
     if (user) {
         console.log("logged in", user);
         router.loadRoute('menu');
+        router.loadNavRoute('navbar');
     } else {
         console.log("logged out", user);
         router.loadRoute('');
+        router.loadNavRoute('blank');
     }
 });
 
@@ -354,3 +356,5 @@ function googleSignIn(){
     });
 }
 
+//STORAGE Functions
+const storageRef = firebase.storage().ref();

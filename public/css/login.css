@@ -54,7 +54,7 @@
     text-align: center;
     color: #dc3545;
 }
-#pass_error, #login_error {
+.error-msg {
     margin-top: -25px;
     text-align: center;
     color: #dc3545;

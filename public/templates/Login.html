@@ -1,7 +1,5 @@
 <template>
     <div>
-        <link rel="stylesheet" href="css/app.css">
-        <link rel="stylesheet" id="app-style" href="css/login.css">
         <div>
             <img id="login_logo" src="img/logobackground.png">
         </div>
@@ -19,7 +17,7 @@
                     <i class="fa fa-google"></i> Sign in with Google
                 </a>
                 <div class="loader"></div>
-                <div id="login_error"></div>
+                <div id="login_error" class="error-msg"></div>
                 <div id="forgot_pass"><span ><a href="#">Forgot Username or Password</a></span> </div>
                 </div>
                 <div class="signup-form">
@@ -27,9 +25,9 @@
                 <input type="date" id="birthdate" name="birthdate" min="1900-01-01" max="new Date().toDateInputValue()"><br />
                 <input type="text" placeholder="Your Full Name" class="input" id="signup-user" max=><br />   
                 <input type="password" onkeydown="passSignOnChange()" placeholder="Choose a Password" class="input" id="signup-pass"><br />
-                <div id="pass_tip">A valid password is at least 8 characters in length!</div>
+                <div class="error-msg">A valid password is at least 8 characters in length!</div>
                 <div class="btn" onclick="signup()">Create Account</div>
-                <div id="pass_error"></div>
+                <div id="pass_error" class="error-msg"></div>
                 <div class="loader"></div>
                 </div>
                 <div id="app-warning"></div>
