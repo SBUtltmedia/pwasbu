@@ -42,10 +42,12 @@ function updateProfile(){
 let loadProfilePicture = () => {
     let user = firebase.auth().currentUser;
     let profilePicName = "";
-    let listRef = storageRef.child(`users/${user.email}/profile-picture/`);
+    let listRef = storageRef.child(encodeURI(`users/${user.email}/profile-picture`));
+    console.log(listRef);
+    console.log("Trying to get a file from" + user.email );
     listRef.listAll().then(function(res) {
         let profilePic = res.items[0];
-        storageRef.child(`users/${user.email}/profile-picture/${profilePic}`).getDownloadURL().then(function(url) {
+        storageRef.child(encodeURI(`users/${user.email}/profile-picture/${profilePic.name}`)).getDownloadURL().then(function(url) {
             console.log("Loading " + url + " as profile image");
             document.getElementById("profile-pic").src = url;
         }).catch(function(error) {
@@ -54,6 +56,7 @@ let loadProfilePicture = () => {
         });
       }).catch(function(error) {
         console.log(error);
+        console.log("List all failed to work");
         document.getElementById("profile-pic").src = '../img/user/default/user-480.png';
       });
 };

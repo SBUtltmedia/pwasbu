@@ -13,7 +13,7 @@ class Router {
 
     // Push a history entry with the new url.
     // We pass an empty object and an empty string as the historyState and title arguments, but their values do not really matter here.
-    const url = `/#${urlSegments.join('/')}`;
+    const url = `/${urlSegments.join('/')}`;
    history.pushState({}, '', url);
 
     // Append the given template to the DOM inside the router outlet.
