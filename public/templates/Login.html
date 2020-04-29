@@ -10,38 +10,42 @@
                 <div class="signup">Sign Up</div>
 
                 <div class="login-form">
-                <input type="text" onkeydown="hideLoginError()" placeholder="Email" class="input" id="login-email"><br />
-                <input type="password" onkeydown="hideLoginError()" placeholder="Password" class="input" id="login-pass"><br />
+                <input type="text"onkeyup="hideLoginError()" onkeydown="hideLoginError()" placeholder="Email" class="input" id="login-email"><br />
+                <input type="password" onkeyup="hideLoginError()"onkeydown="hideLoginError()" placeholder="Password" class="input" id="login-pass"><br />
                 <div class="btn" onclick="login()">Log In</div>
                 <a id="google-button" class="btn btn-block btn-social btn-google" onclick="googleSignIn()">
                     <i class="fa fa-google"></i> Sign in with Google
                 </a>
                 <div class="loader"></div>
                 <div id="login_error" class="error-msg"></div>
-                <div id="forgot_pass"><span ><a href="#">Forgot Username or Password</a></span> </div>
+                <div id="forgot_pass"><span ><button style="padding: 0;border: none;background: none;"class="link text-danger" onclick="router.loadRoute('forgotpassword')">Forgot Password</button></span> </div>
                 </div>
                 <div class="signup-form">
-                <input type="text" onkeydown="emailSignOnChange()" placeholder="Your Email Address" class="input" id="signup-email"><br />
-                <input type="date" id="birthdate" name="birthdate" min="1900-01-01" max="new Date().toDateInputValue()"><br />
-                <input type="text" placeholder="Your Full Name" class="input" id="signup-user" max=><br />   
-                <input type="password" onkeydown="passSignOnChange()" placeholder="Choose a Password" class="input" id="signup-pass"><br />
-                <div class="error-msg">A valid password is at least 8 characters in length!</div>
+                <input type="text"  onkeyup="emailSignOnChange()" onkeydown="emailSignOnChange()" placeholder="Your Email Address" class="input" id="signup-email"><br />
+                <div>Date of Birth : <input type="date" id="signup-birthdate" name="birthdate" min="1900-01-01" max="new Date().toDateInputValue()"> </div><br />
+                <input type="text" placeholder="Your First Name" class="input" id="signup-user-first" max=><br />   
+                <input type="text" placeholder="Your Last Name" class="input" id="signup-user-last" max=><br />   
+                <input type="password" onkeyup="passSignOnChange()" onchange="passSignOnChange()" onkeydown="passSignOnChange()" placeholder="Choose a Password" class="input" id="signup-pass"><br />
+                <div class="error-msg pass-comment" id="pass_tip">A valid password is at least 8 characters in length!</div>
+                <input type="password" onkeyup="passSignMatch()"onchange="passSignMatch()" onkeydown="passSignMatch()" placeholder="Re-Enter the Password" class="input" id="signup-pass-2"><br />
+                <div class="error-msg pass-comment" id="pass_match">Passwords do not match!</div>
                 <div class="btn" onclick="signup()">Create Account</div>
                 <div id="pass_error" class="error-msg"></div>
-                <div class="loader"></div>
                 </div>
                 <div id="app-warning"></div>
             </div>
         </div>
         </div>
         <script>
+            $(".navbar").hide();
+            $("#signup-birthdate").val(new Date().toDateInputValue());
             $(".signup-form").hide();
             $(".loader").hide();
             $(".signup").css("background", "none");
             $("#pass_tip").hide();
             $("#pass_error").hide();
             $("#login_error").hide();
-            
+            $('#pass_match').hide();
             $(".login").click(function(){
                 $(".signup-form").hide();
                 $(".login-form").show();

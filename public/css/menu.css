@@ -1,16 +1,10 @@
+
 #menu-user {
     font-size: 28pt;
     text-align: center;
     padding-top: 40px;
     padding-bottom: 40px;
     font-family: "Lucida Console";
-}
-.btn {
-    margin: auto;
-    font-size: 28px;
-    width: 100%;
-    display: block;
-    background: #022950;
 }
 .btn-space {
     margin-bottom: 10px;

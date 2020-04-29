@@ -28,13 +28,14 @@ function updateProfile(){
             userPayload['gender'] = gender;
             userPayload['birthdate'] = birthdate;
             console.log("The data has been updated to :" + JSON.stringify(userPayload));   
-            addUser(userPayload['email'], userPayload);
+            setUser(userPayload['email'], userPayload);
+            localStorage.setItem("userData", JSON.stringify(userPayload));
         } catch(error) {
             let user = firebase.auth().currentUser;
-            addUser(user.email, generateUser(user.email, name));
+            setUser(user.email, generateUser(user.email, name));
         }
         clearProfilePictures(user.email,
-        storageRef.child(`users/${user.email}/profile-picture/`).put(documnet.getElementById("profile-pic").src)
+        storageRef.child(`users/${user.email}/profile-picture/`).put(document.getElementById("profile-pic").src)
         .catch((err)=>{console.log(err);}));
     }
     
