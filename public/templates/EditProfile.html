@@ -29,7 +29,6 @@
             };
             console.log(document.getElementById("cameraInput").value);
         }
-<<<<<<< HEAD
         function readURL(input) {
             if (input.files && input.files[0]) {
                 var reader = new FileReader();
@@ -42,12 +41,10 @@
             }
         }   
 
-            $("#cameraInput").change(function() {
+            $("#cameraInput").on("change", function() {
             readURL(this);
             });
-=======
         initNavBar();
->>>>>>> fe95db91cd88f08763e1eca05ed97fc05643ba7c
     </script>
     </div>
 </template>

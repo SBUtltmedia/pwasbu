@@ -1,8 +1,9 @@
 //This is a comment. I AM CHANGING IT
 class Router {
 
-  constructor(routes) {
-    this.routes = routes;
+  constructor(routesObj) {
+    this.routesObj = routesObj;
+    this.routes = routesObj.routes;
     this._loadInitialRoute();
   }
 
@@ -15,7 +16,7 @@ class Router {
     // We pass an empty object and an empty string as the historyState and title arguments, but their values do not really matter here.
     const url = `/${urlSegments.join('/')}`;
    history.pushState({}, '', url);
-
+    // this.routesObj.template.load(url);
     // Append the given template to the DOM inside the router outlet.
     const routerOutletElement = document.querySelectorAll('[data-router-outlet]')[0];
     // routerOutletElement.innerHTML = matchedRoute.getTemplate(matchedRoute.params);

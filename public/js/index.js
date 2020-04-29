@@ -4,7 +4,9 @@ Date.prototype.toDateInputValue = (function() {
     return local.toJSON().slice(0,10);
 });
 // Your web app's Firebase configuration
+const routes = new RoutesObj(new Template());
 const router = new Router(routes);
+
 var firebaseConfig = {
     apiKey: "AIzaSyApt83e-9UQl2qm0pWT_qTLHttcJvxVHhk",
     authDomain: "pwasbu.firebaseapp.com",
