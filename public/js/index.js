@@ -47,7 +47,7 @@ var ui = new firebaseui.auth.AuthUI(firebase.auth());
 firebase.auth().onAuthStateChanged((user) => {
     if (user) {
         console.log("logged in", user);
-        router.loadRoute('menu');
+        router.loadRoute('home');
         router.loadNavRoute('navbar');
     } else {
         console.log("logged out", user);
@@ -139,7 +139,13 @@ function saveData(payload, key = "users") {
 }
 function saveCurrentUserData(){
     let user = firebase.auth().currentUser;
-    let payload = generateUser(user.email, user.displayName);
+    let payload = {};
+    let name  = user.displayName.split(" ");
+    if(name.length > 1){
+        payload = generateUser(user.email, name[0], name[1]);
+    } else{
+        payload = generateUser(user.email, name[0]);
+    }
     fs.collection("users").doc(user.email).set(payload)
         .then(function() {
             console.log("User does not exist in the database ... adding user now");
@@ -189,13 +195,14 @@ window.addEventListener('beforeinstallprompt', (e) => {
 /*
  * Firestore User Queries
  */
-// Not working right now
 function getUserData(email, _callback = ()=>{}){
-    fs.collection("users").doc(email).get().then(function(doc) {
-        if (doc.exists) {
-            console.log("Successfully retrieved user data for " + doc.data()['email']);
-            localStorage.setItem("userData", JSON.stringify(doc.data()));
-            _callback();
+    fs.collection("users").where("email", '==', email).get().then(function(res) {
+        if (res.docs.length > 0) {
+            res.docs[0].ref.get().then(doc => {
+                console.log("Successfully retrieved user data for " + doc.data()['email']);
+                localStorage.setItem("userData", JSON.stringify(doc.data()));
+                _callback();
+            });
         } else {
             console.log("The user of " + email + " does not exist");
         }
@@ -203,30 +210,61 @@ function getUserData(email, _callback = ()=>{}){
         console.log("Error getting document:", error);
     });
 }
+function forgotPassword() {
+    let email = document.getElementById("forgot-email").value;
+    $(".loader").show();
+    $("#forgot-button").hide();
+    firebase.auth().sendPasswordResetEmail(email).then(function() {
+        alert("If the email is valid, a reset has been sent.");
+        $(".loader").hide();
+        $("#forgot-button").show();
+        alert("If the email is valid, a reset has been sent.");
+        router.loadRoute('');
+      }).catch(function(error) {
+        $(".loader").hide();
+        $("#forgot-button").show();
+        alert("If the email is valid, a reset has been sent.");
+        router.loadRoute('');
+      });
+}
 // Also used for setting the user
-function addUser(email, payload){
-    fs.collection("users").doc(email).set(payload)
-    .then(function() {
-        console.log("Document successfully written!");
-        localStorage.setItem("userData", JSON.stringify(payload));
-    })
-    .catch(function(error) {
-        console.error("Error writing document: ", error);
+function setUser(email, payload){
+    fs.collection("users").where('email', '==', email).get()
+        .then( res => {
+        let batch = fs.batch();
+        res.forEach(doc => {batch.set(doc.ref, payload);}); 
+        batch.commit().catch(err => console.log(err))}
+        );
+}
+/**
+ * This function is purely used for signing the user up.
+ * @param {} payload 
+ */
+function addUser(payload){
+    fs.collection("users").where('email', '==', payload['email']).get()
+    .then(res=> {
+        if(res.docs.length > 0) {
+            console.log("attempting to add a user that already exists");
+        } else {
+            fs.collection("users").add(payload).then(function(){
+                console.log("Added user successfully");
+            }).catch(function(error) { console.log(error)});
+        }
     });
 }
-
 /**
  * This function returns a JSON Object for adding a user to the "users" collection
  * @param {*} email The email of the user. Cannot be a duplicate of an email already in use.
  */
-function generateUser(email, name){
+function generateUser(email, firstName="", lastName=""){
     return {
         email: email,
-        birthdate : "1999-07-04",
+        birthdate : "1999-07-04", //Needs to be implemented with field
         creationDate : new Date().toDateInputValue(),
-        firstName: name,
-        lastName : "", // Needs to be implemented with field
-        gender: "Female" // Needs to be implemented with field`
+        firstName: firstName,
+        lastName : lastName, 
+        gender: "Female", // Needs to be implemented with field`
+        priv: "." 
     };   
 }
 function signIn(email, password){
@@ -269,24 +307,26 @@ function login() {
 function signup() {
     let email = document.getElementById("signup-email").value;
     let password = document.getElementById("signup-pass").value;
-    let name = document.getElementById("signup-user").value;
+    let firstName = document.getElementById("signup-user-first").value;
+    let lastName = document.getElementById("signup-user-last").value;
+    let name = firstName + " " + lastName;
     if(!emailIsValid(email)){
         document.getElementById("pass_error").innerHTML = "Email field is invalid!"
         $("#pass_error").show();
     } else if(name.length <= 0) {
         document.getElementById("pass_error").innerHTML = "Name field is empty!"
         $("#pass_error").show();
-    } else if(!passIsValid(password)) {
-        document.getElementById("pass_error").innerHTML = "Password field is invalid!"
+    } else if(!passIsValid(password) || !(passMatch())) {
+        document.getElementById("pass_error").innerHTML = "Password field is invalid or passwords don't match!"
         $("#pass_error").show();
     } else {
         $(".btn").hide();
         $(".loader").show();
-        console.log("User signup sucessful!");
+        alert("User signup was successful!");
         firebase.auth().createUserWithEmailAndPassword(email, password)
             .then(() => {
                 console.log("Attempting to register user into DB");
-                addUser(email, generateUser(email, name));
+                addUser(generateUser(email, firstName, lastName));
                 firebase.auth().currentUser.updateProfile({
                     displayName: name,
                 }).then(function() {
@@ -326,18 +366,28 @@ function googleSignIn(){
         // The signed-in user info.
         let user = result.user;
         // Not using all of the fields above yet
-        fs.collection("users").doc(user.email).get().then(function(doc) {
-            if (doc.exists) {
+        fs.collection("users").where('email', '==',).get().then(function(querySnapshot) {
+            if (querySnapshot.length > 0) {
                 console.log("User exist in the database!");
                 getUserData(user.email);
             } else {
                 console.log("User does not exist in the database. Adding the user now");
-                addUser(user.email, generateUser(user.email, user.displayName));
+                let name  = user.displayName.split(" ");
+                if(name.length > 1){
+                    addUser(generateUser(user.email, name[0], name[1]));
+                } else{
+                    addUser(generateUser(user.email, name[0]));
+                }
             }
         }).catch(function(error) {
             console.log("Error getting document:", error);
             console.log("User does not exist in the database. Adding the user now");
-            addUser(user.email, generateUser(user.email, user.displayName));
+            let name  = user.displayName.split(" ");
+            if(name.length > 1){
+                addUser(generateUser(user.email, name[0], name[1]));
+            } else{
+                addUser(generateUser(user.email, name[0]));
+            }
         });
         
     }).catch(function(error) {

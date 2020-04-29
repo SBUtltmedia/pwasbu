@@ -1,0 +1,64 @@
+<template>    
+    <div>
+        <div class="menu">
+            <div id="menu-user"></div>
+            <img id="profile-pic" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left" width="200" height="200">
+            <div id="pic-error" class="error-msg"></div>
+            <br/><br/><br/><br/><br/><br/>
+            <div style="font-size: x-large;">Your Campers: </div>
+            <table id="campers" class="table table-hover">
+                <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">User-id</th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>    
+                    <tr>
+                    <td>Mark</td>
+                    <td>981293891238189</td>
+                    <td><button class='btn'>Records</button></td>
+                    <td><button class='btn'>Evaluate</button></td>
+                  </tr>
+                </tbody>
+            </table>
+
+        </div>
+        <script defer>
+            loadProfilePicture();
+            function addDumbData(){
+                fs.collection("bad egg").add({data:"I have sent dummy data", dateAdded: new Date().toDateInputValue()}).then(()=>{
+                    alert("data has been sent!");
+                });
+            }
+            function userWelcome(){
+                let user = firebase.auth().currentUser;
+                try{
+                    let userData = JSON.parse(localStorage.getItem("userData"));
+                    document.getElementById("menu-user").innerHTML = "Welcome " + userData['firstName'];
+                } catch(error){
+                    fs.collection("users").where('email', '==', user.email).get().then(function(res) {
+                        if(res.docs.length > 0) {
+                            res.docs[0].ref.get().then(doc=> {
+                                document.getElementById("menu-user").innerHTML = "Welcome " + doc.data()["firstName"];
+                                localStorage.setItem("userData", JSON.stringify(doc.data()));
+                                initNavBar();
+                            });
+                        } else {
+                            console.log("There is no such user");
+                            saveCurrentUserData();
+                            document.getElementById("menu-user").innerHTML = "Error loading user, please refresh";
+                        }
+                    }).catch((error)=>{
+                        console.log(error);
+                        document.getElementById("menu-user").innerHTML = "Error loading user, please refresh";
+                    });
+                }
+            }
+            userWelcome();
+            initNavBar();
+        </script>
+    </div>
+</template>

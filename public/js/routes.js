@@ -4,8 +4,15 @@ const routes = [
     path: '/',
     getTemplate:  (params) => template.load('Login'),
   },{
-    path: '/menu',
-    getTemplate:  (params) => template.load('Menu'),
+    path: '/home',
+    getTemplate:  (params) => template.load('Home'),
+  },{
+    path: '/editusers',
+    getTemplate:  (params) => template.load('EditUsers'),
+  },
+  {
+    path: '/forgotpassword',
+    getTemplate:  (params) => template.load('ForgotPassword'),
   },
   {
     path: '/blank',
@@ -16,12 +23,23 @@ const routes = [
     getTemplate:  (params) => template.load('Navbar'),
   },
   {
+    path: '/missinginfo',
+    getTemplate: (params) => template.load('MissingInfo'),
+  },
+  {
     path: '/contact',
     getTemplate: (params) => template.load('Contact'),
   },
   {
     path: '/editprofile',
     getTemplate: (params) => template.load('EditProfile'),
+  },
+  {
+    path: '/editcampers',
+    getTemplate: (params) => template.load('EditCampers'),
+  },{
+    path: '/editactivities',
+    getTemplate: (params) => template.load('EditActivities'),
   },
   {
     path: '/products/:productId',

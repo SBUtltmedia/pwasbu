@@ -7,7 +7,7 @@
 .login{
     width: 50%;
     background: #fff;
-    color: #022950;
+    color: #840101;
     font-size: 130%;
     float: left;
     height: 60px;
@@ -18,14 +18,16 @@
 }
 
 .signup-form{
+    color: #840101;
     background: #fff;
     padding: 40px;
     clear: both;
     width: 100%;
     box-sizing: border-box;
-    height: 400px;
+    height: 700px;
 }
 .login-form{
+    color: #840101;
     background: #fff;
     padding: 40px;
     clear: both;
@@ -44,11 +46,18 @@
     outline: none;
     transform: all 0.5s ease;
 }
-
-.input:focus{
-    border: 2px solid #022950;
+.nav-item{
+    text-align:left;
 }
-#pass_tip{
+.bdrlessBtn{
+    padding: 0;
+    border: none;
+    background: none;
+}
+.input:focus{
+    border: 2px solid #840101;
+}
+.pass-comment{
     margin-top: -25px;
     font-size: 75%;
     text-align: center;
@@ -64,7 +73,7 @@
 }
 .btn{
     width: 100%;
-    background: #022950;
+    background: #840101;
     height: 60px;
     text-align: center;
     line-height: 50px;
