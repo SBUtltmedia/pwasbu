@@ -59,6 +59,11 @@ let loadProfilePicture = () => {
         console.log("List all failed to work");
         document.getElementById("profile-pic").src = '../img/user/default/user-480.png';
       });
+      try{
+          document.getElementById("cameraInput").value = "";
+      } catch(err) {
+          
+      }
 };
 let initEditProfile = () => {
     birthdateField = document.getElementById("birthdate");

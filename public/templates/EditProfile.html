@@ -9,7 +9,7 @@
         <input type="date" id="birthdate" name="birthdate" min="1900-01-01"><br />
         <div id="profile-error">One or more of the above fields are in the wrong format or empty!</div> <br/>
         <img id="profile-pic" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left" width="200" height="200">
-        <div>Change Profile Picture: </div><input type="file" accept="image/*" capture="camera" id="cameraInput" onchange="changePhoto()">
+        <div>Change Profile Picture: </div><input type="file" accept="image/*" capture="camera" id="cameraInput">
         <div id="pic-error" class="error-msg"></div>
         <button type="button" class="btn btn-secondary btn-lg btn-space" onclick="initEditProfile()">Reset Profile Fields</button>
         <button type="button" class="btn btn-secondary btn-lg btn-space" onclick="updateProfile()">Submit Changes</button>
@@ -20,9 +20,28 @@
         console.log("loading in fields");
         initEditProfile();
         function changePhoto(){
-            document.getElementById("profile-pic").src = document.getElementById("cameraInput").value;
+            let fileReader = new FileReader();
+            fileReader.readAsDataURL(document.getElementById("cameraInput").value);
+            fileReader.onloadend = () => {
+                console.log(this);
+            };
             console.log(document.getElementById("cameraInput").value);
         }
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                
+                reader.onload = function(e) {
+                $('#profile-pic').attr('src', `${e.target.result}`);
+                }
+
+            reader.readAsDataURL(input.files[0]); // convert to base64 string
+            }
+        }   
+
+            $("#cameraInput").change(function() {
+            readURL(this);
+            });
     </script>
     </div>
 </template>
