@@ -14,8 +14,11 @@ class Router {
 
     // Push a history entry with the new url.
     // We pass an empty object and an empty string as the historyState and title arguments, but their values do not really matter here.
-    const url = `/${urlSegments.join('/')}`;
+    const url = `/#${urlSegments.join('/')}`;
    history.pushState({}, '', url);
+    window.onhashchange = ()=> {
+      routesObj.template.load(location.hash.split('#')[1]);
+    };
     // this.routesObj.template.load(url);
     // Append the given template to the DOM inside the router outlet.
     const routerOutletElement = document.querySelectorAll('[data-router-outlet]')[0];

@@ -1,13 +1,13 @@
 class Template {
     async load (filename) {
-        console.log(filename);
+        // console.log(filename);
         const url = new URL(`../templates/${filename}.html`,
           document.currentScript && document.currentScript.src || location.href)
       //  if (url in this) return this[url]
         // fetch and parse template as string
         let template = await fetch(url)
         template = await template.text()
-        console.log(url)
+        // console.log(url)
         template = new DOMParser().parseFromString(template, 'text/html')
           .querySelector('template')
         if (!template) throw new TypeError('No template element found')
