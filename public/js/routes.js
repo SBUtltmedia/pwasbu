@@ -9,9 +9,6 @@ class RoutesObj {
       },{
         path: '/home',
         getTemplate:  (params) => this.template.load('Home'),
-      },{
-        path: '/editusers',
-        getTemplate:  (params) => this.template.load('EditUsers'),
       },
       {
         path: '/forgotpassword',
@@ -36,13 +33,9 @@ class RoutesObj {
       {
         path: '/editprofile',
         getTemplate: (params) => this.template.load('EditProfile'),
-      },
-      {
-        path: '/editcampers',
-        getTemplate: (params) => this.template.load('EditCampers'),
       },{
-        path: '/editactivities',
-        getTemplate: (params) => this.template.load('EditActivities'),
+        path: '/controlpanel',
+        getTemplate: (params) => this.template.load('ControlPanel'),
       },
       {
         path: '/products/:productId',

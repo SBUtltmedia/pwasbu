@@ -139,6 +139,9 @@ function saveData(payload, key = "users") {
     // }
 
 }
+/**
+ * DEPRECATED FUNCTION
+ */
 function saveCurrentUserData(){
     let user = firebase.auth().currentUser;
     let payload = {};
@@ -148,7 +151,7 @@ function saveCurrentUserData(){
     } else{
         payload = generateUser(user.email, name[0]);
     }
-    fs.collection("users").doc(user.email).set(payload)
+    fs.collection("users").where("email", '==', email).set(payload)
         .then(function() {
             console.log("User does not exist in the database ... adding user now");
             localStorage.setItem("userData", JSON.stringify(payload));
@@ -238,19 +241,36 @@ function setUser(email, payload){
         batch.commit().catch(err => console.log(err))}
         );
 }
+function makeid(length) {
+    var result           = '';
+    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+       result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+ }
 /**
  * This function is purely used for signing the user up.
  * @param {} payload 
  */
-function addUser(payload){
+function addUser(payload, _callback = ()=> {}){
     fs.collection("users").where('email', '==', payload['email']).get()
     .then(res=> {
         if(res.docs.length > 0) {
             console.log("attempting to add a user that already exists");
         } else {
-            fs.collection("users").add(payload).then(function(){
-                console.log("Added user successfully");
-            }).catch(function(error) { console.log(error)});
+            fs.collection("users").get().then((res) => {
+                let id = makeid(3);
+                if (payload['email'] == "") {
+                    payload['email'] = id;
+                }
+                payload['id'] = id + (res.docs.length + 1);
+                fs.collection("users").add(payload).then(function(){
+                    console.log("Added user successfully");
+                    _callback();
+                }).catch(function(error) { console.log(error)});
+            });
         }
     });
 }
@@ -258,15 +278,15 @@ function addUser(payload){
  * This function returns a JSON Object for adding a user to the "users" collection
  * @param {*} email The email of the user. Cannot be a duplicate of an email already in use.
  */
-function generateUser(email, firstName="", lastName=""){
+function generateUser(email, firstName="", lastName="", gender ="Female", priv = "."){
     return {
         email: email,
         birthdate : "1999-07-04", //Needs to be implemented with field
         creationDate : new Date().toDateInputValue(),
         firstName: firstName,
         lastName : lastName, 
-        gender: "Female", // Needs to be implemented with field`
-        priv: "." 
+        gender: gender, // Needs to be implemented with field`
+        priv: priv
     };   
 }
 function signIn(email, password){
