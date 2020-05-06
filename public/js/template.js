@@ -1,6 +1,6 @@
 class Template {
     async load (filename) {
-        // console.log(filename);
+         console.log(filename);
         const url = new URL(`../templates/${filename}.html`,
           document.currentScript && document.currentScript.src || location.href)
       //  if (url in this) return this[url]

@@ -17,7 +17,7 @@ class Router {
     const url = `/#${urlSegments.join('/')}`;
    history.pushState({}, '', url);
     window.onhashchange = ()=> {
-      routesObj.template.load(location.hash.split('#')[1]);
+      this.routesObj.template.load(location.hash.split('#')[1]);
     };
     // this.routesObj.template.load(url);
     // Append the given template to the DOM inside the router outlet.
