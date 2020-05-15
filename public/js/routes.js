@@ -19,6 +19,10 @@ class RoutesObj {
         getTemplate:  (params) => this.template.load('Blank'),
       },
       {
+        path: '/evaluation',
+        getTemplate:  (params) => this.template.load('Evaluation'),
+      },
+      {
         path: '/navbar',
         getTemplate:  (params) => this.template.load('Navbar'),
       },

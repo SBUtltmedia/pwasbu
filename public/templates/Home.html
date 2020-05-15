@@ -2,28 +2,11 @@
     <div>
         <div class="menu">
             <div id="menu-user"></div>
-            <img id="profile-pic" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left" width="200" height="200">
+            <img id="profile-pic" src="../img/user/default/user-480.png" class="img-thumbnail rounded" width="200" height="200">
             <div id="pic-error" class="error-msg"></div>
-            <br/><br/><br/><br/><br/><br/>
-            <div style="font-size: x-large;">Your Campers: </div>
-            <table id="campers" class="table table-hover">
-                <thead>
-                <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">User-id</th>
-                    <th scope="col"></th>
-                    <th scope="col"></th>
-                </tr>
-                </thead>
-                <tbody>    
-                    <tr>
-                    <td>Mark</td>
-                    <td>981293891238189</td>
-                    <td><button class='btn'>Records</button></td>
-                    <td><button class='btn'>Evaluate</button></td>
-                  </tr>
-                </tbody>
-            </table>
+            <br/>
+             <div style="font-size: x-large;">Your Campers</div>
+            <table id="campers" class="table table-striped table-bordered" style="width:100%; display:block;"> </table>
 
         </div>
         <script defer>
@@ -58,6 +41,7 @@
             }
             userWelcome();
             initNavBar();
+            initCampersEvalTable();
         </script>
     </div>
 </template>
