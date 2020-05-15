@@ -58,6 +58,17 @@ firebase.auth().onAuthStateChanged((user) => {
     }
 });
 
+window.addEventListener('hashchange', hashChangeEvent => {
+    console.log("Hash Change: ");
+    urlSegments = hashChangeEvent.newURL.split("#");
+    // console.log(urlSegments);
+    if(urlSegments[1] != '') {
+        router.loadRoute(urlSegments[1]);
+    } else {
+        router.loadRoute('home');
+    }
+});
+
 const fs = firebase.firestore()
 fs.enablePersistence()
     .catch(function(err) {
