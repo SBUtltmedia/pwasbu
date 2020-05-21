@@ -1,9 +1,10 @@
 class Evaluation {
-    constructor(camperID = "DEFAULT", evalMode = "add", docID = "DEFAULT", actID = "DEFAULT") {
+    constructor(camperID = "DEFAULT", evalMode = "add", docID = "DEFAULT", actID = "DEFAULT", instrID = "DEFAULT") {
         this.camperID = camperID;
         this.evalMode = evalMode;
         this.docID = docID;
         this.actID = actID;
+        this.instrID = instrID;
     }
 }
 const currEval = new Evaluation(); //Current Evaluation Object
@@ -34,9 +35,9 @@ function initCampersEvalTable(){
                                     doc.data()['firstName'], 
                                     doc.data()['lastName'],
                                     doc.data()['id'],
-                                    `<button class='btn bdrlessBtn' onclick='getEvals("${doc.data()['id']}")'>Get Evals</button>`,
-                                    `<button class='btn bdrlessBtn btn-danger' onclick='editEval("${doc.data()['id']}")'>Edit Eval</button>`,
-                                    `<button class='btn bdrlessBtn btn-danger' onclick='eval("${doc.data()['id']}")'>Add Eval</button>`
+                                    `<button class='btn bdrlessBtn' onclick='eval("${doc.data()['id']}", "get")'>Get Evals</button>`,
+                                    `<button class='btn bdrlessBtn btn-danger' onclick='eval("${doc.data()['id']}")', "edit">Edit Eval</button>`,
+                                    `<button class='btn bdrlessBtn btn-danger' onclick='eval("${doc.data()['id']}", "add")'>Add Eval</button>`
                                 ]).draw();
                             });
                         });
@@ -46,20 +47,23 @@ function initCampersEvalTable(){
         });
     }).catch(err => { console.log(err);});
 }
-function eval(id){
-    currEval.camperID = id;
-    currEval.evalMode = "add";
-    router.loadRoute('evaluation');
+function updateEval(camperID, _callback = () => {}) {
+    try{
+        let userData = JSON.parse(localStorage.getItem("userData"));
+        currEval.instrID = userData['id'];
+        currEval.camperID = camperID;
+    }catch(err){
+        fs.collection("users").where('email', '==', user.email).get().then(function(res) {
+            res.docs[0].ref.get().then(doc=> {
+                currEval.instrID = doc.data()['id'];
+                _callback();
+            });
+        })
+    }
 }
-function getEvals(id){
-    currEval.camperID = id;
-    currEval.evalMode = "get";
-    router.loadRoute('evaluation');
-}
-function editEvals(id){
-    currEval.camperID = id;
-    currEval.evalMode = "edit";
-    router.loadRoute('evaluation');
+function eval(id, evalMode = "add"){
+    currEval.evalMode = evalMode;
+    updateEval(id, router.loadRoute('evaluation'));
 }
 function actEvalInit(){
     fs.collection("Activities").get().then(res =>{
@@ -96,14 +100,14 @@ function loadEval(docID = currEval.actID) {
             let day = 1;
             while(day < 4) {
                 let itemID = 1;
-                $("#checklist").append(`<a class="list-group-item list-group-item-action" 
+                $("#checklist").append(`<a class="list-group-item list-group-item-action firstDropDownColor" 
                     data-toggle="collapse" href="#checklist-day-${day}" role="button" 
                     aria-expanded="false" aria-controls="checklist-day-${day}">
                     Day ${day} <i class="fas fa-angle-down rotate-icon"></i>
                     </a>
                     <div class="collapse" id="checklist-day-${day}">`);
                 doc.data()['checklist'].forEach( item => {
-                    $(`#checklist-day-${day}`).append(`<a class="list-group-item list-group-item-action" 
+                    $(`#checklist-day-${day}`).append(`<a class="list-group-item list-group-item-action secondDropDownColor" 
                     data-toggle="collapse" href="#${"checklist" + itemID + "-" + day}" role="button" 
                     aria-expanded="false" aria-controls="${"checklist" + itemID + "-" + day}">
                     ${item['name']} <i class="fas fa-angle-down rotate-icon"></i>
@@ -125,7 +129,7 @@ function loadEval(docID = currEval.actID) {
         try{
             let skillCount = 1;
             doc.data()['skills'].forEach(skill=>{
-                $("#skills").append(`<a class="list-group-item list-group-item-action" 
+                $("#skills").append(`<a class="list-group-item list-group-item-action firstDropDownColor" 
                     data-toggle="collapse" href="#skill-${skillCount}" role="button" 
                     aria-expanded="false" aria-controls="skill-${skillCount}">
                     ${skill['skillName']} <i class="fas fa-angle-down rotate-icon"></i>
@@ -133,7 +137,7 @@ function loadEval(docID = currEval.actID) {
                     <div class="collapse" id="skill-${skillCount}">`);
                 let subSkillCount = 1;
                 skill['subSkills'].forEach(subSkill=>{
-                    $(`#skill-${skillCount}`).append(`<a class="list-group-item list-group-item-action" 
+                    $(`#skill-${skillCount}`).append(`<a class="list-group-item list-group-item-action secondDropDownColor" 
                     data-toggle="collapse" href="#skill-${skillCount}-${subSkillCount}" role="button" 
                     aria-expanded="false" aria-controls="skill-${skillCount}-${subSkillCount}">
                     ${subSkill} <i class="fas fa-angle-down rotate-icon"></i>
@@ -167,12 +171,15 @@ function submitEval(evalID = "DEFAULT"){
             evalDoc['activityName'] = doc.data()['name'];
             evalDoc['camper'] = currEval.camperID;
             evalDoc['dailyCheckList'] = { 1:[],2:[],3:[]};
+            evalDoc['skills'] = {};
+            evalDoc['date'] = new Date().toDateInputValue();
+            evalDoc['instructor'] = currEval.instrID;
             try{
-                let clen = doc.data()['checklist'].length;
+                let checkLen = doc.data()['checklist'].length;
                 let day = 1;
                 while(day < 4){
                     let itemID = 1;
-                    while(itemID < clen + 1) {
+                    while(itemID < checkLen + 1) {
                         evalDoc['dailyCheckList'][day].push(document.getElementById(`${"checklist" + itemID + "-" + day}-input`).value);
                         itemID++;
                     }
@@ -180,7 +187,27 @@ function submitEval(evalID = "DEFAULT"){
                 }
             } catch(err) {
                 console.log(err);
-                console.log("checklist does not exist when submitting");
+                console.log("checklist does not exist when submitting for this activity");
+            }
+            try {
+                let skillsLen = doc.data()['skills'].length;
+                let skillCount = 1;
+                while(skillCount < skillsLen + 1){
+                    evalDoc['skills']['skill_'+skillCount] = [];
+                    let subSkillCount = 1;
+                    let subSkillsLen = doc.data()['skills'][skillCount - 1]['subSkills'].length;
+                    while(subSkillCount < subSkillsLen + 1){
+                        evalDoc['skills']['skill_'+skillCount].push({
+                            score: document.getElementById(`skill-${skillCount}-${subSkillCount}-select`).value,
+                            comment: document.getElementById(`skill-${skillCount}-${subSkillCount}-comment`).value
+                        })
+                        subSkillCount++;
+                    }
+                    skillCount++;
+                }
+            } catch(err) {
+                console.log(err);
+                console.log("skills does not exist when submitting for this activity")
             }
             console.log(evalDoc);
             // alert("Evaluation added successfully!");

@@ -10,7 +10,7 @@
 
         </div>
         <script defer>
-            loadProfilePicture();
+            loadProfilePicture(); // LOCATED IN settings.js
             function addDumbData(){
                 fs.collection("bad egg").add({data:"I have sent dummy data", dateAdded: new Date().toDateInputValue()}).then(()=>{
                     alert("data has been sent!");
@@ -40,8 +40,8 @@
                 }
             }
             userWelcome();
-            initNavBar();
-            initCampersEvalTable();
+            initNavBar(); // LOCATED in navbar.js
+            initCampersEvalTable(); // LOCATED in evaluation.js
         </script>
     </div>
 </template>
