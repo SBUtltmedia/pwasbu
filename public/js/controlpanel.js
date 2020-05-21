@@ -162,7 +162,7 @@ function initGroupsTable(){
         fs.collection("users").where("priv", "==", "coach").get().then( resCoach => {
             coaches = {} // Dictionary of coachIDs
             resCoach.forEach(doc => {
-                coaches[doc.data['id']] = doc.data();
+                coaches[doc.data()['id']] = doc.data();
             });
             fs.collection("Groups").get().then(res =>{
                 let data = [];

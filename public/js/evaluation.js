@@ -1,10 +1,14 @@
 class Evaluation {
-    constructor(camperID = "DEFAULT", evalMode = "add", docID = "DEFAULT", actID = "DEFAULT", instrID = "DEFAULT") {
+    // Just an object to hold global variables
+    constructor(camperID = "DEFAULT", evalMode = "add", docID = "DEFAULT", actID = "DEFAULT", 
+                instrID = "DEFAULT", evalDoc = {}, evalID = "DEFAULT") {
         this.camperID = camperID;
         this.evalMode = evalMode;
         this.docID = docID;
         this.actID = actID;
         this.instrID = instrID;
+        this.evalDoc = evalDoc;
+        this.evalID = evalID;
     }
 }
 const currEval = new Evaluation(); //Current Evaluation Object
@@ -17,7 +21,6 @@ function initCampersEvalTable(){
                 {"title" : "First Name"},
                 {"title" : "Last Name"},
                 {"title" : "UID"},
-                {"title" : ""},
                 {"title" : ""},
                 {"title" : ""}
             ]
@@ -36,7 +39,6 @@ function initCampersEvalTable(){
                                     doc.data()['lastName'],
                                     doc.data()['id'],
                                     `<button class='btn bdrlessBtn' onclick='eval("${doc.data()['id']}", "get")'>Get Evals</button>`,
-                                    `<button class='btn bdrlessBtn btn-danger' onclick='eval("${doc.data()['id']}")', "edit">Edit Eval</button>`,
                                     `<button class='btn bdrlessBtn btn-danger' onclick='eval("${doc.data()['id']}", "add")'>Add Eval</button>`
                                 ]).draw();
                             });
@@ -70,7 +72,7 @@ function actEvalInit(){
         let data = [];
         res.forEach(doc => {
             data.push([
-                `<button class='btn bdrlessBtn' onclick='loadEval("${doc.id}")'>${doc.data()['name']}</button>`
+                `<button class='btn bdrlessBtn' onclick='loadNewEval("${doc.id}")'>${doc.data()['name']}</button>`
             ]);
         });
         $(document).ready(function() {
@@ -84,14 +86,17 @@ function actEvalInit(){
     });
 }
 /**
- * Loads an evaluation form 
+ * Loads an Add evaluation form 
  */
-function loadEval(docID = currEval.actID) {
+function loadNewEval(docID = currEval.actID, _callback = () => {}) {
     currEval.actID = docID;
-    document.getElementById("activities").style="display: none;";
-    $('#activities').DataTable().destroy();
+    if(currEval.evalMode == "add"){
+        document.getElementById("activities").style="display: none;";
+        console.log(currEval.evalMode);
+        $('#activities').DataTable().destroy();
+    }
     document.getElementById("submitEval").style="display: block;";
-    fs.collection("Activities").doc(docID).get().then(doc => {
+    return fs.collection("Activities").doc(docID).get().then(doc => {
         document.getElementById("activityName").innerHTML = doc.data()['name'];
         // Adding daily checklist
         $("#evaluation").append(`<div style="font-size: large;"> Daily Check List </div>
@@ -162,56 +167,151 @@ function loadEval(docID = currEval.actID) {
         } catch(err){
             console.log("skills does not exist in this activity");
         }
+        _callback();
     });
 }
-function submitEval(evalID = "DEFAULT"){
-    if(currEval.evalMode == "add"){
-        fs.collection("Activities").doc(currEval.actID).get().then(doc => { 
-            let evalDoc = {};
+function submitEval(evalID = "DEFAULT", evalDoc = currEval.evalDoc){
+    fs.collection("Activities").doc(currEval.actID).get().then(doc => { 
+        if(currEval.evalMode == "add"){
             evalDoc['activityName'] = doc.data()['name'];
             evalDoc['camper'] = currEval.camperID;
             evalDoc['dailyCheckList'] = { 1:[],2:[],3:[]};
             evalDoc['skills'] = {};
             evalDoc['date'] = new Date().toDateInputValue();
             evalDoc['instructor'] = currEval.instrID;
-            try{
-                let checkLen = doc.data()['checklist'].length;
-                let day = 1;
-                while(day < 4){
-                    let itemID = 1;
-                    while(itemID < checkLen + 1) {
-                        evalDoc['dailyCheckList'][day].push(document.getElementById(`${"checklist" + itemID + "-" + day}-input`).value);
-                        itemID++;
-                    }
-                    day++;
+        }
+        try{
+            let checkLen = doc.data()['checklist'].length;
+            let day = 1;
+            while(day < 4){
+                let itemID = 1;
+                while(itemID < checkLen + 1) {
+                    evalDoc['dailyCheckList'][day].push(document.getElementById(`${"checklist" + itemID + "-" + day}-input`).value);
+                    itemID++;
                 }
-            } catch(err) {
-                console.log(err);
-                console.log("checklist does not exist when submitting for this activity");
+                day++;
             }
-            try {
-                let skillsLen = doc.data()['skills'].length;
-                let skillCount = 1;
-                while(skillCount < skillsLen + 1){
-                    evalDoc['skills']['skill_'+skillCount] = [];
-                    let subSkillCount = 1;
-                    let subSkillsLen = doc.data()['skills'][skillCount - 1]['subSkills'].length;
-                    while(subSkillCount < subSkillsLen + 1){
-                        evalDoc['skills']['skill_'+skillCount].push({
-                            score: document.getElementById(`skill-${skillCount}-${subSkillCount}-select`).value,
-                            comment: document.getElementById(`skill-${skillCount}-${subSkillCount}-comment`).value
-                        })
-                        subSkillCount++;
-                    }
-                    skillCount++;
+        } catch(err) {
+            console.log(err);
+            console.log("checklist does not exist when submitting for this activity");
+        }
+        try {
+            let skillsLen = doc.data()['skills'].length;
+            let skillCount = 1;
+            while(skillCount < skillsLen + 1){
+                evalDoc['skills']['skill_'+skillCount] = [];
+                let subSkillCount = 1;
+                let subSkillsLen = doc.data()['skills'][skillCount - 1]['subSkills'].length;
+                while(subSkillCount < subSkillsLen + 1){
+                    evalDoc['skills']['skill_'+skillCount].push({
+                        score: document.getElementById(`skill-${skillCount}-${subSkillCount}-select`).value,
+                        comment: document.getElementById(`skill-${skillCount}-${subSkillCount}-comment`).value
+                    })
+                    subSkillCount++;
                 }
-            } catch(err) {
-                console.log(err);
-                console.log("skills does not exist when submitting for this activity")
+                skillCount++;
             }
-            console.log(evalDoc);
-            // alert("Evaluation added successfully!");
-            // router.loadRoute("home")
+        } catch(err) {
+            console.log(err);
+            console.log("skills does not exist when submitting for this activity")
+        }
+        if(currEval.evalMode == "add"){
+            fs.collection("Evaluations").add(evalDoc).then(()=>{
+                alert("Evaluation added successfully!");
+                router.loadRoute("home")
+            });
+        } else {
+            fs.collection("Evaluations").doc(currEval.evalID).set(evalDoc).then(()=>{
+                alert("Evaluation updated successfully!");
+                router.loadRoute("home")
+            });
+        }
+    });
+}
+function initEvalTable(){
+    $('#evaluations').DataTable({        
+        columns: [
+            {"title" : "Activity Name"},
+            {"title" : "Instructor"},
+            {"title" : "Date"},
+            {"title" : ""}
+        ],
+        "order": [[2, "asc"]]
+    });
+    fs.collection("users").where("priv", "==", "coach").get().then( resCoach => {
+        coaches = {} // Dictionary of coachIDs
+        resCoach.forEach(doc => {
+            coaches[doc.data()['id']] = doc.data();
         });
-    }
+        fs.collection("Evaluations").where("camper", "==", currEval.camperID).get().then(res =>{
+            let table = $('#evaluations').DataTable(); 
+            res.forEach(doc => {
+                try{
+                    console.log(coaches);
+                    table.row.add([
+                        doc.data()['activityName'], 
+                        coaches[doc.data()['instructor']]['firstName'] + coaches[doc.data()['instructor']]['lastName'],
+                        doc.data()['date'],
+                        `<button class='btn bdrlessBtn' onclick='editEval("${doc.data()['activityName']}", 
+                         "${doc.id}",${JSON.stringify(doc.data())});'>Edit</button>`
+                       ]);
+                } catch(err) {
+                    console.log(err);
+                    console.log("Couldn't load the coach for the specified evaluation " + doc.id);
+                }
+            });
+            table.draw();
+        });
+    });
+}
+function populateEval(evalDoc){
+    $(document).ready(function(){
+        try{
+            let checkLen = evalDoc['dailyCheckList'][1].length;
+            let day = 1;
+            while(day < 4){
+                let itemID = 1;
+                while(itemID < checkLen + 1) {
+                    document.getElementById(`${"checklist" + itemID + "-" + day}-input`).value = evalDoc['dailyCheckList'][day][itemID - 1];
+                    itemID++;
+                }
+                day++;
+            }
+        } catch(err) {
+            console.log(err);
+            console.log("checklist does not exist in this Evaluation Document");
+        }
+        try {
+            let skillsLen = Object.getOwnPropertyNames(evalDoc['skills']).length;
+            let skillCount = 1;
+            while(skillCount < skillsLen + 1){
+                let subSkillCount = 1;
+                let subSkillsLen = evalDoc['skills']['skill_'+skillCount].length;
+                while(subSkillCount < subSkillsLen + 1){
+                    document.getElementById(`skill-${skillCount}-${subSkillCount}-select`).value 
+                        = evalDoc['skills']['skill_'+skillCount][subSkillCount-1]['score'];
+                    document.getElementById(`skill-${skillCount}-${subSkillCount}-comment`).value
+                        = evalDoc['skills']['skill_'+skillCount][subSkillCount-1]['comment'];
+                    subSkillCount++;
+                }
+                skillCount++;
+            }
+        } catch(err) {
+            console.log(err);
+            console.log("skills does not exist when submitting for this activity")
+        }
+    });
+}
+function editEval(actName, evalID, evalDoc){
+    currEval.evalID = evalID;
+    currEval.evalDoc = evalDoc;
+    fs.collection("Activities").where("name","==", actName).get().then(res=>{
+        res.docs[0].ref.get().then(doc => {
+            document.getElementById("evaluations").style="display: none;";
+            $('#evaluations').DataTable().destroy();
+            loadNewEval(doc.id).then(()=>{
+                populateEval(evalDoc);
+            });
+        });
+    });
 }
