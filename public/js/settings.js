@@ -34,9 +34,13 @@ function updateProfile(){
             let user = firebase.auth().currentUser;
             setUser(user.email, generateUser(user.email, name));
         }
+        let user = firebase.auth().currentUser;
+        let file = document.getElementById("cameraInput").files[0];
+        console.log(file);
+        
         clearProfilePictures(user.email,
-        storageRef.child(`users/${user.email}/profile-picture/`).put(document.getElementById("profile-pic").src)
-        .catch((err)=>{console.log(err);}));
+            storageRef.child(`users/${user.email}/profile-picture/` + file.name).put(file)
+            .catch((err)=>{console.log(err);}));
     }
     
 }
