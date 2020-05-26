@@ -1,14 +1,14 @@
 class Evaluation {
     // Just an object to hold global variables
     constructor(camperID = "DEFAULT", evalMode = "add", docID = "DEFAULT", actID = "DEFAULT", 
-                instrID = "DEFAULT", evalDoc = {}, evalID = "DEFAULT") {
+                instrID = "DEFAULT", evalID = "DEFAULT") {
         this.camperID = camperID;
         this.evalMode = evalMode;
         this.docID = docID;
         this.actID = actID;
         this.instrID = instrID;
-        this.evalDoc = evalDoc;
         this.evalID = evalID;
+        this.date = "";
     }
 }
 const currEval = new Evaluation(); //Current Evaluation Object
@@ -65,6 +65,7 @@ function updateEval(camperID, _callback = () => {}) {
 }
 function eval(id, evalMode = "add"){
     currEval.evalMode = evalMode;
+    currEval.date = new Date().toDateInputValue();
     updateEval(id, router.loadRoute('evaluation'));
 }
 function actEvalInit(){
@@ -170,16 +171,15 @@ function loadNewEval(docID = currEval.actID, _callback = () => {}) {
         _callback();
     });
 }
-function submitEval(evalID = "DEFAULT", evalDoc = currEval.evalDoc){
+function submitEval(evalID = "DEFAULT"){
+    let evalDoc = {};
     fs.collection("Activities").doc(currEval.actID).get().then(doc => { 
-        if(currEval.evalMode == "add"){
-            evalDoc['activityName'] = doc.data()['name'];
-            evalDoc['camper'] = currEval.camperID;
-            evalDoc['dailyCheckList'] = { 1:[],2:[],3:[]};
-            evalDoc['skills'] = {};
-            evalDoc['date'] = new Date().toDateInputValue();
-            evalDoc['instructor'] = currEval.instrID;
-        }
+        evalDoc['activityName'] = doc.data()['name'];
+        evalDoc['camper'] = currEval.camperID;
+        evalDoc['dailyCheckList'] = { 1:[],2:[],3:[]};
+        evalDoc['skills'] = {};
+        evalDoc['date'] = currEval.date;
+        evalDoc['instructor'] = currEval.instrID;
         try{
             let checkLen = doc.data()['checklist'].length;
             let day = 1;
@@ -221,6 +221,7 @@ function submitEval(evalID = "DEFAULT", evalDoc = currEval.evalDoc){
                 router.loadRoute("home")
             });
         } else {
+            //console.log(`The ID ${currEval.evalID} has been updated to ` + JSON.stringify(evalDoc));
             fs.collection("Evaluations").doc(currEval.evalID).set(evalDoc).then(()=>{
                 alert("Evaluation updated successfully!");
                 router.loadRoute("home")
@@ -236,7 +237,7 @@ function initEvalTable(){
             {"title" : "Date"},
             {"title" : ""}
         ],
-        "order": [[2, "asc"]]
+        "order": [[2, "desc"]]
     });
     fs.collection("users").where("priv", "==", "coach").get().then( resCoach => {
         coaches = {} // Dictionary of coachIDs
@@ -247,7 +248,7 @@ function initEvalTable(){
             let table = $('#evaluations').DataTable(); 
             res.forEach(doc => {
                 try{
-                    console.log(coaches);
+                    // console.log(coaches);
                     table.row.add([
                         doc.data()['activityName'], 
                         coaches[doc.data()['instructor']]['firstName'] + coaches[doc.data()['instructor']]['lastName'],
@@ -272,6 +273,7 @@ function populateEval(evalDoc){
             while(day < 4){
                 let itemID = 1;
                 while(itemID < checkLen + 1) {
+                    console.log(`SOmething wrong with ${"checklist" + itemID + "-" + day}`);
                     document.getElementById(`${"checklist" + itemID + "-" + day}-input`).value = evalDoc['dailyCheckList'][day][itemID - 1];
                     itemID++;
                 }
@@ -305,8 +307,11 @@ function populateEval(evalDoc){
 function editEval(actName, evalID, evalDoc){
     currEval.evalID = evalID;
     currEval.evalDoc = evalDoc;
+    currEval.instrID = evalDoc['instructor'];
+    currEval.date = evalDoc['date'];
     fs.collection("Activities").where("name","==", actName).get().then(res=>{
         res.docs[0].ref.get().then(doc => {
+            currEval.actID = doc.id;
             document.getElementById("evaluations").style="display: none;";
             $('#evaluations').DataTable().destroy();
             loadNewEval(doc.id).then(()=>{
