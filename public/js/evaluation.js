@@ -26,28 +26,41 @@ function initCampersEvalTable(){
             ]
         });
     });
-    fs.collection("users").where("email","==", email).get().then(res=>{
-        res.docs[0].ref.get().then(doc => {
-            fs.collection("Groups").where("coach", "==", doc.data()['id']).get().then(res=>{
-                res.docs[0].ref.get().then(doc => {
-                    doc.data()['campers'].forEach(camper => {
-                        fs.collection('users').where("id", "==", camper).get().then( res =>{
-                            res.docs[0].ref.get().then(doc => {
-                                let table = $('#campers').DataTable(); // Future improvements would use local storage caching
-                                table.row.add([
-                                    doc.data()['firstName'], 
-                                    doc.data()['lastName'],
-                                    doc.data()['id'],
-                                    `<button class='btn bdrlessBtn' onclick='eval("${doc.data()['id']}", "get")'>Get Evals</button>`,
-                                    `<button class='btn bdrlessBtn btn-danger' onclick='eval("${doc.data()['id']}", "add")'>Add Eval</button>`
-                                ]).draw();
+    try {
+        let campersTable = JSON.parse(localStorage.getItem('campers'))['0'];
+        console.log(campersTable);
+        $(document).ready(function() {
+            $('#campers').DataTable().rows.add(campersTable).draw();
+        });
+    } catch(err) {
+        localStorage.setItem('campers', JSON.stringify({0:[]}));
+        fs.collection("users").where("email","==", email).get().then(res=>{
+            res.docs[0].ref.get().then(doc => {
+                fs.collection("Groups").where("coach", "==", doc.data()['id']).get().then(res=>{
+                    res.docs[0].ref.get().then(doc => {
+                        doc.data()['campers'].forEach(camper => {
+                            fs.collection('users').where("id", "==", camper).get().then( res =>{
+                                res.docs[0].ref.get().then(doc => {
+                                    let table = $('#campers').DataTable(); // Future improvements would use local storage caching
+                                    let row = [
+                                        doc.data()['firstName'], 
+                                        doc.data()['lastName'],
+                                        doc.data()['id'],
+                                        `<button class='btn bdrlessBtn' onclick='eval("${doc.data()['id']}", "get")'>Get Evals</button>`,
+                                        `<button class='btn bdrlessBtn btn-danger' onclick='eval("${doc.data()['id']}", "add")'>Add Eval</button>`
+                                    ];
+                                    let campersData = JSON.parse(localStorage.getItem('campers'));
+                                    campersData['0'].push(row);
+                                    localStorage.setItem('campers', JSON.stringify(campersData));
+                                    table.row.add(row).draw();
+                                });
                             });
                         });
                     });
-                });
-            }).then(err=>{console.log(err);});
-        });
-    }).catch(err => { console.log(err);});
+                }).catch(err=>{console.log(err);});
+            });
+        }).catch(err => { console.log(err);});
+    }
 }
 function updateEval(camperID, _callback = () => {}) {
     try{
