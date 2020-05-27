@@ -264,7 +264,7 @@ function initEvalTable(){
                     // console.log(coaches);
                     table.row.add([
                         doc.data()['activityName'], 
-                        coaches[doc.data()['instructor']]['firstName'] + coaches[doc.data()['instructor']]['lastName'],
+                        coaches[doc.data()['instructor']]['firstName'] + " " + coaches[doc.data()['instructor']]['lastName'],
                         doc.data()['date'],
                         `<button class='btn bdrlessBtn' onclick='editEval("${doc.data()['activityName']}", 
                          "${doc.id}",${JSON.stringify(doc.data())});'>Edit</button>`
