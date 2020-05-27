@@ -1,3 +1,10 @@
+/**
+ * Enable Tooltip everywhere on this page
+ */
+$(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+});
+
 //////////////////////////////// ACTIVITY FUNCTIONS //////////////////////////////////////////////
 const editor = "";
 /**
@@ -28,7 +35,6 @@ function initActivitiesTable(){
             });
         });
         let data = populateAct(names);
-        console.log(data);
         $(document).ready(function() {
             $('#activities').DataTable({        
                 data: data,
@@ -153,47 +159,83 @@ function addCamper(){
  * Populate the groups tables
  */
 function initGroupsTable(){
-    
     fs.collection("users").where("priv", "==", "camper").get().then( resCamp => {
         campers = {} // Dictionary of coachIDs
         resCamp.forEach(doc => {
-            campers[doc.data['id']] = doc.data();
+            campers[doc.data()['id']] = doc.data();
         });
         fs.collection("users").where("priv", "==", "coach").get().then( resCoach => {
             coaches = {} // Dictionary of coachIDs
             resCoach.forEach(doc => {
                 coaches[doc.data()['id']] = doc.data();
             });
+            $('#groups').DataTable({   
+                columns: [
+                    {"title" : "Coach Name",
+                    "searchable": false},
+                    {"title" : "Campers",
+                    "searchable": false},
+                    {"title" : "",
+                    "searchable": false},
+                    {"title" : "",
+                    "searchable": false},
+                    {"title" : "",
+                     "visible": false},
+                     {"title" : "",
+                      "visible": false}
+                ]
+            });
+            let allCampers = [];
+            Object.keys(campers).forEach(camperId => {
+                allCampers.push({
+                    username: camperId,
+                    fullname: campers[camperId]['firstName'] + ' ' + campers[camperId]['lastName']
+                });
+            });
+            let instrSelect = document.createElement('select'); 
+            instrSelect.className = "form-control";
+            Object.keys(coaches).forEach(coachId => {
+                let opt = document.createElement('option');
+                opt.innerHTML = coaches[coachId]['firstName'] + " " + coaches[coachId]['lastName'] + `(id:${coachId})`;
+                opt.value = coachId;
+                instrSelect.appendChild(opt);
+            });
+            $(document).ready(function() {
             fs.collection("Groups").get().then(res =>{
                 let data = [];
                 res.forEach(doc => {
                     try{
                         let camperNames = "";
                         doc.data()['campers'].forEach(camperId => {
-                            camperNames = ' "' + campers[camperId]['firstName'] + ' ' + campers[camperId]['lastName']+ '"';
+                            camperNames += `@${camperId} `;
                         });
-                        data.push([
-                        coaches[doc.data()['coach']]['firstName'] + " " + coaches[doc.data()['coach']]['lastName'] , 
-                        camperNames,
-                        `<button class='btn bdrlessBtn' onclick='getGroup("${doc.id}")'>Edit</button>`,
-                        `<button class='btn bdrlessBtn btn-danger' onclick='removeGroup("${doc.id}")'>Remove</button>`
-                        ]); 
+                        let tempSelect = instrSelect.cloneNode(true);
+                        tempSelect.id = "group-select-" + doc.id;
+                        $('#groups').DataTable().row.add([
+                        tempSelect.outerHTML, 
+                        `<textarea class="form-control" id="${"group-" + doc.id}" rows="1"></textarea>`,
+                        `<button class='btn bdrlessBtn btn-danger' onclick='removeGroup("${doc.id}")'>Remove</button>`,
+                        `<button class='btn bdrlessBtn' onclick='updateGroup("${doc.id}")'>Update</button>`,
+                        coaches[doc.data()['coach']]['firstName'] + " " + coaches[doc.data()['coach']]['lastName'] + `(id:${doc.data()['coach']})`,
+                        camperNames
+                        ]).draw(); 
+                        $('#group-'+ doc.id).suggest('@', {
+                            data: allCampers,
+                              map: function( user ) {
+                                  return {
+                                      value: user.username,
+                                      text: '<strong>'+user.username+'</strong> <small>'+user.fullname+'</small>'
+                                  }
+                            }
+                        });
+                        document.getElementById("group-"+doc.id).value = camperNames;
+                        document.getElementById("group-select-" + doc.id).value = doc.data()['coach'];
                     }catch(err) {
                         console.log(err);
                         // DO nothing. Not a valid group.
                     }
                 });
-                $(document).ready(function() {
-                    $('#groups').DataTable({        
-                        data: data,
-                        columns: [
-                            {"title" : "Coach Name"},
-                            {"title" : "Campers"},
-                            {"title" : ""},
-                            {"title" : ""}
-                        ]
-                    });
-                });
+            });
             });
         });
     });
@@ -201,7 +243,8 @@ function initGroupsTable(){
 
 function updateGroupsTable(){
     $(document).ready(function() {
-        $('#groups').DataTable().destroy();
+        $('#groups').DataTable().clear();
+        $('#groups').DataTable().destroy(); // The destroy function literally does nothing to contents of table. requires override
         initGroupsTable();
     });
 }
@@ -218,4 +261,27 @@ function addGroup(){
     fs.collection('Groups').add(payload).then(()=> {
         updateGroupsTable();
     });
+}
+function updateGroup(docid) {
+    let camperString = document.getElementById("group-" + docid).value;
+    var find = '@';
+    var re = new RegExp(find, 'g');
+    camperString = camperString.replace(re,"").trim();
+    let campers = camperString.split(" ");
+    campers.forEach(c => {
+        campers.forEach(camper=> {
+            if(camper == ""){
+                campers.splice(campers.indexOf(camper),1);
+            }
+        });
+    });
+    let data = {
+        campers: campers,
+        coach: document.getElementById("group-select-" + docid).value
+    };
+    // console.log(data);
+    fs.collection("Groups").doc(docid).set(data);
+}
+function initUsersPage() {
+    //Does nothing right now
 }
