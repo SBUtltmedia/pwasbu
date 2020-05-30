@@ -243,15 +243,18 @@ function forgotPassword() {
         router.loadRoute('');
       });
 }
+
 // Also used for setting the user
 function setUser(email, payload){
-    fs.collection("users").where('email', '==', email).get()
-        .then( res => {
+    fs.collection("users").where('email', '==', email).get().then(res => {
         let batch = fs.batch();
-        res.forEach(doc => {batch.set(doc.ref, payload);}); 
-        batch.commit().catch(err => console.log(err))}
-        );
+        res.forEach(doc => {
+            batch.set(doc.ref, payload); 
+        }); 
+        batch.commit().catch(err => console.log(err))
+    });
 }
+
 function makeid(length) {
     var result           = '';
     var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

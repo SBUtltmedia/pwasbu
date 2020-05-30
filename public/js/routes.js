@@ -37,7 +37,12 @@ class RoutesObj {
       {
         path: '/editprofile',
         getTemplate: (params) => this.template.load('EditProfile'),
-      },{
+      },
+      {
+        path: '/accountSettings',
+        getTemplate: (params) => this.template.load('AccountSettings'),
+      },
+      {
         path: '/controlpanel',
         getTemplate: (params) => this.template.load('ControlPanel'),
       },
