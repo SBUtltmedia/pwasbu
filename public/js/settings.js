@@ -180,11 +180,12 @@ function updateEmail() {
                     // Changing directory path of profile pic
                     updateProfilePicDirectoryPath(original_email, new_email);
                 }).catch(function(error) {
-                    console.log("Could not update account email: ", error);
+                    $("#profile-success").hide();
+                    window.alert("Could not update account email: The new email address is already being used by another account");
                 });
             }).catch(function(error) {
                 $("#profile-success").hide();
-                window.alert("Incorrect credentials provided");
+                window.alert("Could not update account email: Incorrect credentials provided");
             });
         } else {
             window.alert("New email is the same as the old email");
