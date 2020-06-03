@@ -15,19 +15,20 @@ class Router {
     // Push a history entry with the new url.
     // We pass an empty object and an empty string as the historyState and title arguments, but their values do not really matter here.
     const url = `/#${urlSegments.join('/')}`;
-   history.pushState({}, '', url);
-    window.onhashchange = ()=> {
-      this.routesObj.template.load(location.hash.split('#')[1]);
-    };
-    // this.routesObj.template.load(url);
+
+    let current_template = window.location.href.split("#").length > 1 ? window.location.href.split("#")[1] : "";
+    let new_template = url.split("#").length > 1 ? url.split("#")[1] : "";
+    console.log(current_template + " ==> " + new_template);
+    if(current_template != new_template) {
+      history.pushState({}, '', url);
+    }
+
     // Append the given template to the DOM inside the router outlet.
     const routerOutletElement = document.querySelectorAll('[data-router-outlet]')[0];
     // routerOutletElement.innerHTML = matchedRoute.getTemplate(matchedRoute.params);
-     matchedRoute.getTemplate(matchedRoute.params).then((page)=>{
-
-     routerOutletElement.innerHTML='';
-       routerOutletElement.appendChild(page.content.querySelectorAll('div')[0]);
-
+    matchedRoute.getTemplate(matchedRoute.params).then((page)=>{
+      routerOutletElement.innerHTML='';
+      routerOutletElement.appendChild(page.content.querySelectorAll('div')[0]);
      });
   }
 
@@ -44,11 +45,9 @@ class Router {
     // Append the given template to the DOM inside the router outlet.
     const routerOutletElement = document.querySelectorAll('[data-router-header]')[0];
     // routerOutletElement.innerHTML = matchedRoute.getTemplate(matchedRoute.params);
-     matchedRoute.getTemplate(matchedRoute.params).then((page)=>{
-
-     routerOutletElement.innerHTML='';
-       routerOutletElement.appendChild(page.content.querySelectorAll('div')[0]);
-
+    matchedRoute.getTemplate(matchedRoute.params).then((page)=>{
+      routerOutletElement.innerHTML='';
+      routerOutletElement.appendChild(page.content.querySelectorAll('div')[0]);
      });
   }
   _matchUrlToRoute(urlSegments) {
