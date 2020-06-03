@@ -1,5 +1,6 @@
 <template>
     <div>
+        <div style="font-size: x-large; text-align: center;">Admin Console</div>
         <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#activities-control" aria-expanded="false" aria-controls="collapseExample">
             Activities
           </button>
@@ -66,12 +67,19 @@
             <table id="groups" class="table table-striped table-bordered" style="width:100%"></table>
         </div>
 
+        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#users-control" aria-expanded="false" aria-controls="collapseExample">
+            Users
+          </button>
+        <div id="users-control" class= "collapse">
+            <table id="users" class="table table-striped table-bordered" style="width:100%"> </table>
+        </div>
     <script>
         document.getElementById('act-edit').style = "display: none";
         initActivitiesTable();
         initNavBar();
         initCampersTable();
         initGroupsTable();
+        initUsersTable();
     </script>
     </div>
 </template>
