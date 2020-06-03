@@ -38,3 +38,10 @@ div.editProfile
 {
     font-size: 1.5em;
 }
+
+#profile-success{
+    margin-top: -25px;
+    font-size: 75%;
+    text-align: center;
+    color: green;
+}

@@ -2,83 +2,96 @@
     <div>
         <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#activities-control"
             aria-expanded="false" aria-controls="collapseExample">
-            Activities
-        </button>
-        <div id="activities-control" class="collapse">
-            <button class="btn" style="width: 50%;" type="button" onclick="addActivity()">
-                Add an Activity
+            <div style="font-size: x-large; text-align: center;">Admin Console</div>
+            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#activities-control"
+                aria-expanded="false" aria-controls="collapseExample">
+                Activities
             </button>
-            <div style="font-size: x-large;">Activities Table</div>
-            <table id="activities" class="table table-striped table-bordered" style="width:100%">
-                <!-- <thead>
+            <div id="activities-control" class="collapse">
+                <button class="btn" style="width: 50%;" type="button" onclick="addActivity()">
+                    Add an Activity
+                </button>
+                <div style="font-size: x-large;">Activities Table</div>
+                <table id="activities" class="table table-striped table-bordered" style="width:100%">
+                    <!-- <thead>
                 <tr>
                     <th scope="col">Name</th>
                     <th scope="col"></th>
                 </tr>
                 </thead> -->
-                <!-- <tbody></tbody> -->
-            </table>
-            <div id="act-edit" style="display:none;">
-                <div style='font-size: x-large;'>Edit Activity</div> <br />
-                <div>Name: </div> <input type="text" id='act-name'><br />
-                <button class="btn" style="width: 50%; margin-top: 10px; margin-bottom: 10px"
-                    onclick="addCheckList()">Add a Checklist Item</button>
-                <div>Daily Checklist: </div>
-                <!--Adding id's and class tags don't seem to be able to change the css-->
-                <table id="checklist" class="table table-striped table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Unit of Measure</th>
-                            <th></th>
-                        </tr>
-                    </thead>
+                    <!-- <tbody></tbody> -->
                 </table>
-                <button class="btn" style="width: 50%; margin-top: 10px; margin-bottom: 10px" onclick="addSkill()">Add a
-                    Skill</button>
-                <div>Skills: </div>
-                <table id="skills" class="table table-striped table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th data-toggle="tooltip" data-placement="top" title="Subskills are separated by commas">
-                                Subskills</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                </table> <br /> <br />
-                <button class="btn" id="update-activity">Submit Changes</button>
+                <div id="act-edit" style="display:none;">
+                    <div style='font-size: x-large;'>Edit Activity</div> <br />
+                    <div>Name: </div> <input type="text" id='act-name'><br />
+                    <button class="btn" style="width: 50%; margin-top: 10px; margin-bottom: 10px"
+                        onclick="addCheckList()">Add a Checklist Item</button>
+                    <div>Daily Checklist: </div>
+                    <!--Adding id's and class tags don't seem to be able to change the css-->
+                    <table id="checklist" class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Unit of Measure</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <button class="btn" style="width: 50%; margin-top: 10px; margin-bottom: 10px"
+                        onclick="addSkill()">Add a
+                        Skill</button>
+                    <div>Skills: </div>
+                    <table id="skills" class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th data-toggle="tooltip" data-placement="top"
+                                    title="Subskills are separated by commas">
+                                    Subskills</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                    </table> <br /> <br />
+                    <button class="btn" id="update-activity">Submit Changes</button>
+                </div>
             </div>
-        </div>
-        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#campers-control"
-            aria-expanded="false" aria-controls="collapseExample">
-            Campers
-        </button>
-        <div id="campers-control" class="collapse">
-            <button class="btn" style="width: 50%;" type="button" onclick="addCamper()">
-                Add a Camper
+            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#campers-control"
+                aria-expanded="false" aria-controls="collapseExample">
+                Campers
             </button>
-            <div style="font-size: x-large;">All Campers</div>
-            <table id="campers" class="table table-striped table-bordered" style="width:100%"> </table>
-        </div>
-        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#groups-control"
-            aria-expanded="false" aria-controls="collapseExample">
-            Coach Groups
-        </button>
-        <div id="groups-control" class="collapse">
-            <button class="btn" style="width: 50%;" type="button" onclick="addGroup()">
-                Add a Group
+            <div id="campers-control" class="collapse">
+                <button class="btn" style="width: 50%;" type="button" onclick="addCamper()">
+                    Add a Camper
+                </button>
+                <div style="font-size: x-large;">All Campers</div>
+                <table id="campers" class="table table-striped table-bordered" style="width:100%"> </table>
+            </div>
+            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#groups-control"
+                aria-expanded="false" aria-controls="collapseExample">
+                Coach Groups
             </button>
-            <div style="font-size: x-large;">All Coach Groups</div>
-            <table id="groups" class="table table-striped table-bordered" style="width:100%"></table>
-        </div>
+            <div id="groups-control" class="collapse">
+                <button class="btn" style="width: 50%;" type="button" onclick="addGroup()">
+                    Add a Group
+                </button>
+                <div style="font-size: x-large;">All Coach Groups</div>
+                <table id="groups" class="table table-striped table-bordered" style="width:100%"></table>
+            </div>
 
-        <script>
-            document.getElementById('act-edit').style = "display: none";
-            initActivitiesTable();
-            initNavBar();
-            initCampersTable();
-            initGroupsTable();
-        </script>
+            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#users-control"
+                aria-expanded="false" aria-controls="collapseExample">
+                Users
+            </button>
+            <div id="users-control" class="collapse">
+                <table id="users" class="table table-striped table-bordered" style="width:100%"> </table>
+            </div>
+            <script>
+                document.getElementById('act-edit').style = "display: none";
+                initActivitiesTable();
+                initNavBar();
+                initCampersTable();
+                initGroupsTable();
+                initUsersTable();
+            </script>
     </div>
 </template>

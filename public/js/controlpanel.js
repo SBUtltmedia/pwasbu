@@ -238,20 +238,27 @@ function initCampersTable(){
     fs.collection("users").where("priv", "==", "camper").get().then(res =>{
         let data = [];
         res.forEach(doc => {
-            data.push([doc.data()['firstName'], doc.data()['lastName'], doc.data()['id'],
-            `<button class='btn bdrlessBtn' onclick='getCamper("${doc.id}")'>Edit</button>`,
-            `<button class='btn bdrlessBtn btn-danger' onclick='removeCamper("${doc.id}")'>Remove</button>`
+            data.push([
+                `<input type="text" id="${"camper-first" + doc.id}" class="form-control" value="${doc.data()['firstName']}">`, 
+                `<input type="text" id="${"camper-last" + doc.id}" class="form-control" value="${doc.data()['lastName']}">`, 
+                doc.data()['id'],
+                `<button class='btn bdrlessBtn' onclick='updateCamper("${doc.id}")'>Update</button>`,
+                `<button class='btn bdrlessBtn btn-danger' onclick='removeCamper("${doc.id}")'>Remove</button>`,
+                doc.data()['firstName'],
+                doc.data()['lastName']
             ]);
         });
         $(document).ready(function() {
             $('#campers').DataTable({        
                 data: data,
                 columns: [
-                    {"title" : "First Name"},
-                    {"title" : "Last Name"},
+                    {"title" : "First Name", 'searchable': false},
+                    {"title" : "Last Name", 'searchable': false},
                     {"title" : "UID"},
                     {"title" : ""},
-                    {"title" : ""}
+                    {"title" : ""},
+                    {"title": "", 'visible' : false},
+                    {"title": "", 'visible' : false}
                 ]
             });
         });
@@ -272,6 +279,16 @@ function removeCamper(docid) {
 function addCamper(){
     let userPayload = generateUser("", "John", "Doe", "Female", "camper");
     addUser(userPayload, updateCamperTable);
+}
+function updateCamper(docid){
+    let firstName = document.getElementById("camper-first" + docid).value;
+    let lastName = document.getElementById("camper-last" + docid).value;
+    fs.collection("users").doc(docid).update({
+        firstName: firstName,
+        lastName: lastName
+    }).then(()=>{
+        alert("User has been updated successfully!");
+    });
 }
 /////////////////////////////////////////// GROUPS FUNCTIONS ///////////////////////////////////////////
 
@@ -395,6 +412,50 @@ function updateGroup(docid) {
     };
     fs.collection("Groups").doc(docid).set(data);
 }
-function initUsersPage() {
-    //Does nothing right now
+
+/////////////////////////////////// USERS FUNCTIONS ////////////////////////////////////////////////////
+function initUsersTable(){
+    $('#users').DataTable({   
+        columns: [
+            {"title" : "Name"},
+            {"title" : "Role",
+            "searchable": false},
+            {"title" : "",
+            "searchable": false},
+            {"title" : "",
+             "searchable": false},
+             {"title" : "",
+              "visible": false}
+        ]
+    });
+    fs.collection("users").get().then( res => {
+        users = [] // Dictionary of userIDs !!!!!!!!!!!!!!!!!!!! IGNORES CAMPERS !!!!!!!!!!!!!!!!!!!
+        res.forEach(doc => {
+            if(doc.data()['priv'] != "camper") {
+                $('#users').DataTable().row.add([
+                    doc.data()['firstName'] + " " + doc.data()['lastName'],
+                    `<div class="form-group"> 
+                        <select class="form-control" id="users-priv-${doc.id}"> 
+                            <option value="admin">Admin</option>
+                            <option value="coach">Coach</option>
+                            <option value=".">Basic</option>
+                            <option value="parent">Parent</option>
+                        </select> 
+                    </div>`,
+                    `<button class='btn bdrlessBtn' onclick='updateUser("${doc.id}")'>Update</button>`,
+                    `<button class='btn bdrlessBtn btn-danger' onclick='removeUser("${doc.id}")'>Remove</button>`,
+                    doc.data()['priv']
+                ]).draw();
+                document.getElementById("users-priv-" + doc.id).value = doc.data()['priv'];
+            }
+        });
+    });
+}
+function updateUser(docid){
+    let priv = document.getElementById("users-priv-" + docid).value;
+    fs.collection("users").doc(docid).update({ 
+        priv: priv
+    }).then(()=> {
+        alert("User has been updated!");
+    });
 }
