@@ -1,20 +1,23 @@
 <template>
-    <div>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-          <div class="navbar-brand">Menu</div>
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarNavDropdown">
-            <div class="navbar-nav">
-              <button class="nav-item nav-link bdrlessBtn" onclick="router.loadRoute('home')">Home</button>
-             <button id="nav-act" class="nav-item nav-link bdrlessBtn" onclick="router.loadRoute('controlpanel')">Control Panel</button>
-            <button class="nav-item nav-link bdrlessBtn" onclick="router.loadRoute('editprofile')">Edit Profile</button>
-              <button class="nav-item nav-link bdrlessBtn" href="#">Account Settings</button>
-              <button class="nav-item btn-danger" onclick="signout()">Log Out</button>
-              <button class="nav-item nav-link bdrlessBtn" onclick='scanDevices()'>Bluetooth Connect</button>
-            </div>
-          </div>
-        </nav>
-    </div>
+  <div>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="navbar-brand">Menu</div>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+        aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        <div class="navbar-nav">
+          <button class="nav-item nav-link bdrlessBtn" onclick="router.loadRoute('home')">Home</button>
+          <button id="nav-act" class="nav-item nav-link bdrlessBtn" onclick="router.loadRoute('controlpanel')">Control
+            Panel</button>
+          <!--huh, I can't seem to view this button-->
+          <button class="nav-item nav-link bdrlessBtn" onclick="router.loadRoute('editprofile')">Edit Profile</button>
+          <button class="nav-item nav-link bdrlessBtn" href="#">Account Settings</button>
+          <button class="nav-item btn-danger" onclick="signout()">Log Out</button>
+          <button class="nav-item nav-link bdrlessBtn" onclick='scanDevices()'>Bluetooth Connect</button>
+        </div>
+      </div>
+    </nav>
+  </div>
 </template>

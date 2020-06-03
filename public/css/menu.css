@@ -1,10 +1,11 @@
 
-#menu-user {
-    font-size: 28pt;
+ /*this is on the home page*/
+ #menu-user { 
+    font-size: 2em; /*Changing from 28pt to em's, okay so that didn't change anything because this css page wasn't linked to index.html, like why was this even created*/
     text-align: center;
     padding-top: 40px;
     padding-bottom: 40px;
-    font-family: "Lucida Console";
+    /*font-family: "Lucida Console";*/
 }
 .btn-space {
     margin-bottom: 10px;
@@ -12,3 +13,21 @@
 #menu-signout{
     background-color: firebrick;
 }
+
+.nav-item nav-link bdrlessBtn /*Okay, this is a test, it did nothing, devastating*/
+{
+    color:green;
+    font-size: 100em;
+}
+
+#navbarNavDropdown /*Here we go, trying again to increase font size in nav bar, nothing happened again with color, oof but the font-size changed*/
+{
+    color:yellow;
+    font-size: 2em;
+}
+
+div.navbar-brand
+{
+    font-size: 2em;
+}
+

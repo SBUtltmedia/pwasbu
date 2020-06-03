@@ -1,6 +1,9 @@
 .container{
-    width: 450px;
+    /*width: 450px;
+    margin: 30px auto;*/
+    width: 65%;
     margin: 30px auto;
+    /*height*/
 }
 
 .signup,
@@ -8,9 +11,9 @@
     width: 50%;
     background: #fff;
     color: #840101;
-    font-size: 130%;
+    font-size: 2em;
     float: left;
-    height: 60px;
+    height: 100px;
     line-height: 60px;
     text-align: center;
     cursor: pointer;
@@ -42,7 +45,7 @@
     margin-bottom: 25px;
     border: 2px solid #e9eaea;
     color: #3e3e40;
-    font-size: 14px;
+    font-size: 1.5em; /*Changing from 14px to em's*/
     outline: none;
     transform: all 0.5s ease;
 }
@@ -59,7 +62,7 @@
 }
 .pass-comment{
     margin-top: -25px;
-    font-size: 75%;
+    font-size: 1.5em; /*Changing from % to em's*/
     text-align: center;
     color: #dc3545;
 }
@@ -70,16 +73,18 @@
 }
 #google-button {
     color: white;
+    font-size: 1.8em;
 }
 .btn{
     width: 100%;
     background: #840101;
-    height: 60px;
+    height: auto;
     text-align: center;
     line-height: 50px;
     text-transform: uppercase;
     color: #fff;
     font-weight: bold;
+    font-size: 1.8em;
     letter-spacing: 1px;
     cursor: pointer;
     margin-bottom: 30px;
@@ -129,4 +134,19 @@ span a{
      display: inline-block; /* shrink to fit */
      width: 100%;           /* whatever width you like */
      position: relative;    /* so .content can use position: absolute */
+ }
+
+ #signup-birthdate
+ {
+     font-size: 1.8em;
+ }
+
+ div.dob
+ {
+     font-size: 1.5em;
+ }
+
+ label, #forgot-email, #forgot_pass
+ {
+     font-size: 2em;
  }

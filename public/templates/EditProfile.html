@@ -1,50 +1,62 @@
 <template>
     <div>
-        <div id = "user" style="font-size: x-large;">Edit Profile</div>
-        <div>Name: </div>
-        <input type="text" onkeyup="validString('user-name')" onkeydown="validString('user-name')" class="input" id="user-name"><br />
-        <div>Gender: </div>
-        <input type="text"  onkeyup="validString('user-gender')" onkeydown="validString('user-gender')" class="input" id="user-gender"><br />
-        <div>Date of Birth : </div>
+        <div id="user">Edit Profile</div>
+        <!--style="font-size: x-large;" removed the styling-->
+        <div class="editProfile">Name: </div>
+        <input type="text" onkeyup="validString('user-name')" onkeydown="validString('user-name')" class="input"
+            id="user-name"><br />
+        <div class="editProfile">Gender: </div>
+        <input type="text" onkeyup="validString('user-gender')" onkeydown="validString('user-gender')" class="input"
+            id="user-gender"><br />
+        <div class="editProfile">Date of Birth : </div>
         <input type="date" id="birthdate" name="birthdate" min="1900-01-01"><br />
-        <div id="profile-error">One or more of the above fields are in the wrong format or empty!</div> <br/>
-        <img id="profile-pic" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left" width="200" height="200">
-        <div>Change Profile Picture: </div><input type="file" accept="image/*" capture="camera" id="cameraInput">
+        <div id="profile-error">One or more of the above fields are in the wrong format or empty!</div> <br />
+        <img id="profile-pic" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left"
+            width="200" height="200">
+        <div class="profile-pic">Change Profile Picture: </div><input type="file" accept="image/*" capture="camera"
+            id="cameraInput">
         <div id="pic-error" class="error-msg"></div>
-        <button type="button" class="btn btn-secondary btn-lg btn-space" onclick="initEditProfile()">Reset Profile Fields</button>
+        <!--Hmm for these buttons below, I can't find the btn btn-sec class to fix the font-size, the new class(in editPro.css) seems to reset the css *shrug*-->
+        <button type="button" class="editProfileBtn" class="btn btn-secondary btn-lg btn-space"
+            onclick="initEditProfile()">Reset Profile
+            Fields</button>
         <div class="loader"></div>
-        <button type="button" class="btn btn-secondary btn-lg btn-space" onclick="updateProfile()">Submit Changes</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-space" onclick="router.loadRoute('menu')">Back to Menu</button>
-    <script>
-        $(".loader").hide();
-        $("#profile-error").hide();
-        //Date is in YYYY-MM-DD Format
-        console.log("loading in fields");
-        initEditProfile();
-        function changePhoto(){
-            let fileReader = new FileReader();
-            fileReader.readAsDataURL(document.getElementById("cameraInput").value);
-            fileReader.onloadend = () => {
-                console.log(this);
-            };
-            console.log(document.getElementById("cameraInput").value);
-        }
-        function readURL(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                
-                reader.onload = function(e) {
-                $('#profile-pic').attr('src', `${e.target.result}`);
-                }
-
-            reader.readAsDataURL(input.files[0]); // convert to base64 string
+        <button type="button" class="editProfileBtn" class="btn btn-secondary btn-lg btn-space"
+            onclick="updateProfile()">Submit
+            Changes</button>
+        <button type="button" class="editProfileBtn" class="btn btn-secondary btn-lg btn-space"
+            onclick="router.loadRoute('menu')">Back to
+            Menu</button>
+        <script>
+            $(".loader").hide();
+            $("#profile-error").hide();
+            //Date is in YYYY-MM-DD Format
+            console.log("loading in fields");
+            initEditProfile();
+            function changePhoto() {
+                let fileReader = new FileReader();
+                fileReader.readAsDataURL(document.getElementById("cameraInput").value);
+                fileReader.onloadend = () => {
+                    console.log(this);
+                };
+                console.log(document.getElementById("cameraInput").value);
             }
-        }   
+            function readURL(input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
 
-            $("#cameraInput").on("change", function() {
-            readURL(this);
+                    reader.onload = function (e) {
+                        $('#profile-pic').attr('src', `${e.target.result}`);
+                    }
+
+                    reader.readAsDataURL(input.files[0]); // convert to base64 string
+                }
+            }
+
+            $("#cameraInput").on("change", function () {
+                readURL(this);
             });
-        initNavBar();
-    </script>
+            initNavBar();
+        </script>
     </div>
 </template>

@@ -1,6 +1,40 @@
 #profile-error{
     margin-top: -25px;
-    font-size: 75%;
+    font-size: 1.5em;
     text-align: center;
     color: #dc3545;
+}
+
+#user
+{
+    font-size: 2.2em;
+}
+
+div.editProfile
+{
+    font-size: 2em;
+}
+
+.editProfileBtn
+{
+    font-size: 2em;
+    color: white;
+    display: block;
+    width: 100%;
+    border: 5px solid white;
+    background-color: #840101;
+}
+
+#user-name, #user-gender{
+    font-size: 2em;
+}
+
+.profile-pic
+{
+    font-size: 1.5em;
+}
+
+#cameraInput, #birthdate
+{
+    font-size: 1.5em;
 }

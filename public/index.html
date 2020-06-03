@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title></title>
-      <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
   <script src="https://www.gstatic.com/firebasejs/7.8.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.8.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.8.1/firebase-firestore.js"></script>
@@ -23,7 +24,7 @@
   <script src="js/popper.min.js"></script>
   <script src="js/bootstrap.min.js"></script>
   <script src="js/jquery.dataTables.min.js"></script>
-    <script src="js/template.js" defer></script>
+  <script src="js/template.js" defer></script>
   <script src="js/index.js" defer></script>
   <script src="js/login.js" defer> </script>
   <script src="js/settings.js" defer></script>
@@ -32,24 +33,30 @@
   <script src="js/controlpanel.js"></script>
   <script src="js/routes.js"></script>
   <script src="js/evaluation.js"></script>
-<script src="js/router.js"></script>
-<script src="js/processing.min.js"></script>
-<script src="js/bootstrap-suggest.min.js"></script>
-  <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css"/><link>
-    <link href="style.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/app.css">
-    <link rel="stylesheet" href="css/bootstrap-suggest.css">
-    <link rel="stylesheet" id="app-style" href="css/login.css">
-    <link rel="stylesheet" id="app-style" href="css/editProfile.css">
-    <link rel="stylesheet" href="css/dataTables.bootstrap4.min.css">
-    <link rel="stylesheet" href="css/evaluation.css">
+  <script src="js/router.js"></script>
+  <script src="js/processing.min.js"></script>
+  <script src="js/bootstrap-suggest.min.js"></script>
+  <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
+  <link>
+  <link href="style.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/bootstrap-suggest.css">
+  <link rel="stylesheet" id="app-style" href="css/login.css">
+  <link rel="stylesheet" id="app-style" href="css/editProfile.css">
+  <link rel="stylesheet" href="css/dataTables.bootstrap4.min.css">
+  <link rel="stylesheet" href="css/evaluation.css">
+  <link rel="stylesheet" href="css/menu.css">
+  <!--Just casually linking this css page, hope y'all don't mind-->
 
 
-    <link rel="manifest" href="manifest.webmanifest">
-  </head>
-  <body>
-    <header><div data-router-header></div></header>
-    <!-- <header>
+  <link rel="manifest" href="manifest.webmanifest">
+</head>
+
+<body>
+  <header>
+    <div data-router-header></div>
+  </header>
+  <!-- <header>
       <ul>
         <li><button onclick="router.loadRoute('')">Home</button></li>
         <li><button onclick="router.loadRoute('about')">About</button></li>
@@ -59,12 +66,12 @@
       </ul>
     </header>
     <div id='firebaseui-auth-container' style='display: block;'></div> -->
-<!-- 
+  <!-- 
 <div id='signed-in', style='display: none;'> -->
   <div data-router-outlet>
 
   </div>
-<!-- <input id='name'>
+  <!-- <input id='name'>
     <button class="add-button">Add to home screen</button>
 
 
@@ -79,4 +86,4 @@
 
     <div class="result"></div> -->
 
-  </body>
+</body>

@@ -1,6 +1,27 @@
 .firstDropDownColor {
     color: #840101;
+    /*font-size: 1.5em;*/
 }
 .secondDropDownColor {
     color: #32a9ce;
+    /*font-size: 1.5em;*/
+}
+
+button.evaluation-but
+{
+    font-size: 1.8em;
+    color: white;
+    display: block;
+    width: 100%;
+    background-color: #840101;
+}
+
+#activityName
+{
+    font-size: 2em;
+}
+
+#checklist, #skills
+{
+    font-size: 1.8em;
 }
