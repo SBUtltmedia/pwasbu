@@ -25,7 +25,7 @@ div.editProfile
     background-color: #840101;
 }
 
-#user-name, #user-gender{
+#user-first-name, #user-last-name, #user-gender{
     font-size: 2em;
 }
 
