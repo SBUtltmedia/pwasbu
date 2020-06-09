@@ -46,51 +46,6 @@ function updateProfile(){
     }
 }
 
-// function updateProfile() {
-//     name = document.getElementById("user-name").value;
-//     email = document.getElementById("user-email").value;
-//     gender = document.getElementById("user-gender").value;
-//     if(name.length <= 0 || name == null) {
-//         $("#profile-success").hide();
-//         $("#profile-error").show();
-//     } 
-//     else if(email.length <= 0 || email == null) {
-//         $("#profile-success").hide();
-//         $("#profile-error").show();
-//     }
-//     else if(gender.length <= 0 || gender == null) {
-//         $("#profile-success").hide();
-//         $("#profile-error").show();
-//     } else {
-//         $("#profile-error").hide();
-//         birthdate = document.getElementById("birthdate").value;
-//         userPayload = JSON.parse(localStorage.getItem("userData"));
-//         original_email = userPayload['email'];
-//         try {   
-//             userPayload['firstName'] = name;
-//             userPayload['email'] = email;
-//             userPayload['gender'] = gender;
-//             userPayload['birthdate'] = birthdate;
-//             console.log("The data has been updated to :" + JSON.stringify(userPayload));   
-//             if(setUser(original_email, userPayload)) {
-//                 console.log("TEST TRUE");
-//                 localStorage.setItem("userData", JSON.stringify(userPayload));
-//                 console.log("User profile updated successfully");
-//                 $("#profile-success").show();
-//             }
-//             try {
-//                 updateProfilePicture();
-//             } catch(error) {
-//                 console.log("Profile picture not updated");
-//                 console.log(error);
-//             }
-//         } catch(error) {
-//             let user = firebase.auth().currentUser;
-//             setUser(user.email, generateUser(user.email, name));
-//         }
-//     }
-// }
-
 function updateProfilePicture() {
     let user = firebase.auth().currentUser;
     let file = document.getElementById("cameraInput").files[0];

@@ -62,10 +62,13 @@ window.addEventListener('hashchange', hashChangeEvent => {
     console.log("Hash Change: ");
     urlSegments = hashChangeEvent.newURL.split("#");
     // console.log(urlSegments);
-    if(urlSegments[1] != '') {
+    user = firebase.auth().currentUser;
+    if(user && urlSegments[1] != "") {
         router.loadRoute(urlSegments[1]);
+    } else if(user && urlSegments[1] === "") {
+        router.loadRoute("home");
     } else {
-        router.loadRoute('home');
+        router.loadRoute("");
     }
 });
 
