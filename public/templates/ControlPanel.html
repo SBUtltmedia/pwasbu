@@ -2,17 +2,17 @@
     <div>
         <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#activities-control"
             aria-expanded="false" aria-controls="collapseExample">
-            <div style="font-size: x-large; text-align: center;">Admin Console</div>
+            <div class= "mainText">Admin Console</div>
             <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#activities-control"
                 aria-expanded="false" aria-controls="collapseExample">
                 Activities
             </button>
             <div id="activities-control" class="collapse">
-                <button class="btn" style="width: 50%;" type="button" onclick="addActivity()">
+                <button class="btn" type="button" onclick="addActivity()">
                     Add an Activity
                 </button>
-                <div style="font-size: x-large;">Activities Table</div>
-                <table id="activities" class="table table-striped table-bordered" style="width:100%">
+                <div class = "largeText">Activities Table</div>
+                <table id="activities" class="table table-striped table-bordered" >
                     <!-- <thead>
                 <tr>
                     <th scope="col">Name</th>
@@ -21,10 +21,10 @@
                 </thead> -->
                     <!-- <tbody></tbody> -->
                 </table>
-                <div id="act-edit" style="display:none;">
-                    <div style='font-size: x-large;'>Edit Activity</div> <br />
+                <div id="act-edit">
+                    <div>Edit Activity</div> <br />
                     <div>Name: </div> <input type="text" id='act-name'><br />
-                    <button class="btn" style="width: 50%; margin-top: 10px; margin-bottom: 10px"
+                    <button class="btn"
                         onclick="addCheckList()">Add a Checklist Item</button>
                     <div>Daily Checklist: </div>
                     <!--Adding id's and class tags don't seem to be able to change the css-->
@@ -37,7 +37,7 @@
                             </tr>
                         </thead>
                     </table>
-                    <button class="btn" style="width: 50%; margin-top: 10px; margin-bottom: 10px"
+                    <button class="btn"
                         onclick="addSkill()">Add a
                         Skill</button>
                     <div>Skills: </div>
@@ -60,22 +60,22 @@
                 Campers
             </button>
             <div id="campers-control" class="collapse">
-                <button class="btn" style="width: 50%;" type="button" onclick="addCamper()">
+                <button class="btn" type="button" onclick="addCamper()">
                     Add a Camper
                 </button>
-                <div style="font-size: x-large;">All Campers</div>
-                <table id="campers" class="table table-striped table-bordered" style="width:100%"> </table>
+                <div class="largeText">All Campers</div>
+                <table id="campers" class="table table-striped table-bordered"> </table>
             </div>
             <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#groups-control"
                 aria-expanded="false" aria-controls="collapseExample">
                 Coach Groups
             </button>
             <div id="groups-control" class="collapse">
-                <button class="btn" style="width: 50%;" type="button" onclick="addGroup()">
+                <button class="btn" type="button" onclick="addGroup()">
                     Add a Group
                 </button>
-                <div style="font-size: x-large;">All Coach Groups</div>
-                <table id="groups" class="table table-striped table-bordered" style="width:100%"></table>
+                <div class="largeText">All Coach Groups</div>
+                <table id="groups" class="table table-striped table-bordered"></table>
             </div>
 
             <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#users-control"
@@ -83,7 +83,7 @@
                 Users
             </button>
             <div id="users-control" class="collapse">
-                <table id="users" class="table table-striped table-bordered" style="width:100%"> </table>
+                <table id="users" class="table table-striped table-bordered"> </table>
             </div>
             <script>
                 document.getElementById('act-edit').style = "display: none";

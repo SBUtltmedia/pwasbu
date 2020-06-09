@@ -164,11 +164,11 @@ function loadNewEval(docID = currEval.actID, _callback = () => {}) {
                     <div class="collapse" id="skill-${skillCount}-${subSkillCount}">
                         <label for="skill-${skillCount}-${subSkillCount}-select">Score</label>
                         <select class="form-control" id="skill-${skillCount}-${subSkillCount}-select">
-                        <option>NA</option>
-                        <option>PA</option>
-                        <option>TA</option>
-                        <option>IND.</option>
-                        <option>V.CUE</option>
+                        <option>Not Applicable</option>
+                        <option>Partial Assistance</option>
+                        <option>Total Assist</option>
+                        <option>Independent</option>
+                        <option>Visual Cue</option>
                         </select>
                         <label for="skill-${skillCount}-${subSkillCount}-comment">Comments</label>
                         <textarea class="form-control" id="skill-${skillCount}-${subSkillCount}-comment" rows="3"></textarea>
@@ -248,7 +248,9 @@ function initEvalTable(){
             {"title" : "Activity Name"},
             {"title" : "Instructor"},
             {"title" : "Date"},
+            {"title" : ""},
             {"title" : ""}
+
         ],
         "order": [[2, "desc"]]
     });
@@ -267,7 +269,8 @@ function initEvalTable(){
                         coaches[doc.data()['instructor']]['firstName'] + " " + coaches[doc.data()['instructor']]['lastName'],
                         doc.data()['date'],
                         `<button class='btn bdrlessBtn' onclick='editEval("${doc.data()['activityName']}", 
-                         "${doc.id}",${JSON.stringify(doc.data())});'>Edit</button>`
+                         "${doc.id}",${JSON.stringify(doc.data())});'>Edit</button>`,
+                         `<button class='btn bdrlessBtn' onclick='removeEval("${doc.id}");'>Remove</button>`
                        ]);
                 } catch(err) {
                     console.log(err);
@@ -331,5 +334,12 @@ function editEval(actName, evalID, evalDoc){
                 populateEval(evalDoc);
             });
         });
+    });
+}
+function removeEval(docID){
+    fs.collection("Evaluations").doc(docID).delete().then(()=>{
+        $('#evaluations').DataTable().clear();
+        $('#evaluations').DataTable().destroy();
+        initEvalTable();
     });
 }
