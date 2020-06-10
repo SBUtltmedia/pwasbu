@@ -39,7 +39,7 @@ function updateProfile(){
         } catch(error) {
             let user = firebase.auth().currentUser;
             userPayload = JSON.parse(localStorage.getItem("userData"));
-            setUser(user.email, generateUser(user.email, userPayload['firstName'], userPayload['lastName'], userPayload['gender'], userPayload['priv']));
+            setUser(user.email, generateUser(user.email, userPayload['firstName'], userPayload['lastName'], userPayload['gender'], userPayload['birthdate'], userPayload['priv']));
         }
         try {
             updateProfilePicture();
