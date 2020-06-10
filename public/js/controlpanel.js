@@ -277,7 +277,7 @@ function removeCamper(docid) {
     });
 }
 function addCamper(){
-    let userPayload = generateUser("", "John", "Doe", "Female", "camper");
+    let userPayload = generateUser("", "John", "Doe", "Female", "", "camper");
     addUser(userPayload, updateCamperTable);
 }
 function updateCamper(docid){
