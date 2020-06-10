@@ -459,3 +459,26 @@ function updateUser(docid){
         alert("User has been updated!");
     });
 }
+function addModalUser() {
+    let firstName = document.getElementById("modal-user-first").value;
+    let lastName = document.getElementById("modal-user-last").value;
+    let gender = document.getElementById("modal-user-gender").value;
+    let email = document.getElementById("modal-user-email").value;
+    let password = document.getElementById("modal-user-pass").value;
+    if(password.length == 0){
+        password = "password123";
+    }
+    firebase.auth().createUserWithEmailAndPassword(email, password).then(()=>{
+        let userPayload = generateUser("", firstName, lastName, gender, "", "coach");
+        $("#modal-user").modal("hide"); 
+        addUser(userPayload, alert(`${firstName} has been added successfully! Password reset has been sent to the ${email}`));
+    }).catch(function(error) {
+        var errorMessage = error.message;
+        document.getElementById("modal-user-error").style = "display: block";
+        document.getElementById("modal-user-error").value = errorMessage;
+      });
+}
+function initUserModal(){
+    document.getElementById("modal-user-save").onclick = addModalUser;
+    document.getElementById("modal-user-error").style = "display: none";
+}
