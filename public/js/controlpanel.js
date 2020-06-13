@@ -310,7 +310,7 @@ function initGroupsTable(){
                 columns: [
                     {"title" : "Coach Name",
                     "searchable": false},
-                    {"title" : "Campers",
+                    {"title" : "Athletes",
                     "searchable": false},
                     {"title" : "",
                     "searchable": false},

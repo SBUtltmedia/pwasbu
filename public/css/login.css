@@ -18,12 +18,14 @@
     text-align: center;
     cursor: pointer;
     text-transform: uppercase;
+    margin-left:auto;
+    margin-right:auto;
 }
 
 .signup-form{
     color: #840101;
     background: #fff;
-    padding: 40px;
+    padding: 1.2rem;
     clear: both;
     width: 100%;
     box-sizing: border-box;
@@ -32,7 +34,7 @@
 .login-form{
     color: #840101;
     background: #fff;
-    padding: 40px;
+    padding: 1.2rem;
     clear: both;
     width: 100%;
     box-sizing: border-box;
