@@ -330,13 +330,13 @@ function initGroupsTable(){
             //         fullname: campers[camperId]['firstName'] + ' ' + campers[camperId]['lastName']
             //     });
             // });
-            let instrSelect = document.createElement('select'); 
-            instrSelect.className = "form-control";
+            let coachSelectrData = [];
             Object.keys(coaches).forEach(coachId => {
-                let opt = document.createElement('option');
-                opt.innerHTML = coaches[coachId]['firstName'] + " " + coaches[coachId]['lastName'] + `(id:${coachId})`;
-                opt.value = coachId;
-                instrSelect.appendChild(opt);
+                data = {
+                    text: coaches[coachId]['firstName'] + " " + coaches[coachId]['lastName'] + ` (id:${coachId})`,
+                    value: coachId
+                }
+                coachSelectrData.push(data);
             });
             $(document).ready(function() {
             fs.collection("Groups").get().then(res =>{
@@ -357,8 +357,8 @@ function initGroupsTable(){
                             try{
                                 camperName = campers[camperId]['firstName'] + " " + campers[camperId]['lastName'] + " (id:" + camperId + ")";
                                 data = {
-                                    value:camperId, 
-                                    text: camperName
+                                    text: camperName,
+                                    value: camperId
                                 };
                                 if(doc.data()['campers'].indexOf(camperId) >= 0) {
                                     data['selected'] = true;
@@ -368,8 +368,6 @@ function initGroupsTable(){
                                 // Camper doesn't exist
                             }
                         });
-                        let tempSelect = instrSelect.cloneNode(true);
-                        tempSelect.id = "group-select-" + doc.id;
                         let coachName = "Example Coach (Please select one)"
                         try{
                             coachName = coaches[doc.data()['coach']]['firstName'] + " " + coaches[doc.data()['coach']]['lastName'] + `(id:${doc.data()['coach']})`;
@@ -377,7 +375,7 @@ function initGroupsTable(){
                             // Coach no longer exists
                         }
                         $('#groups').DataTable().row.add([
-                        tempSelect.outerHTML, 
+                        `<select class="form-control" id="${"group-select-" + doc.id}"></select>`, 
                         `<select class="form-control" id="${"group-" + doc.id}"></select>`,
                         `<button class='btn bdrlessBtn' onclick='updateGroupSelectr("${doc.id}")'>Update</button>`,
                         `<button class='btn bdrlessBtn btn-danger' onclick='removeGroup("${doc.id}")'>Remove</button>`,
@@ -387,6 +385,9 @@ function initGroupsTable(){
                         new Selectr('#group-'+ doc.id, {
                             data: camperSelection,
                             multiple:true
+                        });
+                        let coachSelectr = new Selectr("#group-select-" + doc.id, {
+                            data:coachSelectrData
                         });
                         // Deprecated (No longer in use) - @1
                         // $('#group-'+ doc.id).suggest('@', {
@@ -399,7 +400,8 @@ function initGroupsTable(){
                         //     }
                         // });
                         // document.getElementById("group-"+doc.id).value = camperNames;
-                        document.getElementById("group-select-" + doc.id).value = doc.data()['coach'];
+                        coachSelectr.setValue(doc.data()['coach']);
+                        // document.getElementById("group-select-" + doc.id).value = doc.data()['coach'];
                     }catch(err) {
                         console.log(err);
                         // DO nothing. Not a valid group.
