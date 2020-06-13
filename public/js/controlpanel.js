@@ -297,7 +297,7 @@ function updateCamper(docid){
  */
 function initGroupsTable(){
     fs.collection("users").where("priv", "==", "camper").get().then( resCamp => {
-        campers = {} // Dictionary of coachIDs
+        campers = {} // Dictionary of camperIDs
         resCamp.forEach(doc => {
             campers[doc.data()['id']] = doc.data();
         });
@@ -322,13 +322,14 @@ function initGroupsTable(){
                       "visible": false}
                 ]
             });
-            let allCampers = [];
-            Object.keys(campers).forEach(camperId => {
-                allCampers.push({
-                    username: camperId,
-                    fullname: campers[camperId]['firstName'] + ' ' + campers[camperId]['lastName']
-                });
-            });
+            // Deprecated (No longer in use) - @1
+            // let allCampers = [];
+            // Object.keys(campers).forEach(camperId => {
+            //     allCampers.push({
+            //         username: camperId,
+            //         fullname: campers[camperId]['firstName'] + ' ' + campers[camperId]['lastName']
+            //     });
+            // });
             let instrSelect = document.createElement('select'); 
             instrSelect.className = "form-control";
             Object.keys(coaches).forEach(coachId => {
@@ -343,29 +344,61 @@ function initGroupsTable(){
                 res.forEach(doc => {
                     try{
                         let camperNames = "";
+                        let camperSelection = [];
                         doc.data()['campers'].forEach(camperId => {
-                            camperNames += `@${camperId} `;
+                            try{
+                                camperName = campers[camperId]['firstName'] + " " + campers[camperId]['lastName'] + " (id:" + camperId + ")";
+                                camperNames += camperName;
+                            } catch(err){
+                                // Camper doesn't exist
+                            }
+                        });
+                        Object.keys(campers).forEach(camperId => {
+                            try{
+                                camperName = campers[camperId]['firstName'] + " " + campers[camperId]['lastName'] + " (id:" + camperId + ")";
+                                data = {
+                                    value:camperId, 
+                                    text: camperName
+                                };
+                                if(doc.data()['campers'].indexOf(camperId) >= 0) {
+                                    data['selected'] = true;
+                                }
+                                camperSelection.push(data);
+                            } catch(err) {
+                                // Camper doesn't exist
+                            }
                         });
                         let tempSelect = instrSelect.cloneNode(true);
                         tempSelect.id = "group-select-" + doc.id;
+                        let coachName = "Example Coach (Please select one)"
+                        try{
+                            coachName = coaches[doc.data()['coach']]['firstName'] + " " + coaches[doc.data()['coach']]['lastName'] + `(id:${doc.data()['coach']})`;
+                        } catch(err) {
+                            // Coach no longer exists
+                        }
                         $('#groups').DataTable().row.add([
                         tempSelect.outerHTML, 
-                        `<textarea class="form-control" id="${"group-" + doc.id}" rows="1"></textarea>`,
-                        `<button class='btn bdrlessBtn' onclick='updateGroup("${doc.id}")'>Update</button>`,
+                        `<select class="form-control" id="${"group-" + doc.id}"></select>`,
+                        `<button class='btn bdrlessBtn' onclick='updateGroupSelectr("${doc.id}")'>Update</button>`,
                         `<button class='btn bdrlessBtn btn-danger' onclick='removeGroup("${doc.id}")'>Remove</button>`,
-                        coaches[doc.data()['coach']]['firstName'] + " " + coaches[doc.data()['coach']]['lastName'] + `(id:${doc.data()['coach']})`,
+                        coachName,
                         camperNames
                         ]).draw(); 
-                        $('#group-'+ doc.id).suggest('@', {
-                            data: allCampers,
-                              map: function( user ) {
-                                  return {
-                                      value: user.username,
-                                      text: '<strong>'+user.username+'</strong> <small>'+user.fullname+'</small>'
-                                  }
-                            }
+                        new Selectr('#group-'+ doc.id, {
+                            data: camperSelection,
+                            multiple:true
                         });
-                        document.getElementById("group-"+doc.id).value = camperNames;
+                        // Deprecated (No longer in use) - @1
+                        // $('#group-'+ doc.id).suggest('@', {
+                        //     data: allCampers,
+                        //       map: function( user ) {
+                        //           return {
+                        //               value: user.username,
+                        //               text: '<strong>'+user.username+'</strong> <small>'+user.fullname+'</small>'
+                        //           }
+                        //     }
+                        // });
+                        // document.getElementById("group-"+doc.id).value = camperNames;
                         document.getElementById("group-select-" + doc.id).value = doc.data()['coach'];
                     }catch(err) {
                         console.log(err);
@@ -393,21 +426,29 @@ function removeGroup(docid) {
 function addGroup(){
     let payload = {
         coach: "1023",
-        campers: ["V4w18"]
+        campers: [""]
     };
     fs.collection('Groups').add(payload).then(()=> {
         updateGroupsTable();
     });
 }
-function updateGroup(docid) {
-    let camperString = document.getElementById("group-" + docid).value;
-    var find = '@';
-    var re = new RegExp(find, 'g');
-    camperString = camperString.replace(re,"").trim();
-    let campers = camperString.split(" ");
-    campers = removeEmptyIndices(campers);
+// DEPRECATED FUNCTION - @1
+// function updateGroup(docid) {
+//     let camperString = document.getElementById("group-" + docid).value;
+//     var find = '@';
+//     var re = new RegExp(find, 'g');
+//     camperString = camperString.replace(re,"").trim();
+//     let campers = camperString.split(" ");
+//     campers = removeEmptyIndices(campers);
+//     let data = {
+//         campers: campers,
+//         coach: document.getElementById("group-select-" + docid).value
+//     };
+//     fs.collection("Groups").doc(docid).set(data);
+// }
+function updateGroupSelectr(docid) {
     let data = {
-        campers: campers,
+        campers: $('#group-'+ docid).val(),
         coach: document.getElementById("group-select-" + docid).value
     };
     fs.collection("Groups").doc(docid).set(data);
