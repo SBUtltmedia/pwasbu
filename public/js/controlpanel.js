@@ -489,6 +489,7 @@ function initUsersTable(){
                     `<button class='btn bdrlessBtn btn-danger' onclick='removeUser("${doc.id}")'>Remove</button>`,
                     doc.data()['priv']
                 ]).draw();
+                console.log(doc.data());
                 document.getElementById("users-priv-" + doc.id).value = doc.data()['priv'];
             }
         });
@@ -502,24 +503,40 @@ function updateUser(docid){
         alert("User has been updated!");
     });
 }
+function newAccountPasswordReset(firstName, email){
+    firebase.auth().sendPasswordResetEmail(email).then(function() {
+        $("#modal-user").modal("hide"); 
+        alert(`${firstName} has been added successfully! Password reset has been sent to the ${email}`);
+        $('#users').DataTable().clear();
+        $('#users').DataTable().destroy();
+        initUsersTable();
+    }).catch(function(error) {
+        var errorMessage = error.message;
+        console.log(errorMessage);
+        document.getElementById("modal-user-error").style = "display: block";
+        document.getElementById("modal-user-error").innerHTML = errorMessage;
+    });
+}
 function addModalUser() {
+    document.getElementById("modal-user-error").style = "display: none";
     let firstName = document.getElementById("modal-user-first").value;
     let lastName = document.getElementById("modal-user-last").value;
     let gender = document.getElementById("modal-user-gender").value;
     let email = document.getElementById("modal-user-email").value;
     let password = document.getElementById("modal-user-pass").value;
+    let priv = document.getElementById("modal-user-priv").value;
     if(password.length == 0){
         password = "password123";
-    }
-    firebase.auth().createUserWithEmailAndPassword(email, password).then(()=>{
-        let userPayload = generateUser("", firstName, lastName, gender, "", "coach");
-        $("#modal-user").modal("hide"); 
-        addUser(userPayload, alert(`${firstName} has been added successfully! Password reset has been sent to the ${email}`));
-    }).catch(function(error) {
-        var errorMessage = error.message;
-        document.getElementById("modal-user-error").style = "display: block";
-        document.getElementById("modal-user-error").value = errorMessage;
-      });
+    }        
+    // firebase.auth().createUserWithEmailAndPassword(email, password).then(()=>{
+    //     let userPayload = generateUser(email, firstName, lastName, gender, "", priv);
+    //     addUser(userPayload, newAccountPasswordReset(firstName, email));
+    // }).catch(function(error) {
+    //     var errorMessage = error.message;
+    //     console.log(errorMessage);
+    //     document.getElementById("modal-user-error").style = "display: block";
+    //     document.getElementById("modal-user-error").innerHTML = errorMessage;
+    //   });
 }
 function initUserModal(){
     document.getElementById("modal-user-save").onclick = addModalUser;
