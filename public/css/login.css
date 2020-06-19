@@ -1,20 +1,20 @@
 .container{
     /*width: 450px;
     margin: 30px auto;*/
-    width: 65%;
-    margin: 30px auto;
-    /*height*/
+    width: auto; /*this changes the width of the container*/
+    margin: 15px auto;
+    /*height is apparently below in login-form*/
 }
 
 .signup,
 .login{
-    width: 50%;
+    width: 100%;
     background: #fff;
     color: #840101;
-    font-size: 2em;
-    float: left;
-    height: 100px;
-    line-height: 60px;
+    font-size: 2.5rem;
+    /*float: left;*/
+    height: 20%;
+    /*line-height: 60px;*/
     text-align: center;
     cursor: pointer;
     text-transform: uppercase;
@@ -38,33 +38,34 @@
     clear: both;
     width: 100%;
     box-sizing: border-box;
-    height: 450px;
+    height: auto;
 }
 .input{
     width: 100%;
     padding: 20px;
     box-sizing: border-box;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
     border: 2px solid #e9eaea;
     color: #3e3e40;
-    font-size: 1.5em; /*Changing from 14px to em's*/
+    font-size: 2.5rem; /*Changing from 14px to rem's*/
     outline: none;
     transform: all 0.5s ease;
 }
 .nav-item{
     text-align:left;
 }
-.bdrlessBtn{
+.bdrlessBtn{ /*This class doesn't exist in Login, it's a button class in control panel and I think menu*/
     padding: 0;
     border: none;
     background: none;
+    font-size: 2.5rem;
 }
 .input:focus{
     border: 2px solid #840101;
 }
 .pass-comment{
-    margin-top: -25px;
-    font-size: 1.5em; /*Changing from % to em's*/
+    margin-top: -20px; /*This changes the margin on the top between login and inputting email*/
+    font-size: 1.5rem; /*Changing from % to rem's*/
     text-align: center;
     color: #dc3545;
 }
@@ -72,10 +73,11 @@
     margin-top: -25px;
     text-align: center;
     color: #dc3545;
+    font-size: 2rem;
 }
 #google-button {
     color: white;
-    font-size: 1.8em;
+    font-size: 2.5rem;
 }
 .btn{
     width: 100%;
@@ -86,10 +88,10 @@
     text-transform: uppercase;
     color: #fff;
     font-weight: bold;
-    font-size: 1.8em;
+    font-size: 2.5rem;
     letter-spacing: 1px;
     cursor: pointer;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 .emptybtn{
     padding: 0;
@@ -145,15 +147,24 @@ span a{
 
  #signup-birthdate
  {
-     font-size: 1.8em;
+     font-size: 1.8rem;
  }
 
  div.dob
  {
-     font-size: 1.5em;
+     font-size: 1.5rem;
  }
 
  label, #forgot-email, #forgot_pass
  {
-     font-size: 2em;
+     font-size: 2.5rem;
+     text-align: center;
+     margin-bottom: -20px;
+ }
+
+ #login_logo
+ {
+     width:25rem;
+     height:20%;
+     margin-top: 20px;
  }
