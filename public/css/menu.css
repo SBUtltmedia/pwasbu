@@ -14,10 +14,10 @@
     background-color: firebrick;
 }
 
-.nav-item nav-link bdrlessBtn /*Okay, this is a test, it did nothing, devastating*/
-{
+.nav-item nav-link bdrlessBtn /*...bdrlessBtn is a class for a button found on the control panel also but clearly it's not working*/
+{   
     color:green;
-    font-size: 100em;
+    font-size: 100rem;
 }
 
 #navbarNavDropdown /*Here we go, trying again to increase font size in nav bar, nothing happened again with color, oof but the font-size changed*/
