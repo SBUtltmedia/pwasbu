@@ -297,7 +297,7 @@ function updateCamper(docid){
  */
 function initGroupsTable(){
     fs.collection("users").where("priv", "==", "camper").get().then( resCamp => {
-        campers = {} // Dictionary of coachIDs
+        campers = {} // Dictionary of camperIDs
         resCamp.forEach(doc => {
             campers[doc.data()['id']] = doc.data();
         });
@@ -310,7 +310,7 @@ function initGroupsTable(){
                 columns: [
                     {"title" : "Coach Name",
                     "searchable": false},
-                    {"title" : "Campers",
+                    {"title" : "Athletes",
                     "searchable": false},
                     {"title" : "",
                     "searchable": false},
@@ -322,20 +322,21 @@ function initGroupsTable(){
                       "visible": false}
                 ]
             });
-            let allCampers = [];
-            Object.keys(campers).forEach(camperId => {
-                allCampers.push({
-                    username: camperId,
-                    fullname: campers[camperId]['firstName'] + ' ' + campers[camperId]['lastName']
-                });
-            });
-            let instrSelect = document.createElement('select'); 
-            instrSelect.className = "form-control";
+            // Deprecated (No longer in use) - @1
+            // let allCampers = [];
+            // Object.keys(campers).forEach(camperId => {
+            //     allCampers.push({
+            //         username: camperId,
+            //         fullname: campers[camperId]['firstName'] + ' ' + campers[camperId]['lastName']
+            //     });
+            // });
+            let coachSelectrData = [];
             Object.keys(coaches).forEach(coachId => {
-                let opt = document.createElement('option');
-                opt.innerHTML = coaches[coachId]['firstName'] + " " + coaches[coachId]['lastName'] + `(id:${coachId})`;
-                opt.value = coachId;
-                instrSelect.appendChild(opt);
+                data = {
+                    text: coaches[coachId]['firstName'] + " " + coaches[coachId]['lastName'] + ` (id:${coachId})`,
+                    value: coachId
+                }
+                coachSelectrData.push(data);
             });
             $(document).ready(function() {
             fs.collection("Groups").get().then(res =>{
@@ -343,30 +344,64 @@ function initGroupsTable(){
                 res.forEach(doc => {
                     try{
                         let camperNames = "";
+                        let camperSelection = [];
                         doc.data()['campers'].forEach(camperId => {
-                            camperNames += `@${camperId} `;
-                        });
-                        let tempSelect = instrSelect.cloneNode(true);
-                        tempSelect.id = "group-select-" + doc.id;
-                        $('#groups').DataTable().row.add([
-                        tempSelect.outerHTML, 
-                        `<textarea class="form-control" id="${"group-" + doc.id}" rows="1"></textarea>`,
-                        `<button class='btn bdrlessBtn' onclick='updateGroup("${doc.id}")'>Update</button>`,
-                        `<button class='btn bdrlessBtn btn-danger' onclick='removeGroup("${doc.id}")'>Remove</button>`,
-                        coaches[doc.data()['coach']]['firstName'] + " " + coaches[doc.data()['coach']]['lastName'] + `(id:${doc.data()['coach']})`,
-                        camperNames
-                        ]).draw(); 
-                        $('#group-'+ doc.id).suggest('@', {
-                            data: allCampers,
-                              map: function( user ) {
-                                  return {
-                                      value: user.username,
-                                      text: '<strong>'+user.username+'</strong> <small>'+user.fullname+'</small>'
-                                  }
+                            try{
+                                camperName = campers[camperId]['firstName'] + " " + campers[camperId]['lastName'] + " (id:" + camperId + ")";
+                                camperNames += camperName;
+                            } catch(err){
+                                // Camper doesn't exist
                             }
                         });
-                        document.getElementById("group-"+doc.id).value = camperNames;
-                        document.getElementById("group-select-" + doc.id).value = doc.data()['coach'];
+                        Object.keys(campers).forEach(camperId => {
+                            try{
+                                camperName = campers[camperId]['firstName'] + " " + campers[camperId]['lastName'] + " (id:" + camperId + ")";
+                                data = {
+                                    text: camperName,
+                                    value: camperId
+                                };
+                                if(doc.data()['campers'].indexOf(camperId) >= 0) {
+                                    data['selected'] = true;
+                                }
+                                camperSelection.push(data);
+                            } catch(err) {
+                                // Camper doesn't exist
+                            }
+                        });
+                        let coachName = "Example Coach (Please select one)"
+                        try{
+                            coachName = coaches[doc.data()['coach']]['firstName'] + " " + coaches[doc.data()['coach']]['lastName'] + `(id:${doc.data()['coach']})`;
+                        } catch(err) {
+                            // Coach no longer exists
+                        }
+                        $('#groups').DataTable().row.add([
+                        `<select class="form-control" id="${"group-select-" + doc.id}"></select>`, 
+                        `<select class="form-control" id="${"group-" + doc.id}"></select>`,
+                        `<button class='btn bdrlessBtn' onclick='updateGroupSelectr("${doc.id}")'>Update</button>`,
+                        `<button class='btn bdrlessBtn btn-danger' onclick='removeGroup("${doc.id}")'>Remove</button>`,
+                        coachName,
+                        camperNames
+                        ]).draw(); 
+                        new Selectr('#group-'+ doc.id, {
+                            data: camperSelection,
+                            multiple:true
+                        });
+                        let coachSelectr = new Selectr("#group-select-" + doc.id, {
+                            data:coachSelectrData
+                        });
+                        // Deprecated (No longer in use) - @1
+                        // $('#group-'+ doc.id).suggest('@', {
+                        //     data: allCampers,
+                        //       map: function( user ) {
+                        //           return {
+                        //               value: user.username,
+                        //               text: '<strong>'+user.username+'</strong> <small>'+user.fullname+'</small>'
+                        //           }
+                        //     }
+                        // });
+                        // document.getElementById("group-"+doc.id).value = camperNames;
+                        coachSelectr.setValue(doc.data()['coach']);
+                        // document.getElementById("group-select-" + doc.id).value = doc.data()['coach'];
                     }catch(err) {
                         console.log(err);
                         // DO nothing. Not a valid group.
@@ -393,21 +428,29 @@ function removeGroup(docid) {
 function addGroup(){
     let payload = {
         coach: "1023",
-        campers: ["V4w18"]
+        campers: [""]
     };
     fs.collection('Groups').add(payload).then(()=> {
         updateGroupsTable();
     });
 }
-function updateGroup(docid) {
-    let camperString = document.getElementById("group-" + docid).value;
-    var find = '@';
-    var re = new RegExp(find, 'g');
-    camperString = camperString.replace(re,"").trim();
-    let campers = camperString.split(" ");
-    campers = removeEmptyIndices(campers);
+// DEPRECATED FUNCTION - @1
+// function updateGroup(docid) {
+//     let camperString = document.getElementById("group-" + docid).value;
+//     var find = '@';
+//     var re = new RegExp(find, 'g');
+//     camperString = camperString.replace(re,"").trim();
+//     let campers = camperString.split(" ");
+//     campers = removeEmptyIndices(campers);
+//     let data = {
+//         campers: campers,
+//         coach: document.getElementById("group-select-" + docid).value
+//     };
+//     fs.collection("Groups").doc(docid).set(data);
+// }
+function updateGroupSelectr(docid) {
     let data = {
-        campers: campers,
+        campers: $('#group-'+ docid).val(),
         coach: document.getElementById("group-select-" + docid).value
     };
     fs.collection("Groups").doc(docid).set(data);
@@ -446,6 +489,7 @@ function initUsersTable(){
                     `<button class='btn bdrlessBtn btn-danger' onclick='removeUser("${doc.id}")'>Remove</button>`,
                     doc.data()['priv']
                 ]).draw();
+                console.log(doc.data());
                 document.getElementById("users-priv-" + doc.id).value = doc.data()['priv'];
             }
         });
@@ -459,24 +503,40 @@ function updateUser(docid){
         alert("User has been updated!");
     });
 }
+function newAccountPasswordReset(firstName, email){
+    firebase.auth().sendPasswordResetEmail(email).then(function() {
+        $("#modal-user").modal("hide"); 
+        alert(`${firstName} has been added successfully! Password reset has been sent to the ${email}`);
+        $('#users').DataTable().clear();
+        $('#users').DataTable().destroy();
+        initUsersTable();
+    }).catch(function(error) {
+        var errorMessage = error.message;
+        console.log(errorMessage);
+        document.getElementById("modal-user-error").style = "display: block";
+        document.getElementById("modal-user-error").innerHTML = errorMessage;
+    });
+}
 function addModalUser() {
+    document.getElementById("modal-user-error").style = "display: none";
     let firstName = document.getElementById("modal-user-first").value;
     let lastName = document.getElementById("modal-user-last").value;
     let gender = document.getElementById("modal-user-gender").value;
     let email = document.getElementById("modal-user-email").value;
     let password = document.getElementById("modal-user-pass").value;
+    let priv = document.getElementById("modal-user-priv").value;
     if(password.length == 0){
         password = "password123";
-    }
-    firebase.auth().createUserWithEmailAndPassword(email, password).then(()=>{
-        let userPayload = generateUser("", firstName, lastName, gender, "", "coach");
-        $("#modal-user").modal("hide"); 
-        addUser(userPayload, alert(`${firstName} has been added successfully! Password reset has been sent to the ${email}`));
-    }).catch(function(error) {
-        var errorMessage = error.message;
-        document.getElementById("modal-user-error").style = "display: block";
-        document.getElementById("modal-user-error").value = errorMessage;
-      });
+    }        
+    // firebase.auth().createUserWithEmailAndPassword(email, password).then(()=>{
+    //     let userPayload = generateUser(email, firstName, lastName, gender, "", priv);
+    //     addUser(userPayload, newAccountPasswordReset(firstName, email));
+    // }).catch(function(error) {
+    //     var errorMessage = error.message;
+    //     console.log(errorMessage);
+    //     document.getElementById("modal-user-error").style = "display: block";
+    //     document.getElementById("modal-user-error").innerHTML = errorMessage;
+    //   });
 }
 function initUserModal(){
     document.getElementById("modal-user-save").onclick = addModalUser;

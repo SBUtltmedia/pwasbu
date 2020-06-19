@@ -22,25 +22,21 @@ body {
   font-family: "Arial Black";
   user-select: none;
 }
-#login_logo {
-  margin-top: 30px;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 425px;
-  height: 92px;
-}
-
 #app-warning {
   text-align: center;
   color: #dc3545;
 }
 
+body {
+  margin-left:auto;
+  margin-right:auto;
+}
 /* small tablet styles */
 @media screen and (min-width: 320px){
   html{
       font-size: 10px;
     }
+
 }
 
 /* large tablet & laptop styles <= those words are in fact lies, this is the screens size for the phone*/
@@ -49,7 +45,9 @@ body {
 html{
   font-size: 20px;
 }
-
+.wrapper {
+  width:50%
+}
 }
 
 /* desktop styles */
@@ -58,7 +56,6 @@ html{
 html{
   font-size: 12px;
 }
-
 }
 
 .mainText {
