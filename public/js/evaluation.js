@@ -325,15 +325,20 @@ function editEval(actName, evalID, evalDoc) {
     currEval.evalDoc = evalDoc;
     currEval.instrID = evalDoc['instructor'];
     currEval.date = evalDoc['date'];
-    fs.collection("Activities").where("name", "==", actName).get().then(res => {
-        res.docs[0].ref.get().then(doc => {
-            currEval.actID = doc.id;
-            document.getElementById("evaluations").style = "display: none;";
-            $('#evaluations').DataTable().destroy();
-            loadNewEval(doc.id).then(() => {
-                populateEval(evalDoc);
+    fs.collection("Activities").where("name","==", actName).get().then(res=>{
+        try {
+            res.docs[0].ref.get().then(doc => {
+                currEval.actID = doc.id;
+                document.getElementById("evaluations").style="display: none;";
+                $('#evaluations').DataTable().destroy();
+                loadNewEval(doc.id).then(()=>{
+                    populateEval(evalDoc);
+                });
             });
-        });
+        } catch(err) {
+            console.log(err);
+            alert("The activity : " + actName + " may have been deleted or no longer exist in the database");s
+        }
     });
 }
 function removeEval(docID) {
