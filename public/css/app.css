@@ -71,3 +71,9 @@ body {
  .form-control{
   font-size: 1.8rem;
  }
+
+#data-router-outlet {
+  padding-left: 4rem;
+  padding-right: 4rem;
+  /* color: #2C4477; */
+}

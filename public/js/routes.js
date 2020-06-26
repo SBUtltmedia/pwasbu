@@ -6,9 +6,14 @@ class RoutesObj {
       {
         path: '/',
         getTemplate:  (params) => this.template.load('Login'),
-      },{
+      },
+      {
         path: '/home',
         getTemplate:  (params) => this.template.load('Home'),
+      },
+      {
+        path: '/userDetails',
+        getTemplate:  (params) => this.template.load('UserDetails'),
       },
       {
         path: '/forgotpassword',
