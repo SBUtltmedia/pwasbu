@@ -8,12 +8,12 @@
 
 .signup,
 .login{
-    width: 50%;
+    width: 100%;
     background: #fff;
-    color: #840101;
-    font-size: 2em;
-    float: left;
-    height: 100px;
+    color: var(--primary-color);
+    font-size: 2.5rem;
+    /* float: left; */
+    /* height: 100px; */
     line-height: 60px;
     text-align: center;
     cursor: pointer;
@@ -32,11 +32,11 @@
 .login-form{
     color: #840101;
     background: #fff;
-    padding: 40px;
+    padding: 10px 40px 40px 40px;
     clear: both;
     width: 100%;
     box-sizing: border-box;
-    height: 450px;
+    height: auto;
 }
 .input{
     width: 100%;
@@ -45,7 +45,7 @@
     margin-bottom: 25px;
     border: 2px solid #e9eaea;
     color: #3e3e40;
-    font-size: 1.5em; /*Changing from 14px to em's*/
+    font-size: 2.5rem;
     outline: none;
     transform: all 0.5s ease;
 }
@@ -62,7 +62,7 @@
 }
 .pass-comment{
     margin-top: -25px;
-    font-size: 1.5em; /*Changing from % to em's*/
+    font-size: 1.5rem; 
     text-align: center;
     color: #dc3545;
 }
@@ -73,18 +73,20 @@
 }
 #google-button {
     color: white;
-    font-size: 1.8em;
+    font-size: 1.8rem;
 }
 .btn{
-    width: 100%;
-    background: #840101;
-    height: auto;
+    /* width: 100%; */
+    border-radius: 10px;
+    padding: 4px;
+    background: var(--primary-color);
+    /* height: auto; */
     text-align: center;
-    line-height: 50px;
+    /* line-height: 50px; */
     text-transform: uppercase;
     color: #fff;
-    font-weight: bold;
-    font-size: 1.8em;
+    /* font-weight: bold; */
+    font-size: 1.8rem;
     letter-spacing: 1px;
     cursor: pointer;
     margin-bottom: 30px;
@@ -138,15 +140,26 @@ span a{
 
  #signup-birthdate
  {
-     font-size: 1.8em;
+     font-size: 1.8rem;
  }
 
  div.dob
  {
-     font-size: 1.5em;
+     font-size: 1.5rem;
  }
 
  label, #forgot-email, #forgot_pass
  {
-     font-size: 2em;
+     font-size: 2rem;
  }
+
+ .link{
+    padding: 0;
+    border: none;
+    background: none;
+    font-size: 2.0rem;
+}
+
+.login-btn{
+    font-size: 2.5rem;
+}

@@ -1,47 +1,124 @@
-<template>    
+<template>
     <div>
-        <div class="menu">
-            <div id="menu-user"></div>
-            <img id="profile-pic" src="../img/user/default/user-480.png" class="img-thumbnail rounded" width="200" height="200">
-            <div id="pic-error" class="error-msg"></div>
-            <br/>
-             <div style="font-size: x-large;">Your Campers</div>
-            <table id="campers" class="table table-striped table-bordered" style="width:100%; display:block;"> </table>
-
-        </div>
-        <script defer>
-            loadProfilePicture(); // LOCATED IN settings.js
-            function addDumbData(){
-                fs.collection("bad egg").add({data:"I have sent dummy data", dateAdded: new Date().toDateInputValue()}).then(()=>{
-                    alert("data has been sent!");
-                });
+        <!-- This is for the home page layout ignore the fact that the style and js is currently here -->
+        <style>
+            * {
+                box-sizing: border-box;
             }
-            function userWelcome(){
-                let user = firebase.auth().currentUser;
-                try{
-                    let userData = JSON.parse(localStorage.getItem("userData"));
-                    document.getElementById("menu-user").innerHTML = "Welcome " + userData['firstName'];
-                } catch(error){
-                    fs.collection("users").where('email', '==', user.email).get().then(function(res) {
-                        if(res.docs.length > 0) {
-                            res.docs[0].ref.get().then(doc=> {
-                                document.getElementById("menu-user").innerHTML = "Welcome " + doc.data()["firstName"];
-                                localStorage.setItem("userData", JSON.stringify(doc.data()));
-                                initNavBar();
-                            });
-                        } else {
-                            console.log("There is no such user");
-                            document.getElementById("menu-user").innerHTML = "Error loading user, please refresh";
-                        }
-                    }).catch((error)=>{
-                        console.log(error);
-                        document.getElementById("menu-user").innerHTML = "Error loading user, please refresh";
-                    });
+
+            body {
+                font-family: Arial, Helvetica, sans-serif;
+            }
+
+            /* Style the header */
+            .header {
+                background-color: #f1f1f1;
+                /* padding: 30px; */
+                text-align: center;
+                font-size: 2rem;
+            }
+
+            /* Container for flexboxes */
+            .row {
+                display: -webkit-flex;
+                display: flex;
+            }
+
+            /* Create three unequal columns that sits next to each other */
+            .column {
+                padding: 10px;
+                height: 300px;
+                /* Should be removed. Only for demonstration */
+            }
+
+            /* Left and right column */
+            .column.side {
+                -webkit-flex: 1;
+                -ms-flex: 1;
+                flex: 1;
+            }
+
+            /* Middle column */
+            .column.middle {
+                -webkit-flex: 2;
+                -ms-flex: 2;
+                flex: 2;
+            }
+
+            /* Responsive layout - makes the three columns stack on top of each other instead of next to each other */
+            @media (max-width: 600px) {
+                .row {
+                    -webkit-flex-direction: column;
+                    flex-direction: column;
                 }
             }
-            userWelcome();
-            initNavBar(); // LOCATED in navbar.js
-            initCampersEvalTable(); // LOCATED in evaluation.js
-        </script>
+        </style>
+        </head>
+
+        <body>
+            <div class="header">
+                <div id="menu-user"></div>
+            </div>
+
+            <div class="row">
+                <div class="column side" style="background-color:#aaa;"><img id="profile-pic"
+                        src="../img/user/default/user-480.png" class="img-thumbnail rounded" width="200" height="200">
+                    <div id="pic-error" class="error-msg"></div>
+                </div>
+                <div class="column middle" style="background-color:#bbb;">
+                    Get rid of the table and search
+                    <table id="campers" class="table table-striped table-bordered" style="width:100%; display:block;">
+                    </table>
+                </div>
+                <div class="column side" style="background-color:#ccc;">The get eval and add evals buttons will be in
+                    this column</div>
+            </div>
+
+
+            <div class="menu">
+                <!-- <div id="menu-user"></div> -->
+                <!-- <img id="profile-pic" src="../img/user/default/user-480.png" class="img-thumbnail rounded" width="200"
+                    height="200">
+                <div id="pic-error" class="error-msg"></div> -->
+                <!-- <br />
+                <div>Your Campers</div> -->
+                <!-- <table id="campers" class="table table-striped table-bordered" style="width:100%; display:block;">
+                </table> -->
+
+            </div>
+            <script defer>
+                loadProfilePicture(); // LOCATED IN settings.js
+                function addDumbData() {
+                    fs.collection("bad egg").add({ data: "I have sent dummy data", dateAdded: new Date().toDateInputValue() }).then(() => {
+                        alert("data has been sent!");
+                    });
+                }
+                function userWelcome() {
+                    let user = firebase.auth().currentUser;
+                    try {
+                        let userData = JSON.parse(localStorage.getItem("userData"));
+                        document.getElementById("menu-user").innerHTML = "Welcome " + userData['firstName'];
+                    } catch (error) {
+                        fs.collection("users").where('email', '==', user.email).get().then(function (res) {
+                            if (res.docs.length > 0) {
+                                res.docs[0].ref.get().then(doc => {
+                                    document.getElementById("menu-user").innerHTML = "Welcome " + doc.data()["firstName"];
+                                    localStorage.setItem("userData", JSON.stringify(doc.data()));
+                                    initNavBar();
+                                });
+                            } else {
+                                console.log("There is no such user");
+                                document.getElementById("menu-user").innerHTML = "Error loading user, please refresh";
+                            }
+                        }).catch((error) => {
+                            console.log(error);
+                            document.getElementById("menu-user").innerHTML = "Error loading user, please refresh";
+                        });
+                    }
+                }
+                userWelcome();
+                initNavBar(); // LOCATED in navbar.js
+                initCampersEvalTable(); // LOCATED in evaluation.js
+            </script>
     </div>
 </template>

@@ -25,3 +25,11 @@ button.evaluation-but
 {
     font-size: 1.8em;
 }
+
+#activities_wrapper{
+    text-align: center;
+}
+
+/* .dataTables_wrapper{
+    text-align: center;
+} */

@@ -1,11 +1,11 @@
 
  /*this is on the home page*/
  #menu-user { 
-    font-size: 2em; /*Changing from 28pt to em's, okay so that didn't change anything because this css page wasn't linked to index.html, like why was this even created*/
+    font-size: 2rem;
     text-align: center;
-    padding-top: 40px;
-    padding-bottom: 40px;
-    /*font-family: "Lucida Console";*/
+    padding-top: 20px;
+    padding-bottom: 20px;
+    font-weight: bold;
 }
 .btn-space {
     margin-bottom: 10px;

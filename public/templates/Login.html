@@ -7,21 +7,21 @@
             <div class="container">
                 <div id="app">
                     <div class="login">Log In</div>
-                    <div class="signup">Sign Up</div>
+                    <!-- <div class="signup">Sign Up</div> -->
 
                     <div class="login-form">
                         <input type="text" onkeyup="hideLoginError()" onkeydown="hideLoginError()" placeholder="Email"
                             class="input" id="login-email"><br />
                         <input type="password" onkeyup="hideLoginError()" onkeydown="hideLoginError()"
                             placeholder="Password" class="input" id="login-pass"><br />
-                        <div class="btn" onclick="login()">Log In</div>
-                        <a id="google-button" class="btn btn-block btn-social btn-google" onclick="googleSignIn()">
+                        <div class="btn login-btn" onclick="login()">Log In</div>
+                        <!-- <a id="google-button" class="btn btn-block btn-social btn-google" onclick="googleSignIn()">
                             <i class="fa fa-google"></i> Sign in with Google
-                        </a>
+                        </a> -->
                         <div class="loader"></div>
                         <div id="login_error" class="error-msg"></div>
-                        <div id="forgot_pass"><span><button style="padding: 0;border: none;background: none;"
-                                    class="link text-danger" onclick="router.loadRoute('forgotpassword')">Forgot
+                        <div id="forgot_pass"><span><button class="link text-danger"
+                                    onclick="router.loadRoute('forgotpassword')">Forgot
                                     Password</button></span> </div>
                     </div>
                     <div class="signup-form">
