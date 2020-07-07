@@ -97,7 +97,7 @@ function createUserDetailsItem(routerOutletElement, row) {
         userDetailsItem.content.querySelectorAll(".user-team")[0].innerHTML = row.team;
 
         userDetailsItem.content.querySelectorAll(".get-evals")[0].onclick = (event) => {eval(row['id'], "get")};
-        userDetailsItem.content.querySelectorAll(".add-evals")[0].onclick = (event) => {eval(row['id'], "add")};
+        userDetailsItem.content.querySelectorAll(".add-evals")[0].onclick = (event) => {eval(row['id'], "get")};
 
         let rowElem = document.createElement("tr");
 
@@ -166,48 +166,53 @@ function eval(id, evalMode = "add"){
 }
 
 function actEvalInit(){
-    // fs.collection("Activities").get().then(res =>{
-    //     let data = [];
-    //     res.forEach(doc => {
-    //         data.push([
-    //             `<button class='btn bdrlessBtn' onclick='loadNewEval("${doc.id}")'>${doc.data()['name']}</button>`
-    //         ]);
-    //     });
-    //     $(document).ready(function() {
-    //         $('#activities').DataTable({        
-    //             data: data,
-    //             columns: [
-    //                 {"title" : ""}
-    //             ]
-    //         });
-    //     });
-    // });
-
     let table = document.getElementById("activities");
     fs.collection("users").where("priv", "==", "coach").get().then( resCoach => {
         coaches = {} // Dictionary of coachIDs
         resCoach.forEach(doc => {
             coaches[doc.data()['id']] = doc.data();
         });
-        fs.collection("Evaluations").where("camper", "==", currEval.camperID).get().then(res => {
+        fs.collection("Activities").get().then(res => {
+            let activities = {};
             res.forEach(doc => {
-                try {
-                    // console.log("coaches: ", coaches);
+                activities[doc.data()['name']] = doc.id;
+            });
+            fs.collection("Evaluations").where("camper", "==", currEval.camperID).get().then(res => {
+                res.forEach(doc => {
+                    try {
+                        let listElement = document.createElement("li");
+                        let editButton = document.createElement("button");
+                        editButton.classList.add("btn", "bdrlessBtn");
+                        editButton.onclick = (evt) => {
+                            currEval.evalMode = "get";
+                            editEval("" + doc.data()['activityName'], "" + doc.id, doc.data());
+                        }
+                        editButton.innerHTML = doc.data()['activityName'];
+                        listElement.appendChild(editButton);
+                        table.appendChild(listElement);
+                        if(activities.hasOwnProperty(doc.data()['activityName'])) {
+                            delete activities[doc.data()['activityName']];
+                        }
+                    } catch(err) {
+                        console.log(err);
+                        console.log("Couldn't load the coach for the specified evaluation " + doc.id);
+                    }
+                });
+                
+                Object.keys(activities).forEach(function(name) {
                     let listElement = document.createElement("li");
                     let editButton = document.createElement("button");
                     editButton.classList.add("btn", "bdrlessBtn");
                     editButton.onclick = (evt) => {
-                        // editEval("" + doc.data()['activityName'], "" + doc.id, JSON.stringify(doc.data()));
-                        editEval("" + doc.data()['activityName'], "" + doc.id, doc.data());
+                        currEval.evalMode = "add";
+                        loadNewEval(activities[name]);
                     }
-                    editButton.innerHTML = doc.data()['activityName'];
-
+                    editButton.innerHTML = name;
                     listElement.appendChild(editButton);
                     table.appendChild(listElement);
-                } catch(err) {
-                    console.log(err);
-                    console.log("Couldn't load the coach for the specified evaluation " + doc.id);
-                }
+
+                    console.log(name, activities[name]);
+                });
             });
         });
     });
@@ -220,8 +225,6 @@ function loadNewEval(docID = currEval.actID, _callback = () => {}) {
     currEval.actID = docID;
     if(currEval.evalMode == "add"){
         document.getElementById("activities").style="display: none;";
-        console.log(currEval.evalMode);
-        // $('#activities').DataTable().destroy();
     }
     document.getElementById("submitEval").style="display: block;";
 
@@ -353,15 +356,10 @@ function submitEval(evalID = "DEFAULT"){
             console.log("Skills does not exist when submitting for this activity: ", err)
         }
         if(currEval.evalMode == "add"){
-            //console.log(`The ID ${currEval.evalID} has been updated to ` + JSON.stringify(evalDoc));
-            fs.collection("Evaluations").doc(currEval.evalID).set(evalDoc).then(()=>{
+            fs.collection("Evaluations").add(evalDoc).then(() => {
                 alert("Evaluation updated successfully!");
                 router.loadRoute("home")
             });
-            // fs.collection("Evaluations").add(evalDoc).then(()=>{
-            //     alert("Evaluation added successfully!");
-            //     router.loadRoute("home")
-            // });
         } else {
             //console.log(`The ID ${currEval.evalID} has been updated to ` + JSON.stringify(evalDoc));
             fs.collection("Evaluations").doc(currEval.evalID).set(evalDoc).then(()=>{
@@ -452,7 +450,7 @@ function editEval(actName, evalID, evalDoc){
         res.docs[0].ref.get().then(doc => {
             currEval.actID = doc.id;
             document.getElementById("evaluations").style="display: none;";
-            // document.getElementById("activities").style="display: none;";
+            document.getElementById("activities").style="display: none;";
             // $('#evaluations').DataTable().destroy();
             loadNewEval(doc.id).then(() => {
                 populateEval(evalDoc);
