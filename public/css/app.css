@@ -22,6 +22,10 @@ body {
     color: #dc3545;
 }
 
+.hiddenElement {
+  display: none;
+}
+
 /* small tablet styles */
 @media screen and (min-width: 320px){
     body{
@@ -46,3 +50,10 @@ body {
   }
 
  }
+
+
+#data-router-outlet {
+  padding-left: 4rem;
+  padding-right: 4rem;
+  /* color: #2C4477; */
+} 

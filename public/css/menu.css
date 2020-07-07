@@ -3,8 +3,9 @@
  #menu-user { 
     font-size: 2rem;
     text-align: center;
-    padding-top: 20px;
-    padding-bottom: 20px;
+    /* padding-top: 20px;
+    padding-bottom: 20px; */
+    padding-top: 3rem;
     font-weight: bold;
 }
 .btn-space {
