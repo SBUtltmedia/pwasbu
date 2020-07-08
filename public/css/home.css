@@ -1,8 +1,14 @@
-/* .col-elem {
-    display: flex;
+.col-elem {
+    /* display: flex; */
     justify-content: center;
     align-items: center;
-} */
+}
+
+.ath-hd{
+    font-size: 1.3rem;
+    color: var(--primary-color);
+    margin: 5px;
+}
 
 .cell-col {
     display: flex;
@@ -20,7 +26,7 @@
 
 .home-btn {
     width: 12rem;
-    font-weight: bold;
+    font-weight: bold;  
     background: #2C4477;
     height: 5rem;
     text-align: center;
@@ -41,9 +47,10 @@
 #camp-quote {
     text-align: center;
     font-size: 1.2rem;
-    padding-bottom: 3rem;
+    padding-bottom: 2rem;
 }
 
 #campers {
     border: none;
+    text-align: none;
 }

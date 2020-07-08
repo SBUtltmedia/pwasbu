@@ -92,7 +92,8 @@
     margin-bottom: 30px;
 }
 .btn:active {
-    background: #82ffec;
+    background: var(--primary-color);
+    color: white;
 }
 
 span a{

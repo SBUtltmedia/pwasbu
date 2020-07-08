@@ -1,7 +1,7 @@
 class Evaluation {
     // Just an object to hold global variables
-    constructor(camperID = "DEFAULT", evalMode = "add", docID = "DEFAULT", actID = "DEFAULT", 
-                instrID = "DEFAULT", evalID = "DEFAULT") {
+    constructor(camperID = "DEFAULT", evalMode = "add", docID = "DEFAULT", actID = "DEFAULT",
+        instrID = "DEFAULT", evalID = "DEFAULT") {
         this.camperID = camperID;
         this.evalMode = evalMode;
         this.docID = docID;
@@ -14,7 +14,7 @@ class Evaluation {
 
 const currEval = new Evaluation(); //Current Evaluation Object
 
-function initCampersEvalTable(){
+function initCampersEvalTable() {
     let user = firebase.auth().currentUser;
     let email = user.email;
     // $(document).ready(function() {
@@ -35,18 +35,18 @@ function initCampersEvalTable(){
         // $(document).ready(function() {
         //     $('#campers').DataTable().rows.add(campersTable).draw();
         // });
-        for(i = 0; i < campersTable.length; i++) {
+        for (i = 0; i < campersTable.length; i++) {
             createUserDetailsItem(athletesTable, campersTable[i]);
         }
-    } catch(err) {
+    } catch (err) {
         let athletesTable = document.getElementById("campers");
-        localStorage.setItem('campers', JSON.stringify({0:[]}));
-        fs.collection("users").where("email","==", email).get().then(res=>{
+        localStorage.setItem('campers', JSON.stringify({ 0: [] }));
+        fs.collection("users").where("email", "==", email).get().then(res => {
             res.docs[0].ref.get().then(doc => {
-                fs.collection("Groups").where("coach", "==", doc.data()['id']).get().then(res=>{
+                fs.collection("Groups").where("coach", "==", doc.data()['id']).get().then(res => {
                     res.docs[0].ref.get().then(doc => {
                         doc.data()['campers'].forEach(camper => {
-                            fs.collection('users').where("id", "==", camper).get().then( res =>{
+                            fs.collection('users').where("id", "==", camper).get().then(res => {
                                 res.docs[0].ref.get().then(doc => {
                                     // console.log(new Date(doc.data()["birthdate"]));
                                     // console.log("doc.data()['email']: ", doc.data()["email"]);
@@ -80,9 +80,9 @@ function initCampersEvalTable(){
                             });
                         });
                     });
-                }).catch(err => {console.log(err);});
+                }).catch(err => { console.log(err); });
             });
-        }).catch(err => { console.log(err);});
+        }).catch(err => { console.log(err); });
     }
 }
 
@@ -96,8 +96,8 @@ function createUserDetailsItem(routerOutletElement, row) {
         userDetailsItem.content.querySelectorAll(".user-pronouns")[0].innerHTML = row.pronouns;
         userDetailsItem.content.querySelectorAll(".user-team")[0].innerHTML = row.team;
 
-        userDetailsItem.content.querySelectorAll(".get-evals")[0].onclick = (event) => {eval(row['id'], "get")};
-        userDetailsItem.content.querySelectorAll(".add-evals")[0].onclick = (event) => {eval(row['id'], "get")};
+        userDetailsItem.content.querySelectorAll(".get-evals")[0].onclick = (event) => { eval(row['id'], "get") };
+        userDetailsItem.content.querySelectorAll(".add-evals")[0].onclick = (event) => { eval(row['id'], "get") };
 
         let rowElem = document.createElement("tr");
 
@@ -128,30 +128,30 @@ function loadProfilePictureInElement(element, email) {
     // console.log(email);
     let listRef = storageRef.child(encodeURI(`users/${email}/profile-picture`));
     // console.log("Trying to get a file from " + email);
-    listRef.listAll().then(function(res) {
+    listRef.listAll().then(function (res) {
         let profilePic = res.items[0];
-        storageRef.child(encodeURI(`users/${email}/profile-picture/${profilePic.name}`)).getDownloadURL().then(function(url) {
+        storageRef.child(encodeURI(`users/${email}/profile-picture/${profilePic.name}`)).getDownloadURL().then(function (url) {
             // console.log("Loading " + url + " as profile image");
             element.src = url;
-        }).catch(function(error) {
+        }).catch(function (error) {
             // console.log(error);
             element.src = '../img/user/default/user-480.png';
         });
-    }).catch(function(error) {
+    }).catch(function (error) {
         // console.log(error);
         // console.log("List all failed to work");
         element.src = '../img/user/default/user-480.png';
     });
 }
 
-function updateEval(camperID, _callback = () => {}) {
-    try{
+function updateEval(camperID, _callback = () => { }) {
+    try {
         let userData = JSON.parse(localStorage.getItem("userData"));
         currEval.instrID = userData['id'];
         currEval.camperID = camperID;
-    }catch(err){
-        fs.collection("users").where('email', '==', user.email).get().then(function(res) {
-            res.docs[0].ref.get().then(doc=> {
+    } catch (err) {
+        fs.collection("users").where('email', '==', user.email).get().then(function (res) {
+            res.docs[0].ref.get().then(doc => {
                 currEval.instrID = doc.data()['id'];
                 _callback();
             });
@@ -159,15 +159,15 @@ function updateEval(camperID, _callback = () => {}) {
     }
 }
 
-function eval(id, evalMode = "add"){
+function eval(id, evalMode = "add") {
     currEval.evalMode = evalMode;
     currEval.date = new Date().toDateInputValue();
     updateEval(id, router.loadRoute('evaluation'));
 }
 
-function actEvalInit(){
+function actEvalInit() {
     let table = document.getElementById("activities");
-    fs.collection("users").where("priv", "==", "coach").get().then( resCoach => {
+    fs.collection("users").where("priv", "==", "coach").get().then(resCoach => {
         coaches = {} // Dictionary of coachIDs
         resCoach.forEach(doc => {
             coaches[doc.data()['id']] = doc.data();
@@ -182,7 +182,7 @@ function actEvalInit(){
                     try {
                         let listElement = document.createElement("li");
                         let editButton = document.createElement("button");
-                        editButton.classList.add("btn", "bdrlessBtn");
+                        editButton.classList.add("btn", "bdrlessBtn", "act-btns");
                         editButton.onclick = (evt) => {
                             currEval.evalMode = "get";
                             editEval("" + doc.data()['activityName'], "" + doc.id, doc.data());
@@ -190,19 +190,19 @@ function actEvalInit(){
                         editButton.innerHTML = doc.data()['activityName'];
                         listElement.appendChild(editButton);
                         table.appendChild(listElement);
-                        if(activities.hasOwnProperty(doc.data()['activityName'])) {
+                        if (activities.hasOwnProperty(doc.data()['activityName'])) {
                             delete activities[doc.data()['activityName']];
                         }
-                    } catch(err) {
+                    } catch (err) {
                         console.log(err);
                         console.log("Couldn't load the coach for the specified evaluation " + doc.id);
                     }
                 });
-                
-                Object.keys(activities).forEach(function(name) {
+
+                Object.keys(activities).forEach(function (name) {
                     let listElement = document.createElement("li");
                     let editButton = document.createElement("button");
-                    editButton.classList.add("btn", "bdrlessBtn");
+                    editButton.classList.add("btn", "bdrlessBtn", "act-btns");
                     editButton.onclick = (evt) => {
                         currEval.evalMode = "add";
                         loadNewEval(activities[name]);
@@ -221,21 +221,21 @@ function actEvalInit(){
 /**
  * Loads an Add evaluation form 
  */
-function loadNewEval(docID = currEval.actID, _callback = () => {}) {
+function loadNewEval(docID = currEval.actID, _callback = () => { }) {
     currEval.actID = docID;
-    if(currEval.evalMode == "add"){
-        document.getElementById("activities").style="display: none;";
+    if (currEval.evalMode == "add") {
+        document.getElementById("activities").style = "display: none;";
     }
-    document.getElementById("submitEval").style="display: block;";
+    document.getElementById("submitEval").style = "display: block;";
 
     return fs.collection("Activities").doc(docID).get().then(doc => {
         document.getElementById("activityName").innerHTML = doc.data()['name'];
         // Adding daily checklist
         $("#evaluation").append(`<div>Daily Check List</div>
                                 <ul id="checklist"></ul>`);
-        try{
+        try {
             let day = 1;
-            while(day < 4) {
+            while (day < 4) {
                 let itemID = 1;
                 $("#checklist").append(`<li>
                     <button class="btn bdrlessBtn evaluation-but" 
@@ -245,7 +245,7 @@ function loadNewEval(docID = currEval.actID, _callback = () => {}) {
                         Day ${day}
                     </button>
                     <table id="checklist-day-${day}" class="hiddenElement"></table></li>`);
-                doc.data()['checklist'].forEach( item => {
+                doc.data()['checklist'].forEach(item => {
                     $(`#checklist-day-${day}`).append(`<tr>
                         <td>${item['name']}</td>
                         <td><input type="number" id="${'checklist' + itemID + '-' + day}-input">${item['type']}</td>
@@ -254,13 +254,13 @@ function loadNewEval(docID = currEval.actID, _callback = () => {}) {
                 });
                 day++;
             }
-        } catch(err) {
+        } catch (err) {
             console.log("Checklist doesn't exist in this activity: ", err);
         }
         //Adding Skills
         $("#evaluation").append(`<div>Skills</div>
                                 <ul id="skills"></ul>`);
-        try{
+        try {
             let skillCount = 1;
             doc.data()['skills'].forEach(skill => {
                 $("#skills").append(`<li>
@@ -306,45 +306,45 @@ function loadNewEval(docID = currEval.actID, _callback = () => {}) {
                 });
                 skillCount++;
             });
-        } catch(err){
+        } catch (err) {
             console.log("Skills does not exist in this activity: ", err);
         }
         _callback();
     });
 }
 
-function submitEval(evalID = "DEFAULT"){
+function submitEval(evalID = "DEFAULT") {
     let evalDoc = {};
-    fs.collection("Activities").doc(currEval.actID).get().then(doc => { 
+    fs.collection("Activities").doc(currEval.actID).get().then(doc => {
         evalDoc['activityName'] = doc.data()['name'];
         evalDoc['camper'] = currEval.camperID;
-        evalDoc['dailyCheckList'] = { 1:[],2:[],3:[]};
+        evalDoc['dailyCheckList'] = { 1: [], 2: [], 3: [] };
         evalDoc['skills'] = {};
         evalDoc['date'] = currEval.date;
         evalDoc['instructor'] = currEval.instrID;
-        try{
+        try {
             let checkLen = doc.data()['checklist'].length;
             let day = 1;
-            while(day < 4){
+            while (day < 4) {
                 let itemID = 1;
-                while(itemID < checkLen + 1) {
+                while (itemID < checkLen + 1) {
                     evalDoc['dailyCheckList'][day].push(document.getElementById(`${"checklist" + itemID + "-" + day}-input`).value);
                     itemID++;
                 }
                 day++;
             }
-        } catch(err) {
+        } catch (err) {
             console.log("Checklist does not exist when submitting for this activity: ", err);
         }
         try {
             let skillsLen = doc.data()['skills'].length;
             let skillCount = 1;
-            while(skillCount < skillsLen + 1){
-                evalDoc['skills']['skill_'+skillCount] = [];
+            while (skillCount < skillsLen + 1) {
+                evalDoc['skills']['skill_' + skillCount] = [];
                 let subSkillCount = 1;
                 let subSkillsLen = doc.data()['skills'][skillCount - 1]['subSkills'].length;
-                while(subSkillCount < subSkillsLen + 1){
-                    evalDoc['skills']['skill_'+skillCount].push({
+                while (subSkillCount < subSkillsLen + 1) {
+                    evalDoc['skills']['skill_' + skillCount].push({
                         score: document.getElementById(`skill-${skillCount}-${subSkillCount}-select`).value,
                         comment: document.getElementById(`skill-${skillCount}-${subSkillCount}-comment`).value
                     })
@@ -352,17 +352,17 @@ function submitEval(evalID = "DEFAULT"){
                 }
                 skillCount++;
             }
-        } catch(err) {
+        } catch (err) {
             console.log("Skills does not exist when submitting for this activity: ", err)
         }
-        if(currEval.evalMode == "add"){
+        if (currEval.evalMode == "add") {
             fs.collection("Evaluations").add(evalDoc).then(() => {
                 alert("Evaluation updated successfully!");
                 router.loadRoute("home")
             });
         } else {
             //console.log(`The ID ${currEval.evalID} has been updated to ` + JSON.stringify(evalDoc));
-            fs.collection("Evaluations").doc(currEval.evalID).set(evalDoc).then(()=>{
+            fs.collection("Evaluations").doc(currEval.evalID).set(evalDoc).then(() => {
                 alert("Evaluation updated successfully!");
                 router.loadRoute("home")
             });
@@ -370,21 +370,21 @@ function submitEval(evalID = "DEFAULT"){
     });
 }
 
-function initEvalTable(){
-    fs.collection("users").where("priv", "==", "coach").get().then( resCoach => {
+function initEvalTable() {
+    fs.collection("users").where("priv", "==", "coach").get().then(resCoach => {
         coaches = {} // Dictionary of coachIDs
         resCoach.forEach(doc => {
             coaches[doc.data()['id']] = doc.data();
         });
-        fs.collection("Evaluations").where("camper", "==", currEval.camperID).get().then(res =>{
+        fs.collection("Evaluations").where("camper", "==", currEval.camperID).get().then(res => {
             // let table = $('#evaluations').DataTable(); 
             let table = document.getElementById("evaluations");
             res.forEach(doc => {
-                try{
+                try {
                     // console.log("coaches: ", coaches);
                     let listElement = document.createElement("li");
                     let editButton = document.createElement("button");
-                    editButton.classList.add("btn", "bdrlessBtn");
+                    editButton.classList.add("btn", "bdrlessBtn", "act-btns");
                     editButton.onclick = (evt) => {
                         // editEval("" + doc.data()['activityName'], "" + doc.id, JSON.stringify(doc.data()));
                         editEval("" + doc.data()['activityName'], "" + doc.id, doc.data());
@@ -393,7 +393,7 @@ function initEvalTable(){
 
                     listElement.appendChild(editButton);
                     table.appendChild(listElement);
-                } catch(err) {
+                } catch (err) {
                     console.log("Couldn't load the coach for the specified evaluation " + doc.id + ": ", err);
                 }
             });
@@ -402,55 +402,55 @@ function initEvalTable(){
     });
 }
 
-function populateEval(evalDoc){
-    $(document).ready(function(){
-        try{
+function populateEval(evalDoc) {
+    $(document).ready(function () {
+        try {
             // evalDoc = JSON.parse(evalDoc);
             let checkLen = evalDoc['dailyCheckList'][1].length;
             let day = 1;
-            while(day < 4){
+            while (day < 4) {
                 let itemID = 1;
-                while(itemID < checkLen + 1) {
+                while (itemID < checkLen + 1) {
                     console.log(`SOmething wrong with ${"checklist" + itemID + "-" + day}`);
                     document.getElementById(`${"checklist" + itemID + "-" + day}-input`).value = evalDoc['dailyCheckList'][day][itemID - 1];
                     itemID++;
                 }
                 day++;
             }
-        } catch(err) {
+        } catch (err) {
             console.log("Checklist does not exist in this Evaluation Document: ", err);
         }
         try {
             let skillsLen = Object.getOwnPropertyNames(evalDoc['skills']).length;
             let skillCount = 1;
-            while(skillCount < skillsLen + 1){
+            while (skillCount < skillsLen + 1) {
                 let subSkillCount = 1;
-                let subSkillsLen = evalDoc['skills']['skill_'+skillCount].length;
-                while(subSkillCount < subSkillsLen + 1){
-                    document.getElementById(`skill-${skillCount}-${subSkillCount}-select`).value 
-                        = evalDoc['skills']['skill_'+skillCount][subSkillCount-1]['score'];
+                let subSkillsLen = evalDoc['skills']['skill_' + skillCount].length;
+                while (subSkillCount < subSkillsLen + 1) {
+                    document.getElementById(`skill-${skillCount}-${subSkillCount}-select`).value
+                        = evalDoc['skills']['skill_' + skillCount][subSkillCount - 1]['score'];
                     document.getElementById(`skill-${skillCount}-${subSkillCount}-comment`).value
-                        = evalDoc['skills']['skill_'+skillCount][subSkillCount-1]['comment'];
+                        = evalDoc['skills']['skill_' + skillCount][subSkillCount - 1]['comment'];
                     subSkillCount++;
                 }
                 skillCount++;
             }
-        } catch(err) {
+        } catch (err) {
             console.log("Skills does not exist when submitting for this activity: ", err)
         }
     });
 }
 
-function editEval(actName, evalID, evalDoc){
+function editEval(actName, evalID, evalDoc) {
     currEval.evalID = evalID;
     currEval.evalDoc = evalDoc;
     currEval.instrID = evalDoc['instructor'];
     currEval.date = evalDoc['date'];
-    fs.collection("Activities").where("name","==", actName).get().then(res => {
+    fs.collection("Activities").where("name", "==", actName).get().then(res => {
         res.docs[0].ref.get().then(doc => {
             currEval.actID = doc.id;
-            document.getElementById("evaluations").style="display: none;";
-            document.getElementById("activities").style="display: none;";
+            document.getElementById("evaluations").style = "display: none;";
+            document.getElementById("activities").style = "display: none;";
             // $('#evaluations').DataTable().destroy();
             loadNewEval(doc.id).then(() => {
                 populateEval(evalDoc);

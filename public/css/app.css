@@ -31,6 +31,42 @@ body {
     body{
         font-size: 18px;
       }
+      #data-router-outlet{
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+      }
+      #campers {
+        border: none;
+        text-align: center;
+        display: grid;
+    }
+    .col-elem {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+  }
+  td{
+    display:flex;
+  }
+}
+
+@media screen and (min-width: 800px) {
+  /* body {
+    background-color: lavender;
+  } */
+  #campers {
+    border: none;
+    text-align: none;
+    display: unset;
+}
+.col-elem {
+  display: table-cell;
+  justify-content: center;
+  align-items: center;
+}
+td{
+  display:inline-flex;
+}
 }
 
 /* large tablet & laptop styles <= those words are in fact lies, this is the screens size for the phone*/

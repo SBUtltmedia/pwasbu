@@ -23,14 +23,22 @@ li{
 
 button.evaluation-but
 {
-    font-size: 1.8em;
+    font-size: 1.8rem;
     color: white;
     display: block;
     width: 100%;
     background-color: var(--primary-color);
     padding: 15px;
-    border-radius: 15px;
+    /* border-radius: 15px; */
     border: none;
+}
+
+.act-btns{
+    color: var(--primary-color);
+    background-color: inherit;
+    border-radius: 0;
+    border: 1px solid var(--primary-color);
+    padding: 10px;
 }
 
 #activityName
