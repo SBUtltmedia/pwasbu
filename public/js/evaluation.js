@@ -231,7 +231,7 @@ function loadNewEval(docID = currEval.actID, _callback = () => { }) {
     return fs.collection("Activities").doc(docID).get().then(doc => {
         document.getElementById("activityName").innerHTML = doc.data()['name'];
         // Adding daily checklist
-        $("#evaluation").append(`<div>Daily Check List</div>
+        $("#evaluation").append(`<div class="sec-tit">Daily Check List</div>
                                 <ul id="checklist"></ul>`);
         try {
             let day = 1;
@@ -247,8 +247,8 @@ function loadNewEval(docID = currEval.actID, _callback = () => { }) {
                     <table id="checklist-day-${day}" class="hiddenElement"></table></li>`);
                 doc.data()['checklist'].forEach(item => {
                     $(`#checklist-day-${day}`).append(`<tr>
-                        <td>${item['name']}</td>
-                        <td><input type="number" id="${'checklist' + itemID + '-' + day}-input">${item['type']}</td>
+                        <td class="chcklst-tit">${item['name']}</td>
+                        <td class="chcklst-inpt"><input type="number" id="${'checklist' + itemID + '-' + day}-input">${item['type']}</td>
                         </tr>`);
                     itemID++;
                 });
@@ -258,7 +258,7 @@ function loadNewEval(docID = currEval.actID, _callback = () => { }) {
             console.log("Checklist doesn't exist in this activity: ", err);
         }
         //Adding Skills
-        $("#evaluation").append(`<div>Skills</div>
+        $("#evaluation").append(`<div class="sec-tit">Skills</div>
                                 <ul id="skills"></ul>`);
         try {
             let skillCount = 1;
@@ -273,7 +273,7 @@ function loadNewEval(docID = currEval.actID, _callback = () => { }) {
                 skill['subSkills'].forEach(subSkill => {
                     $(`#skill-${skillCount}`).append(`<tr>
                             <td>
-                                <button class="bdrlessBtn evaluation-but" onclick="toggleHide('skill-${skillCount}-${subSkillCount}');">
+                                <button class="bdrlessBtn bby-skill-btn" onclick="toggleHide('skill-${skillCount}-${subSkillCount}');">
                                 ${subSkill}
                                 </button>
                             </td>
@@ -282,7 +282,7 @@ function loadNewEval(docID = currEval.actID, _callback = () => { }) {
                             <td>
                                 <table>
                                     <tr>
-                                        <td>
+                                        <td class="skll-score">
                                             <label for="skill-${skillCount}-${subSkillCount}-select">Score</label>
                                             <select class="form-control" id="skill-${skillCount}-${subSkillCount}-select">
                                             <option>NA</option>
@@ -294,7 +294,7 @@ function loadNewEval(docID = currEval.actID, _callback = () => { }) {
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>
+                                        <td class="skll-comm">
                                             <label for="skill-${skillCount}-${subSkillCount}-comment">Comments</label>
                                             <textarea class="form-control" id="skill-${skillCount}-${subSkillCount}-comment" rows="3"></textarea>
                                         </td>

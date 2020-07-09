@@ -12,10 +12,10 @@
         <div id='evaluation'>
             <!-- This is the evaluation form that will be populated with drop downs -->
         </div>
-        <button class="evaluation-but" class='btn btn-danger' onclick='submitEval()' style="display: none;"
+        <button class="evaluation-but btn btn-danger bck-hme" onclick='submitEval()' style="display: none;"
             id="submitEval">Submit
             Changes</button>
-        <button class="evaluation-but" class='btn btn-danger' onclick='router.loadRoute("home")'>Back to Home</button>
+        <button class="evaluation-but btn btn-danger bck-hme" onclick='router.loadRoute("home")'>Back to Home</button>
         <script defer>
             if (currEval.evalMode == "add") {
                 document.getElementById('activities').style = "display: block;";
