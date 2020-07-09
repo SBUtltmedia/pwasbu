@@ -17,8 +17,9 @@
  #menu-user { /*this is not really in the menu, it's for the welcome user in home*/ 
     font-size: 2.5rem;
     text-align: center;
-    padding-top: 40px;
-    padding-bottom: 40px;
+    padding-top: 3rem;
+    /* padding-top: 40px;
+    padding-bottom: 40px; */
     /*font-family: "Lucida Console";*/
 }
 

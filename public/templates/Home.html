@@ -1,16 +1,18 @@
 <template>    
     <div>
         <div class="menu">
-            <div id="menu-user"></div>
-            <img id="profile-pic" src="../img/user/default/user-480.png" class="img-thumbnail rounded" width="200" height="200">
-            <div id="pic-error" class="error-msg"></div>
-            <br/>
-             <div class="largeText">Your Assigned Athletes</div>
-            <table id="campers" class="table table-striped table-bordered"> </table>
+            <h2 id="menu-user"></h2>
+            <div id="camp-quote">"Believe you can achieve."</div>
+            <!-- <img id="profile-pic" src="../img/user/default/user-480.png" class="img-thumbnail rounded" width="200" height="200"> -->
+            <!-- <div id="pic-error" class="error-msg"></div> -->
+            <!-- <br/> -->
+            <!-- <div class="largeText">ATHLETE'S INFORMATION:</div> -->
+            <h4>ATHLETE'S INFORMATION:</h4>
+            <table id="campers" class="table table-bordered"> </table>
 
         </div>
         <script defer>
-            loadProfilePicture(); // LOCATED IN settings.js
+            // loadProfilePicture(); // LOCATED IN settings.js
             function addDumbData(){
                 fs.collection("bad egg").add({data:"I have sent dummy data", dateAdded: new Date().toDateInputValue()}).then(()=>{
                     alert("data has been sent!");
@@ -20,12 +22,14 @@
                 let user = firebase.auth().currentUser;
                 try{
                     let userData = JSON.parse(localStorage.getItem("userData"));
-                    document.getElementById("menu-user").innerHTML = "Welcome " + userData['firstName'];
+                    // document.getElementById("menu-user").innerHTML = "Welcome " + userData['firstName'];
+                    document.getElementById("menu-user").innerHTML = (userData['firstName'] + "'S HOME PAGE").toUpperCase();
                 } catch(error){
                     fs.collection("users").where('email', '==', user.email).get().then(function(res) {
                         if(res.docs.length > 0) {
                             res.docs[0].ref.get().then(doc=> {
-                                document.getElementById("menu-user").innerHTML = "Welcome " + doc.data()["firstName"];
+                                // document.getElementById("menu-user").innerHTML = "Welcome " + doc.data()["firstName"];
+                                document.getElementById("menu-user").innerHTML = (doc.data()["firstName"] + "'S HOME PAGE").toUpperCase();
                                 localStorage.setItem("userData", JSON.stringify(doc.data()));
                                 initNavBar();
                             });

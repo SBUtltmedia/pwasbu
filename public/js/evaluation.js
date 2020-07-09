@@ -15,44 +15,62 @@ const currEval = new Evaluation(); //Current Evaluation Object
 function initCampersEvalTable() {
     let user = firebase.auth().currentUser;
     let email = user.email;
-    $(document).ready(function () {
-        $('#campers').DataTable({
-            columns: [
-                { "title": "First Name" },
-                { "title": "Last Name" },
-                { "title": "UID" },
-                { "title": "" },
-                { "title": "" }
-            ]
-        });
-    });
+    // $(document).ready(function() {
+    //     $('#campers').DataTable({        
+    //         columns: [
+    //             {"title" : "First Name"},
+    //             {"title" : "Last Name"},
+    //             {"title" : "UID"},
+    //             {"title" : ""},
+    //             {"title" : ""}
+    //         ]
+    //     });
+    // });
     try {
+        let athletesTable = document.getElementById("campers");
         let campersTable = JSON.parse(localStorage.getItem('campers'))['0'];
         console.log(campersTable);
-        $(document).ready(function () {
-            $('#campers').DataTable().rows.add(campersTable).draw();
-        });
-    } catch (err) {
-        localStorage.setItem('campers', JSON.stringify({ 0: [] }));
-        fs.collection("users").where("email", "==", email).get().then(res => {
+        for(i = 0; i < campersTable.length; i++) {
+            createuserDetailsItem(athletesTable, campersTable[i]);
+        }
+    } catch(err) {
+        let athletesTable = document.getElementById("campers");
+        localStorage.setItem('campers', JSON.stringify({0:[]}));
+        fs.collection("users").where("email","==", email).get().then(res=>{
             res.docs[0].ref.get().then(doc => {
                 fs.collection("Groups").where("coach", "==", doc.data()['id']).get().then(res => {
                     res.docs[0].ref.get().then(doc => {
                         doc.data()['campers'].forEach(camper => {
                             fs.collection('users').where("id", "==", camper).get().then(res => {
-                                res.docs[0].ref.get().then(doc => {
-                                    let table = $('#campers').DataTable(); // Future improvements would use local storage caching
-                                    let row = [
-                                        doc.data()['firstName'],
-                                        doc.data()['lastName'],
-                                        doc.data()['id'],
-                                        `<button class='btn bdrlessBtn' onclick='eval("${doc.data()['id']}", "get")'>Get Evals</button>`,
-                                        `<button class='btn bdrlessBtn btn-danger' onclick='eval("${doc.data()['id']}", "add")'>Add Eval</button>`
-                                    ];
+                                res.docs[0].ref.get().then(doc => 
+                                    // console.log(new Date(doc.data()["birthdate"]));
+                                    // console.log("doc.data()['email']: ", doc.data()["email"]);
+                                    let row = {
+                                        name: doc.data()['firstName'] + " " + doc.data()['lastName'],
+                                        age: parseInt(((new Date()) - (new Date(doc.data()["birthdate"]))) / (1000 * 60 * 60 * 24 * 365)),
+                                        gender: doc.data()["gender"],
+                                        pronouns: "She/Her/Hers", // This field needs to be added to the database
+                                        team: "Purple Team", // This field needs to be added to the database
+                                        id: doc.data()["id"],
+                                        email: doc.data()["email"]
+                                    };
                                     let campersData = JSON.parse(localStorage.getItem('campers'));
                                     campersData['0'].push(row);
                                     localStorage.setItem('campers', JSON.stringify(campersData));
-                                    table.row.add(row).draw();
+                                    createuserDetailsItem(athletesTable, row);
+
+                                    // let table = $('#campers').DataTable(); // Future improvements would use local storage caching
+                                    // let row = [
+                                    //     doc.data()['firstName'], 
+                                    //     doc.data()['lastName'],
+                                    //     doc.data()['id'],
+                                    //     `<button class='btn bdrlessBtn' onclick='eval("${doc.data()['id']}", "get")'>Get Evals</button>`,
+                                    //     `<button class='btn bdrlessBtn btn-danger' onclick='eval("${doc.data()['id']}", "add")'>Add Eval</button>`
+                                    // ];
+                                    // let campersData = JSON.parse(localStorage.getItem('campers'));
+                                    // campersData['0'].push(row);
+                                    // localStorage.setItem('campers', JSON.stringify(campersData));
+                                    // table.row.add(row).draw();
                                 });
                             });
                         });
@@ -62,8 +80,67 @@ function initCampersEvalTable() {
         }).catch(err => { console.log(err); });
     }
 }
-function updateEval(camperID, _callback = () => { }) {
-    try {
+
+function createuserDetailsItem(routerOutletElement, row) {
+    // console.log(row);
+    const matchedRoute = router._matchUrlToRoute(['userDetails']);
+    matchedRoute.getTemplate(matchedRoute.params).then((userDetailsItem) => {
+        userDetailsItem.content.querySelectorAll(".user-name")[0].innerHTML = row.name;
+        userDetailsItem.content.querySelectorAll(".user-age")[0].innerHTML = row.age;
+        userDetailsItem.content.querySelectorAll(".user-gender")[0].innerHTML = row.gender;
+        userDetailsItem.content.querySelectorAll(".user-pronouns")[0].innerHTML = row.pronouns;
+        userDetailsItem.content.querySelectorAll(".user-team")[0].innerHTML = row.team;
+
+        userDetailsItem.content.querySelectorAll(".get-evals")[0].onclick = (event) => {eval(row['id'], "get")};
+        userDetailsItem.content.querySelectorAll(".add-evals")[0].onclick = (event) => {eval(row['id'], "add")};
+
+        let rowElem = document.createElement("tr");
+
+        let imgCol = document.createElement("td");
+        let detailsCol = document.createElement("td");
+        let btnsCol = document.createElement("td");
+
+        imgCol.classList.add("col-elem")
+        detailsCol.classList.add("col-elem")
+        btnsCol.classList.add("col-elem")
+
+        // console.log("row.email: ", row.email);
+        loadProfilePictureInElement(userDetailsItem.content.querySelectorAll(".user-img")[0], row.email);
+
+        imgCol.appendChild(userDetailsItem.content.querySelectorAll(".img-col")[0]);
+        detailsCol.appendChild(userDetailsItem.content.querySelectorAll(".details-col")[0]);
+        btnsCol.appendChild(userDetailsItem.content.querySelectorAll(".btns-col")[0]);
+
+        rowElem.appendChild(imgCol);
+        rowElem.appendChild(detailsCol);
+        rowElem.appendChild(btnsCol);
+        
+        routerOutletElement.appendChild(rowElem);
+    });
+}
+
+function loadProfilePictureInElement(element, email) {
+    // console.log(email);
+    let listRef = storageRef.child(encodeURI(`users/${email}/profile-picture`));
+    // console.log("Trying to get a file from " + email);
+    listRef.listAll().then(function(res) {
+        let profilePic = res.items[0];
+        storageRef.child(encodeURI(`users/${email}/profile-picture/${profilePic.name}`)).getDownloadURL().then(function(url) {
+            // console.log("Loading " + url + " as profile image");
+            element.src = url;
+        }).catch(function(error) {
+            // console.log(error);
+            element.src = '../img/user/default/user-480.png';
+        });
+    }).catch(function(error) {
+        // console.log(error);
+        // console.log("List all failed to work");
+        element.src = '../img/user/default/user-480.png';
+    });
+};
+
+function updateEval(camperID, _callback = () => {}) {
+    try{
         let userData = JSON.parse(localStorage.getItem("userData"));
         currEval.instrID = userData['id'];
         currEval.camperID = camperID;
