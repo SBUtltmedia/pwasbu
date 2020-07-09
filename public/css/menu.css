@@ -1,34 +1,57 @@
+.btn{ /*strangely the background color doesn't show up when I put this in app.css or style.css*/
+    width: 100%;
+    background: #840101;
+    height: auto;
+    text-align: center;
+    line-height: 50px;
+    text-transform: uppercase;
+    color: #fff;
+    font-weight: bold;
+    font-size: 2.0rem;
+    letter-spacing: 1px;
+    cursor: pointer;
+    margin: 10px;
+  }
 
- /*this is on the home page*/
- #menu-user { 
-    font-size: 2em; /*Changing from 28pt to em's, okay so that didn't change anything because this css page wasn't linked to index.html, like why was this even created*/
+ /* Things actually mainly in the Home page */
+ #menu-user { /*this is not really in the menu, it's for the welcome user in home*/ 
+    font-size: 2.5rem;
     text-align: center;
     padding-top: 3rem;
     /* padding-top: 40px;
     padding-bottom: 40px; */
     /*font-family: "Lucida Console";*/
 }
+
+.nav-item nav-link bdrlessBtn /*...bdrlessBtn is a class for a button found on the control panel, this doesn't work, color or size*/
+{   
+    color:green;
+    font-size: 50rem;
+}
+
+/* Things actually in the nav bar */
+.nav-item{ /*This is for the words in the nav bar*/
+    text-align:left;
+}
+
+#navbarNavDropdown /*Nothing happened with color, but the font-size changed for the Log out button in the nav bar*/
+{
+    color:yellow;
+    font-size: 2rem;
+}
+
+div.navbar-brand /*This changes the size of the word 'Menu'*/
+{
+    font-size: 2rem;
+}
+
+
+/* Things which I honestly don't know where they go currently */
 .btn-space {
     margin-bottom: 10px;
 }
-#menu-signout{
-    background-color: firebrick;
-}
 
-.nav-item nav-link bdrlessBtn /*...bdrlessBtn is a class for a button found on the control panel also but clearly it's not working*/
-{   
-    color:green;
-    font-size: 100rem;
+#menu-signout{ /*Okay for this one I don't know what it does color and size doesn't change*/
+    background-color: rgb(58, 178, 34);
+    font-size: 50rem;
 }
-
-#navbarNavDropdown /*Here we go, trying again to increase font size in nav bar, nothing happened again with color, oof but the font-size changed*/
-{
-    color:yellow;
-    font-size: 2em;
-}
-
-div.navbar-brand
-{
-    font-size: 2em;
-}
-
