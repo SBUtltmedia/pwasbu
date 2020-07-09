@@ -42,7 +42,7 @@ function initCampersEvalTable() {
                     res.docs[0].ref.get().then(doc => {
                         doc.data()['campers'].forEach(camper => {
                             fs.collection('users').where("id", "==", camper).get().then(res => {
-                                res.docs[0].ref.get().then(doc => 
+                                res.docs[0].ref.get().then(doc => {
                                     // console.log(new Date(doc.data()["birthdate"]));
                                     // console.log("doc.data()['email']: ", doc.data()["email"]);
                                     let row = {
