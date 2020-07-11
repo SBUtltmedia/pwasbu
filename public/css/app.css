@@ -9,12 +9,11 @@ body {
     user-select: none;
 }
 #login_logo {
-    margin-top: 30px;
     display: block;
     margin-left: auto;
     margin-right: auto;
-    width: 425px;
-    height: 92px;
+    width: -webkit-fill-available;
+    height: unset;
 }
 
 #app-warning {
@@ -46,7 +45,7 @@ body {
       align-items: center;
   }
   td{
-    display:flex;
+    display:inline-flex;
   }
 }
 
@@ -84,12 +83,27 @@ td{
   body{
     font-size: 12px;
   }
+  #login_logo {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 500px;
+    height: unset;
+}
 
+.container {
+  width: 65%;
+  margin: 30px auto;
+}
  }
 
 
 #data-router-outlet {
   padding-left: 4rem;
   padding-right: 4rem;
-  /* color: #2C4477; */
+  margin-bottom: 30px;
 } 
+
+.sec-tit{
+  font-size: 1.5rem;
+}

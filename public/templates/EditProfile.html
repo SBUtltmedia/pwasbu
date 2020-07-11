@@ -1,10 +1,10 @@
 <template>
     <div>
-        <div id="user" style="font-size: x-large;">Edit Profile</div>
-        <div>Name: </div>
+        <div id="user">Edit Profile</div>
+        <div class="ed-pr-nm">Name: </div>
         <input type="text" onkeyup="validString('user-name')" onkeydown="validString('user-name')" class="input"
             id="user-name"><br />
-        <div>Gender: </div>
+        <div class="ed-pr-nm">Gender: </div>
         <input type="text" onkeyup="validString('user-gender')" onkeydown="validString('user-gender')" class="input"
             id="user-gender"><br />
         <div>Date of Birth : </div>
@@ -17,16 +17,16 @@
         <div>Change Profile Picture: </div><input type="file" onchange="$('#profile-success').hide()" accept="image/*"
             capture="camera" id="cameraInput">
         <div id="pic-error" class="error-msg"></div>
-        <!--Hmm for these buttons below, I can't find the btn btn-sec class to fix the font-size, the new class(in editPro.css) seems to reset the css *shrug*-->
-        <button type="button" class="editProfileBtn" class="btn btn-secondary btn-lg btn-space"
-            onclick="initEditProfile()">Reset Profile
+        <button type="button" class="btn btn-secondary btn-lg btn-space" onclick="initEditProfile()">Reset Profile
             Fields</button>
         <div class="loader"></div>
+        <!-- class="editProfileBtn"  this was originally infront of the button classs on line 20-->
         <button type="button" class="btn btn-secondary btn-lg btn-space" onclick="updateProfile()">Submit
             Changes</button>
         <button type="button" class="btn btn-secondary btn-lg btn-space"
             onclick="router.loadRoute('accountSettings')">Change Email or Password</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-space" onclick="router.loadRoute('menu')">Back to
+        <button type="button" class="btn btn-secondary btn-lg btn-space bck-hme" onclick="router.loadRoute('menu')">Back
+            to
             Menu</button>
         <script>
             $(".loader").hide();

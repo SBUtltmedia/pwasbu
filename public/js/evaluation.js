@@ -96,7 +96,7 @@ function createUserDetailsItem(routerOutletElement, row) {
         userDetailsItem.content.querySelectorAll(".user-pronouns")[0].innerHTML = row.pronouns;
         userDetailsItem.content.querySelectorAll(".user-team")[0].innerHTML = row.team;
 
-        userDetailsItem.content.querySelectorAll(".get-evals")[0].onclick = (event) => { eval(row['id'], "get") };
+        //userDetailsItem.content.querySelectorAll(".get-evals")[0].onclick = (event) => { eval(row['id'], "get") };
         userDetailsItem.content.querySelectorAll(".add-evals")[0].onclick = (event) => { eval(row['id'], "get") };
 
         let rowElem = document.createElement("tr");
@@ -244,9 +244,9 @@ function loadNewEval(docID = currEval.actID, _callback = () => { }) {
                             toggleHide('checklist-day-${day}');">
                         Day ${day}
                     </button>
-                    <table id="checklist-day-${day}" class="hiddenElement"></table></li>`);
+                    <table id="checklist-day-${day}" class="hiddenElement sk-box"></table></li>`);
                 doc.data()['checklist'].forEach(item => {
-                    $(`#checklist-day-${day}`).append(`<tr>
+                    $(`#checklist-day-${day}`).append(`<tr class="chcklst-sec">
                         <td class="chcklst-tit">${item['name']}</td>
                         <td class="chcklst-inpt"><input type="number" id="${'checklist' + itemID + '-' + day}-input">${item['type']}</td>
                         </tr>`);
