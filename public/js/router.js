@@ -51,6 +51,14 @@ class Router {
 
      });
   }
+
+  hideNav() {
+    const routerOutletElement = document.querySelectorAll('[data-router-header]')[0];
+    if(routerOutletElement) {
+      routerOutletElement.innerHTML='';
+    }
+  }
+
   _matchUrlToRoute(urlSegments) {
     // Try and match the URL to a route.
     const routeParams = {};
