@@ -54,7 +54,7 @@ firebase.auth().onAuthStateChanged((user) => {
     } else {
         console.log("logged out", user);
         router.loadRoute('');
-        router.loadNavRoute('blank');
+        router.hideNav();
     }
 });
 
