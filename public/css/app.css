@@ -90,10 +90,17 @@ td{
     width: 500px;
     height: unset;
 }
-
 .container {
-  width: 65%;
+  width: 65% !important;
   margin: 30px auto;
+}
+.login-form input{
+  margin-bottom: unset;
+}
+.col-elem {
+  justify-content: center;
+  align-items: center;
+  width: 7%;
 }
  }
 

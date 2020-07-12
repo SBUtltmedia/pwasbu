@@ -259,7 +259,7 @@ function loadNewEval(docID = currEval.actID, _callback = () => { }) {
         }
         //Adding Skills
         $("#evaluation").append(`<div class="sec-tit">Skills</div>
-                                <ul id="skills"></ul>`);
+                                <ul id="skills" class="skill-sec"></ul>`);
         try {
             let skillCount = 1;
             doc.data()['skills'].forEach(skill => {
@@ -268,7 +268,7 @@ function loadNewEval(docID = currEval.actID, _callback = () => { }) {
                         onclick="toggleHide('skill-${skillCount}');">
                         ${skill['skillName']}
                     </button>
-                    <table id="skill-${skillCount}" class="hiddenElement"></table></li>`);
+                    <table id="skill-${skillCount}" class="hiddenElement skillz"></table></li>`);
                 let subSkillCount = 1;
                 skill['subSkills'].forEach(subSkill => {
                     $(`#skill-${skillCount}`).append(`<tr>
@@ -278,7 +278,7 @@ function loadNewEval(docID = currEval.actID, _callback = () => { }) {
                                 </button>
                             </td>
                         </tr>
-                        <tr id="skill-${skillCount}-${subSkillCount}" class="hiddenElement">
+                        <tr id="skill-${skillCount}-${subSkillCount}" class="hiddenElement subskill">
                             <td>
                                 <table>
                                     <tr>

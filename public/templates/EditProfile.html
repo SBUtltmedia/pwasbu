@@ -7,15 +7,15 @@
         <div class="ed-pr-nm">Gender: </div>
         <input type="text" onkeyup="validString('user-gender')" onkeydown="validString('user-gender')" class="input"
             id="user-gender"><br />
-        <div>Date of Birth : </div>
+        <div class="ed-pr-nm">Date of Birth : </div>
         <input type="date" onchange="$('#profile-success').hide()" id="birthdate" name="birthdate"
             min="1900-01-01"><br />
         <div id="profile-error">One or more of the above fields are in the wrong format or empty!</div> <br />
         <div id="profile-success">Profile was updated successfullly!</div> <br />
         <img id="profile-pic" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left"
             width="200" height="200">
-        <div>Change Profile Picture: </div><input type="file" onchange="$('#profile-success').hide()" accept="image/*"
-            capture="camera" id="cameraInput">
+        <div class="ed-pr-nm">Change Profile Picture: </div><input type="file" onchange="$('#profile-success').hide()"
+            accept="image/*" capture="camera" id="cameraInput">
         <div id="pic-error" class="error-msg"></div>
         <button type="button" class="btn btn-secondary btn-lg btn-space" onclick="initEditProfile()">Reset Profile
             Fields</button>

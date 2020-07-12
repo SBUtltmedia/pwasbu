@@ -12,8 +12,14 @@ li{
     margin-bottom: 30px;
 }
 
+.skill-sec li{
+    border: 1px solid var(--primary-color);
+    border-radius: 15px;
+}
+
 .bby-skill-btn{
     font-family: "Arial Black";
+    font-size: 1.3rem;
 }
 
 .bck-hme{
@@ -59,6 +65,10 @@ tr{
     text-align: center;
 }
 
+.skll-comm{
+    display: inline-grid;
+}
+
 .sk-box{
     text-align: center;
     margin-left: auto;
@@ -92,3 +102,13 @@ tr{
 /* .dataTables_wrapper{
     text-align: center;
 } */
+
+.subskill{
+    text-align: center;
+}
+
+.skillz{
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
