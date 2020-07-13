@@ -1,6 +1,7 @@
 <template>
     <div>
-        <div class="ev-title">Evaluations</div>
+        <div class="ev-title">Evaluations</div> <br/>
+        <button id="eval-add" class="btn" onclick="evalAdd()">Add Evaluation</button>
         <table id="activities" class="hiddenField"></table>
         <table id="evaluations" class="hiddenField"></table>
         <div id="activityName"></div>
@@ -15,12 +16,18 @@
         <button class="evaluation-but" class='btn btn-danger' onclick='router.loadRoute("home")'>Back to Home</button>
         <script defer>
             if (currEval.evalMode == "add") {
+                document.getElementById("eval-add").style = "display: none;";
                 document.getElementById('activities').style = "display: block;";
                 actEvalInit();
             } else if (currEval.evalMode == "get") {
+                document.getElementById("eval-add").style = "display: block;";
                 document.getElementById('evaluations').style = "display: block;";
                 initEvalTable();
             } else {
+            }
+            function evalAdd() {
+                document.getElementById("eval-add").style = "display: none;";
+                eval(currEval.camperID, 'add');
             }
         </script>
     </div>

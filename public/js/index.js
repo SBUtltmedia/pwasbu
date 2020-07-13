@@ -72,6 +72,8 @@ window.addEventListener('hashchange', hashChangeEvent => {
     }
 });
 
+const signUpFB = firebase.initializeApp(firebaseConfig, "signUpFB");
+
 const fs = firebase.firestore()
 fs.enablePersistence()
     .catch(function(err) {

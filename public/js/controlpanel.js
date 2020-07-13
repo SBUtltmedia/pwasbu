@@ -461,32 +461,35 @@ function initUsersTable(){
             "searchable": false},
             {"title" : "",
             "searchable": false},
-            {"title" : "",
-             "searchable": false},
+            // {"title" : "",
+            //  "searchable": false},
              {"title" : "",
               "visible": false}
         ]
     });
     fs.collection("users").get().then( res => {
         users = [] // Dictionary of userIDs !!!!!!!!!!!!!!!!!!!! IGNORES CAMPERS !!!!!!!!!!!!!!!!!!!
+        let userData = JSON.parse(localStorage.getItem("userData"));
         res.forEach(doc => {
-            if(doc.data()['priv'] != "camper") {
-                $('#users').DataTable().row.add([
-                    doc.data()['firstName'] + " " + doc.data()['lastName'],
-                    `<div class="form-group"> 
-                        <select class="form-control" id="users-priv-${doc.id}"> 
-                            <option value="admin">Admin</option>
-                            <option value="coach">Coach</option>
-                            <option value=".">Basic</option>
-                            <option value="parent">Parent</option>
-                        </select> 
-                    </div>`,
-                    `<button class='btn bdrlessBtn' onclick='updateUser("${doc.id}")'>Update</button>`,
-                    `<button class='btn bdrlessBtn btn-danger' onclick='removeUser("${doc.id}")'>Remove</button>`,
-                    doc.data()['priv']
-                ]).draw();
-                console.log(doc.data());
-                document.getElementById("users-priv-" + doc.id).value = doc.data()['priv'];
+            if(doc.data()['email'] != userData['email']){
+                if(doc.data()['priv'] != "camper") {
+                    $('#users').DataTable().row.add([
+                        doc.data()['firstName'] + " " + doc.data()['lastName'],
+                        `<div class="form-group"> 
+                            <select class="form-control" id="users-priv-${doc.id}"> 
+                                <option value="admin">Admin</option>
+                                <option value="coach">Coach</option>
+                                <option value=".">Basic</option>
+                                <option value="parent">Parent</option>
+                            </select> 
+                        </div>`,
+                        `<button class='btn bdrlessBtn' onclick='updateUser("${doc.id}")'>Update</button>`,
+                        // `<button class='btn bdrlessBtn btn-danger' onclick='removeUser("${doc.id}")'>Remove</button>`,
+                        doc.data()['priv']
+                    ]).draw();
+                    // console.log(doc.data());
+                    document.getElementById("users-priv-" + doc.id).value = doc.data()['priv'];
+                }
             }
         });
     });
@@ -524,15 +527,30 @@ function addModalUser() {
     if(password.length == 0){
         password = "password123";
     }        
-    // firebase.auth().createUserWithEmailAndPassword(email, password).then(()=>{
-    //     let userPayload = generateUser(email, firstName, lastName, gender, "", priv);
-    //     addUser(userPayload, newAccountPasswordReset(firstName, email));
-    // }).catch(function(error) {
-    //     var errorMessage = error.message;
-    //     console.log(errorMessage);
-    //     document.getElementById("modal-user-error").style = "display: block";
-    //     document.getElementById("modal-user-error").innerHTML = errorMessage;
-    //   });
+    signUpFB.auth().createUserWithEmailAndPassword(email, password).then(()=>{
+        console.log("The user has successfully been signed up!");
+        let userPayload = generateUser(email, firstName, lastName, gender, "", priv);
+        addUser(userPayload, newAccountPasswordReset(firstName, email));
+    }).catch(function(error) {
+        var errorMessage = error.message;
+        console.log(errorMessage);
+        document.getElementById("modal-user-error").style = "display: block";
+        document.getElementById("modal-user-error").innerHTML = errorMessage;
+      });
+}
+/**
+ * Function to be used only under admin controls
+ * @param {} email 
+ */
+function removeUserData(email){
+    fs.collection("users").get().then( res => {
+        res.forEach(doc => {
+            if(doc.data()['email'] == email) {
+                doc.delete();
+                console.log("A document with id : " + doc.id + " has been deleted!");
+            }
+        });
+    });
 }
 function initUserModal(){
     document.getElementById("modal-user-save").onclick = addModalUser;
