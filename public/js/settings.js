@@ -11,6 +11,22 @@ let clearProfilePictures = (email, callback) => {
       });
 };
 
+function readURL(input, elementID) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            $(`#${elementID}`).attr('src', `${e.target.result}`);
+        }
+
+        reader.onload = function (e) {
+            $(`#${elementID}`).attr('src', `${e.target.result}`);
+        }
+
+        reader.readAsDataURL(input.files[0]); // convert to base64 string
+    }
+}
+
 function updateProfile(){
     firstName = document.getElementById("user-first-name").value;
     lastName = document.getElementById("user-last-name").value;

@@ -242,7 +242,11 @@ function initCampersTable(){
                 `<input type="text" id="${"camper-first" + doc.id}" class="form-control" value="${doc.data()['firstName']}">`, 
                 `<input type="text" id="${"camper-last" + doc.id}" class="form-control" value="${doc.data()['lastName']}">`, 
                 doc.data()['id'],
-                `<button class='btn bdrlessBtn' onclick='updateCamper("${doc.id}")'>Update</button>`,
+                `<input type="file" id="camper-upload-${doc.id}" style="display:none" accept="image/*" capture="camera"/> 
+                <button id="camper-pic-button-${doc.id}">
+                    <img id="camper-profile-pic-${doc.id}" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left" width="100" height="100">
+                </button>`,
+                `<button class='btn bdrlessBtn' onclick='updateCamper("${doc.id}", "${doc.data()['id']}")'>Update</button>`,
                 `<button class='btn bdrlessBtn btn-danger' onclick='removeCamper("${doc.id}")'>Remove</button>`,
                 doc.data()['firstName'],
                 doc.data()['lastName']
@@ -255,16 +259,27 @@ function initCampersTable(){
                     {"title" : "First Name", 'searchable': false},
                     {"title" : "Last Name", 'searchable': false},
                     {"title" : "UID"},
+                    {"title" : "Picture", 'searchable': false},
                     {"title" : ""},
                     {"title" : ""},
                     {"title": "", 'visible' : false},
                     {"title": "", 'visible' : false}
                 ]
             });
+            res.forEach(doc => {
+                document.getElementById(`camper-pic-button-${doc.id}`).onclick = () => {$(`#camper-upload-${doc.id}`).trigger('click');};
+                loadCamperImage(`camper-profile-pic-${doc.id}`, doc.data()['id']);
+                $(`#camper-upload-${doc.id}`).on("change", function () {
+                    readURL(this, `camper-profile-pic-${doc.id}`);
+                });
+            });
+            });
         });
-    });
 }
 
+function loadCamperImage(elementID, camperEmail) {
+    loadProfilePictureInElement(document.getElementById(elementID), camperEmail);
+}
 function updateCamperTable(){
     $(document).ready(function() {
         $('#campers').DataTable().destroy();
@@ -274,15 +289,23 @@ function updateCamperTable(){
 function removeCamper(docid) {
     fs.collection('users').doc(docid).delete().then(()=>{
         updateCamperTable();
+        updateGroupsTable();
     });
 }
 function addCamper(){
     let userPayload = generateUser("", "John", "Doe", "Female", "", "camper");
     addUser(userPayload, updateCamperTable);
 }
-function updateCamper(docid){
+function updateCamper(docid, camperId){
     let firstName = document.getElementById("camper-first" + docid).value;
     let lastName = document.getElementById("camper-last" + docid).value;
+    let file = document.getElementById(`camper-upload-${docid}`).files[0];
+    try{
+        clearProfilePictures(camperId, 
+            storageRef.child(`users/${camperId}/profile-picture/` + file.name).put(file)); 
+    } catch(err) {
+        console.log(err);
+    }
     fs.collection("users").doc(docid).update({
         firstName: firstName,
         lastName: lastName
@@ -291,6 +314,17 @@ function updateCamper(docid){
     });
 }
 /////////////////////////////////////////// GROUPS FUNCTIONS ///////////////////////////////////////////
+
+/**
+ *  Adds a coach group with the specified coachID
+ */
+function addCoachGroup(coachID){
+    let data = {
+        campers: [],
+        coach: coachID
+    };
+    fs.collection("Groups").add(data);
+}
 
 /***
  * Populate the groups tables
@@ -305,6 +339,7 @@ function initGroupsTable(){
             coaches = {} // Dictionary of coachIDs
             resCoach.forEach(doc => {
                 coaches[doc.data()['id']] = doc.data();
+                coaches[doc.data()['id']]['hasGroup'] = false; 
             });
             $('#groups').DataTable({   
                 columns: [
@@ -314,8 +349,8 @@ function initGroupsTable(){
                     "searchable": false},
                     {"title" : "",
                     "searchable": false},
-                    {"title" : "",
-                    "searchable": false},
+                    // {"title" : "",
+                    // "searchable": false},
                      {"title" : "",
                       "visible": false}
                 ]
@@ -340,6 +375,8 @@ function initGroupsTable(){
             fs.collection("Groups").get().then(res =>{
                 let data = [];
                 res.forEach(doc => {
+                    let changedDoc = false;
+                    let docData = JSON.parse(JSON.stringify(doc.data()));
                     try{
                         let camperNames = "";
                         let camperSelection = [];
@@ -348,6 +385,9 @@ function initGroupsTable(){
                                 camperName = campers[camperId]['firstName'] + " " + campers[camperId]['lastName'] + " (id:" + camperId + ")";
                                 camperNames += camperName;
                             } catch(err){
+                                docData['campers'].splice([docData['campers'].indexOf(camperId)], 1);
+                                changedDoc = true;
+                                console.log("Camper with id " + camperId + " has been removed from the list");
                                 // Camper doesn't exist
                             }
                         });
@@ -366,9 +406,10 @@ function initGroupsTable(){
                                 // Camper doesn't exist
                             }
                         });
-                        let coachName = "Example Coach (Please select one)"
+                        let coachName = "Coach no longer exist"
                         try{
                             coachName = coaches[doc.data()['coach']]['firstName'] + " " + coaches[doc.data()['coach']]['lastName'] + `(id:${doc.data()['coach']})`;
+                            coaches[doc.data()['coach']]['hasGroup'] = true;
                         } catch(err) {
                             // Coach no longer exists
                         }
@@ -376,7 +417,7 @@ function initGroupsTable(){
                         coachName,
                         `<select class="form-control" id="${"group-" + doc.id}"></select>`,
                         `<button class='btn bdrlessBtn' onclick='updateGroupSelectr("${doc.id}")'>Update</button>`,
-                        `<button class='btn bdrlessBtn btn-danger' onclick='removeGroup("${doc.id}")'>Remove</button>`,
+                        // `<button class='btn bdrlessBtn btn-danger' onclick='removeGroup("${doc.id}")'>Remove</button>`,
                         camperNames
                         ]).draw(); 
                         new Selectr('#group-'+ doc.id, {
@@ -403,7 +444,27 @@ function initGroupsTable(){
                         console.log(err);
                         // DO nothing. Not a valid group.
                     }
+                    if(changedDoc) {
+                        fs.collection("Groups").doc(doc.id).set(docData);
+                    }
+                });            
+                let reset = false;
+                Object.keys(coaches).forEach(coachId => {
+                    if (!coaches[coachId]['hasGroup']) {
+                        let coachName = "Coach no longer exist"
+                        try{
+                            coachName = coaches[coachId]['firstName'] + " " + coaches[coachId]['lastName'] + `(id:${coachId})`;
+                            coaches[doc.data()]['hasGroup'] = true;
+                        } catch(err) {
+                            // Coach no longer exists
+                        }
+                        addCoachGroup(coachId);
+                        reset = true;
+                    }
                 });
+                if(reset) {
+                    updateGroupsTable();
+                }
             });
             });
         });
@@ -422,15 +483,15 @@ function removeGroup(docid) {
         updateGroupsTable();
     });
 }
-function addGroup(){
-    let payload = {
-        coach: "1023",
-        campers: [""]
-    };
-    fs.collection('Groups').add(payload).then(()=> {
-        updateGroupsTable();
-    });
-}
+// function addGroup(){
+//     let payload = {
+//         coach: "1023",
+//         campers: [""]
+//     };
+//     fs.collection('Groups').add(payload).then(()=> {
+//         updateGroupsTable();
+//     });
+// }
 // DEPRECATED FUNCTION - @1
 // function updateGroup(docid) {
 //     let camperString = document.getElementById("group-" + docid).value;
