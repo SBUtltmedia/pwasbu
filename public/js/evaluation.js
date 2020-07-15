@@ -13,7 +13,6 @@ class Evaluation {
 }
 
 const currEval = new Evaluation(); //Current Evaluation Object
-
 function initCampersEvalTable() {
     let user = firebase.auth().currentUser;
     let email = user.email;
@@ -57,7 +56,7 @@ function initCampersEvalTable() {
                                         pronouns: "She/Her/Hers", // This field needs to be added to the database
                                         team: "Purple Team", // This field needs to be added to the database
                                         id: doc.data()["id"],
-                                        email: doc.data()["email"]
+                                        email: doc.data()["id"]
                                     };
                                     let campersData = JSON.parse(localStorage.getItem('campers'));
                                     campersData['0'].push(row);
@@ -86,7 +85,7 @@ function initCampersEvalTable() {
     }
 }
 
-function createUserDetailsItem(routerOutletElement, row) {
+function createuserDetailsItem(routerOutletElement, row) {
     // console.log(row);
     const matchedRoute = router._matchUrlToRoute(['userDetails']);
     matchedRoute.getTemplate(matchedRoute.params).then((userDetailsItem) => {
@@ -119,7 +118,6 @@ function createUserDetailsItem(routerOutletElement, row) {
         rowElem.appendChild(imgCol);
         rowElem.appendChild(detailsCol);
         rowElem.appendChild(btnsCol);
-
         routerOutletElement.appendChild(rowElem);
     });
 }
@@ -128,24 +126,24 @@ function loadProfilePictureInElement(element, email) {
     // console.log(email);
     let listRef = storageRef.child(encodeURI(`users/${email}/profile-picture`));
     // console.log("Trying to get a file from " + email);
-    listRef.listAll().then(function (res) {
+    listRef.listAll().then(function(res) {
         let profilePic = res.items[0];
-        storageRef.child(encodeURI(`users/${email}/profile-picture/${profilePic.name}`)).getDownloadURL().then(function (url) {
+        storageRef.child(encodeURI(`users/${email}/profile-picture/${profilePic.name}`)).getDownloadURL().then(function(url) {
             // console.log("Loading " + url + " as profile image");
             element.src = url;
-        }).catch(function (error) {
+        }).catch(function(error) {
             // console.log(error);
             element.src = '../img/user/default/user-480.png';
         });
-    }).catch(function (error) {
+    }).catch(function(error) {
         // console.log(error);
         // console.log("List all failed to work");
         element.src = '../img/user/default/user-480.png';
     });
-}
+};
 
-function updateEval(camperID, _callback = () => { }) {
-    try {
+function updateEval(camperID, _callback = () => {}) {
+    try{
         let userData = JSON.parse(localStorage.getItem("userData"));
         currEval.instrID = userData['id'];
         currEval.camperID = camperID;
@@ -455,6 +453,16 @@ function editEval(actName, evalID, evalDoc) {
             loadNewEval(doc.id).then(() => {
                 populateEval(evalDoc);
             });
-        });
+        } catch(err) {
+            console.log(err);
+            alert("The activity : " + actName + " may have been deleted or no longer exist in the database");s
+        }
+    });
+}
+function removeEval(docID) {
+    fs.collection("Evaluations").doc(docID).delete().then(() => {
+        $('#evaluations').DataTable().clear();
+        $('#evaluations').DataTable().destroy();
+        initEvalTable();
     });
 }

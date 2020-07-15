@@ -18,6 +18,7 @@
         <button class="evaluation-but btn btn-danger bck-hme" onclick='router.loadRoute("home")'>Back to Home</button>
         <script defer>
             if (currEval.evalMode == "add") {
+                document.getElementById("eval-add").style = "display: none;";
                 document.getElementById('activities').style = "display: block;";
                 actEvalInit();
             } else if (currEval.evalMode == "get") {
@@ -26,6 +27,10 @@
                 document.getElementById('activities').style = "display: block;";
                 actEvalInit();
             } else {
+            }
+            function evalAdd() {
+                document.getElementById("eval-add").style = "display: none;";
+                eval(currEval.camperID, 'add');
             }
         </script>
     </div>

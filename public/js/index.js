@@ -62,12 +62,17 @@ window.addEventListener('hashchange', hashChangeEvent => {
     console.log("Hash Change: ");
     urlSegments = hashChangeEvent.newURL.split("#");
     // console.log(urlSegments);
-    if(urlSegments[1] != '') {
+    user = firebase.auth().currentUser;
+    if(user && urlSegments[1] != "") {
         router.loadRoute(urlSegments[1]);
+    } else if(user && urlSegments[1] === "") {
+        router.loadRoute("home");
     } else {
-        router.loadRoute('home');
+        router.loadRoute("");
     }
 });
+
+const signUpFB = firebase.initializeApp(firebaseConfig, "signUpFB");
 
 const fs = firebase.firestore()
 fs.enablePersistence()
@@ -292,10 +297,22 @@ function addUser(payload, _callback = ()=> {}){
  * This function returns a JSON Object for adding a user to the "users" collection
  * @param {*} email The email of the user. Cannot be a duplicate of an email already in use.
  */
-function generateUser(email, firstName="", lastName="", gender ="Female", priv = "."){
+// function generateUser(email, firstName="", lastName="", gender ="Female", priv = "."){
+//     return {
+//         email: email,
+//         birthdate : "1999-07-04", //Needs to be implemented with field
+//         creationDate : new Date().toDateInputValue(),
+//         firstName: firstName,
+//         lastName : lastName, 
+//         gender: gender, // Needs to be implemented with field`
+//         priv: priv
+//     };   
+// }
+
+function generateUser(email, firstName="", lastName="", gender="", birthdate="", priv="."){
     return {
         email: email,
-        birthdate : "1999-07-04", //Needs to be implemented with field
+        birthdate : birthdate,
         creationDate : new Date().toDateInputValue(),
         firstName: firstName,
         lastName : lastName, 
@@ -303,6 +320,7 @@ function generateUser(email, firstName="", lastName="", gender ="Female", priv =
         priv: priv
     };   
 }
+
 function signIn(email, password){
     console.log("Attempting to sign in");
     firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
@@ -345,6 +363,7 @@ function signup() {
     let password = document.getElementById("signup-pass").value;
     let firstName = document.getElementById("signup-user-first").value;
     let lastName = document.getElementById("signup-user-last").value;
+    let birthdate = document.getElementById("signup-birthdate").value;
     let name = firstName + " " + lastName;
     if(!emailIsValid(email)){
         document.getElementById("pass_error").innerHTML = "Email field is invalid!"
@@ -362,7 +381,7 @@ function signup() {
         firebase.auth().createUserWithEmailAndPassword(email, password)
             .then(() => {
                 console.log("Attempting to register user into DB");
-                addUser(generateUser(email, firstName, lastName));
+                addUser(generateUser(email, firstName, lastName, "", birthdate, "."));
                 firebase.auth().currentUser.updateProfile({
                     displayName: name,
                 }).then(function() {
