@@ -1,15 +1,38 @@
 /* If I thought it was more generalised or it was css not for login it has been moved to app.css or its respective css page */
 .container{
+    width: 100%;
     margin: 30px auto;
-    width: auto; /*this changes the width of the container*/
-    margin: 15px auto;
-    /*height is apparently below in login-form*/
 }
 
+.login-form input{
+    margin-bottom: 30px;
+}
+
+.signup,
+.login{
+    width: 100%;
+    background: #fff;
+    color: var(--primary-color);
+    font-size: 2.0rem;
+    line-height: 60px;
+    text-align: center;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+.signup-form{
+    color: #840101;
+    background: #fff;
+    padding: 40px;
+    clear: both;
+    width: 100%;
+    box-sizing: border-box;
+    height: 700px;
+}
 .login-form{
     color: #840101;
     background: #fff;
-    padding: 2rem;
+    padding: 10px 40px 40px 40px;
     clear: both;
     width: 100%;
     box-sizing: border-box;
@@ -19,22 +42,30 @@
 .signup,
 .login{
     width: 100%;
-    background: #fff;
-    color: #840101;
+    padding: 20px;
+    box-sizing: border-box;
+    margin-bottom: 25px;
+    border: 2px solid #e9eaea;
+    color: #3e3e40;
     font-size: 2.5rem;
-    /*float: center;*/
-    height: 20%;
-    /*line-height: 60px;*/
-    text-align: center;
-    cursor: pointer;
-    text-transform: uppercase;
-    /* margin-left:auto;
-    margin-right:auto; */
+    outline: none;
+    transform: all 0.5s ease;
+}
+.nav-item{
+    text-align:left;
+}
+.bdrlessBtn{
+    padding: 0;
+    border: none;
+    background: none;
+}
+.input:focus{
+    border: 2px solid #840101;
 }
 
 .pass-comment{
-    margin-top: -20px; /*This changes the margin on the top between login and inputting email*/
-    font-size: 1.5rem; /*Changing from % to rem's*/
+    margin-top: -25px;
+    font-size: 1.5rem; 
     text-align: center;
     color: #dc3545;
 }
@@ -45,50 +76,29 @@
     color: #dc3545;
     font-size: 2rem;
 }
-
- #forgot-email, #forgot_pass
- {
-     font-size: 2.5rem;
-     text-align: center;
-     margin-bottom: -20px;
- }
-
- label{
-    font-size: 2.5rem;
+#google-button {
+    color: white;
+    font-size: 1.8rem;
+}
+.btn{
+    /* width: 100%; */
+    border-radius: 10px;
+    padding: 4px;
+    background: var(--primary-color);
+    /* height: auto; */
     text-align: center;
-    margin-bottom: 35px;
- }
-
- .sorting_asc{ /*okay so */
-    position: relative;
- }
-
- #login_logo
- {
-     width:25rem;
-     height:20%;
-        /* margin-top: 20px; */
-     margin-left: auto;
-     margin-right: auto;
-     position: relative;        
-     /* text-align: center !important;
-     display: inline-block; these didn't work */
- }
-
- body{
-    text-align: center;
- }
-
- 
- /* Things I am unsure of */
- .aspectwrapper {
-     display: inline-block; /* shrink to fit */
-     width: 100%;           /* whatever width you like */
-     position: relative;    /* so .content can use position: absolute */
- }
-
- .input:focus{
-    border: 2px solid #840101;
+    /* line-height: 50px; */
+    text-transform: uppercase;
+    color: #fff;
+    /* font-weight: bold; */
+    font-size: 1.8rem;
+    letter-spacing: 1px;
+    cursor: pointer;
+    /* margin-bottom: 30px; */
+}
+.btn:active {
+    background: var(--primary-color);
+    color: white;
 }
 
 @keyframes spin {
@@ -130,12 +140,18 @@
      font-size: 1.5rem;
  }
 
- .signup-form{
-    color: #840101;
-    background: #fff;
-    padding: 1.2rem;
-    clear: both;
-    width: 100%;
-    box-sizing: border-box;
-    height: 700px;
+ label, #forgot-email, #forgot_pass
+ {
+     font-size: 2rem;
+ }
+
+ .link{
+    padding: 0;
+    border: none;
+    background: none;
+    font-size: 2.0rem;
+}
+
+.login-btn{
+    font-size: 2.0rem;
 }

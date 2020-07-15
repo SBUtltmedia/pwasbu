@@ -13,14 +13,15 @@
     margin: 10px;
   }
 
- /* Things actually mainly in the Home page */
- #menu-user { /*this is not really in the menu, it's for the welcome user in home*/ 
-    font-size: 2.5rem;
+ /*this is on the home page*/
+ #menu-user { 
+    font-size: 1.8rem;
     text-align: center;
+    /* padding-top: 20px;
+    padding-bottom: 20px; */
     padding-top: 3rem;
-    /* padding-top: 40px;
-    padding-bottom: 40px; */
-    /*font-family: "Lucida Console";*/
+    font-weight: bold;
+
 }
 
 .nav-item nav-link bdrlessBtn /*...bdrlessBtn is a class for a button found on the control panel, this doesn't work, color or size*/

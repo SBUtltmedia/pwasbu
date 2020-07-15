@@ -1,23 +1,31 @@
 <template>
     <div>
-        <div id = "user">Account Settings</div>
-        <div>Email: </div>
-        <input type="email" onkeyup="validString('user-email')" onkeydown="validString('user-email')" class="input" id="user-email"><br />
-        <div>Password (must be entered to change account email address): </div>
-        <input type="password" onkeyup="validString('user-password')" onkeydown="validString('user-password')" class="input" id="user-password"><br />
-        <div id="profile-error">One or more of the above fields are in the wrong format or empty!</div> <br/>
-        <div id="profile-success">Email was updated successfullly!</div> <br/>
-        <button type="button" class="btn btn-secondary btn-lg btn-space" onclick="initAccountSettings()">Reset Account Settings</button>
+        <div id="user">Account Settings</div>
+        <div class="ac-set">Email: </div>
+        <input type="email" onkeyup="validString('user-email')" onkeydown="validString('user-email')" class="input"
+            id="user-email"><br />
+        <div class="ac-set">Password (must be entered to change account email address): </div>
+        <input type="password" onkeyup="validString('user-password')" onkeydown="validString('user-password')"
+            class="input" id="user-password"><br />
+        <div id="profile-error">One or more of the above fields are in the wrong format or empty!</div> <br />
+        <div id="profile-success">Email was updated successfullly!</div> <br />
+        <!-- <button type="button" class="btn btn-secondary btn-lg btn-space" onclick="initAccountSettings()">Reset Account
+            Settings</button> -->
         <div class="loader"></div>
-        <button type="button" class="btn btn-secondary btn-lg btn-space" onclick="updateEmail()">Submit Email Change</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-space" onclick="changePassword()">Change Password</button>
-    <script>
-        $("#loader").hide();
-        $("#profile-error").hide();
-        $("#profile-success").hide();
-        console.log("loading in fields");
-        initAccountSettings();
-        initNavBar();
-    </script>
+        <button type="button" class="btn btn-secondary btn-lg btn-space" onclick="updateEmail()">Submit Email
+            Change</button>
+        <button type="button" class="btn btn-secondary btn-lg btn-space" onclick="changePassword()">Submit Password
+            Change</button>
+        <button type="button" class="btn btn-secondary btn-lg btn-space" onclick="router.loadRoute('editprofile')">Back
+            to
+            Edit Profile</button>
+        <script>
+            $("#loader").hide();
+            $("#profile-error").hide();
+            $("#profile-success").hide();
+            console.log("loading in fields");
+            initAccountSettings();
+            initNavBar();
+        </script>
     </div>
 </template>

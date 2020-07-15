@@ -1,6 +1,7 @@
 *{
     margin: 0;
     padding: 0;
+    --primary-color: #2C4477;  
 }
 
 body {
@@ -8,36 +9,20 @@ body {
     font-family: "Arial Black";
     user-select: none;
 }
-
+#login_logo {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: -webkit-fill-available;
+    height: unset;
+}
 #app-warning {
     text-align: center;
     color: #dc3545;
 }
 
-.btn:active {
-  background: #82ffec;
-}
-
-.emptybtn{
-  padding: 0;
-  border: none;
-  background: none;
-}
-
-.input{
-  width: 100%;
-  padding: 20px;
-  box-sizing: border-box;
-  margin-bottom: 20px;
-  border: 2px solid #e9eaea;
-  color: #3e3e40;
-  font-size: 2.5rem; /*Changing from 14px to rem's*/
-  outline: none;
-  transform: all 0.5s ease;
-}
-
-.input:focus{
-  border: 2px solid #840101;
+.hiddenElement {
+  display: none;
 }
 
 /* small tablet styles */
@@ -45,6 +30,42 @@ body {
     body{
         font-size: 18px;
       }
+      #data-router-outlet{
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+      }
+      #campers {
+        border: none;
+        text-align: center;
+        display: grid;
+    }
+    .col-elem {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+  }
+  td{
+    display:inline-flex;
+  }
+}
+
+@media screen and (min-width: 800px) {
+  /* body {
+    background-color: lavender;
+  } */
+  #campers {
+    border: none;
+    text-align: none;
+    display: unset;
+}
+.col-elem {
+  display: table-cell;
+  justify-content: center;
+  align-items: center;
+}
+td{
+  display:inline-flex;
+}
 }
 
 /* large tablet & laptop styles <= those words are in fact lies, this is the screens size for the phone*/
@@ -62,41 +83,34 @@ body {
   body{
     font-size: 12px;
   }
-
- }
-
-
- /* Attempts at control panel css */
- .bdrlessBtn{ /*This is a button class in control panel and I think menu*/
-  /* padding: 0.8rem; */
-  border: none;
-  background: none;
-  font-size: 2.5rem;
+  #login_logo {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 500px;
+    height: unset;
 }
- 
- .sorting_1, .sorting, .sorting_desc{
-   font-size: 1.8rem;
+.container {
+  width: 65% !important;
+  margin: 30px auto;
+}
+.login-form input{
+  margin-bottom: unset;
+}
+.col-elem {
+  justify-content: center;
+  align-items: center;
+  width: 7%;
+}
  }
 
- .largeText{
-   font-size: 1.8rem;
- }
-
- .sorting_asc{
-   font-size: 1.8rem;
- }
-
- .paginate_button, .dataTables_info{
-  font-size: 1.8rem;
-  padding: 20px;
- }
-
- .form-control{
-  font-size: 1.8rem;
- }
 
 #data-router-outlet {
   padding-left: 4rem;
   padding-right: 4rem;
-  /* color: #2C4477; */
+  margin-bottom: 30px;
+} 
+
+.sec-tit{
+  font-size: 1.5rem;
 }
