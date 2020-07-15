@@ -57,7 +57,7 @@ function initCampersEvalTable() {
                                         pronouns: "She/Her/Hers", // This field needs to be added to the database
                                         team: "Purple Team", // This field needs to be added to the database
                                         id: doc.data()["id"],
-                                        email: doc.data()["email"]
+                                        email: doc.data()["id"]
                                     };
                                     let campersData = JSON.parse(localStorage.getItem('campers'));
                                     campersData['0'].push(row);
