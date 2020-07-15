@@ -33,6 +33,7 @@
     text-transform: uppercase;
     color: #fff;
     cursor: pointer;
+    margin-bottom: 20px;
 }
 
 .get-evals {
@@ -40,7 +41,7 @@
     margin-bottom: 1.5rem;
 }
 
-.details-text {
+.details-text, .user-name {
     font-size: 1.2rem;
 }
 
