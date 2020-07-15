@@ -32,16 +32,13 @@ function initCampersEvalTable() {
         let athletesTable = document.getElementById("campers");
         let campersTable = JSON.parse(localStorage.getItem('campers'))['0'];
         console.log(campersTable);
-        // $(document).ready(function() {
-        //     $('#campers').DataTable().rows.add(campersTable).draw();
-        // });
-        for (i = 0; i < campersTable.length; i++) {
-            createUserDetailsItem(athletesTable, campersTable[i]);
+        for(i = 0; i < campersTable.length; i++) {
+            createuserDetailsItem(athletesTable, campersTable[i]);
         }
-    } catch (err) {
+    } catch(err) {
         let athletesTable = document.getElementById("campers");
-        localStorage.setItem('campers', JSON.stringify({ 0: [] }));
-        fs.collection("users").where("email", "==", email).get().then(res => {
+        localStorage.setItem('campers', JSON.stringify({0:[]}));
+        fs.collection("users").where("email","==", email).get().then(res=>{
             res.docs[0].ref.get().then(doc => {
                 fs.collection("Groups").where("coach", "==", doc.data()['id']).get().then(res => {
                     res.docs[0].ref.get().then(doc => {
@@ -119,7 +116,6 @@ function createUserDetailsItem(routerOutletElement, row) {
         rowElem.appendChild(imgCol);
         rowElem.appendChild(detailsCol);
         rowElem.appendChild(btnsCol);
-
         routerOutletElement.appendChild(rowElem);
     });
 }
@@ -353,11 +349,13 @@ function submitEval(evalID = "DEFAULT") {
                 skillCount++;
             }
         } catch (err) {
+
             console.log("Skills does not exist when submitting for this activity: ", err)
         }
         if (currEval.evalMode == "add") {
             fs.collection("Evaluations").add(evalDoc).then(() => {
                 alert("Evaluation updated successfully!");
+
                 router.loadRoute("home")
             });
         } else {
@@ -454,7 +452,15 @@ function editEval(actName, evalID, evalDoc) {
             // $('#evaluations').DataTable().destroy();
             loadNewEval(doc.id).then(() => {
                 populateEval(evalDoc);
+
             });
-        });
+
+    });
+}
+function removeEval(docID) {
+    fs.collection("Evaluations").doc(docID).delete().then(() => {
+        $('#evaluations').DataTable().clear();
+        $('#evaluations').DataTable().destroy();
+        initEvalTable();
     });
 }

@@ -11,14 +11,33 @@ let clearProfilePictures = (email, callback) => {
       });
 };
 
+function readURL(input, elementID) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            $(`#${elementID}`).attr('src', `${e.target.result}`);
+        }
+
+        reader.onload = function (e) {
+            $(`#${elementID}`).attr('src', `${e.target.result}`);
+        }
+
+        reader.readAsDataURL(input.files[0]); // convert to base64 string
+    }
+}
+
 function updateProfile(){
-    name = document.getElementById("user-name").value;
+    firstName = document.getElementById("user-first-name").value;
+    lastName = document.getElementById("user-last-name").value;
     gender = document.getElementById("user-gender").value;
-    if(name.length <= 0 || name == null) {
+    if(firstName.length <= 0 || firstName == null) {
         $("#profile-success").hide();
         $("#profile-error").show();
-    } 
-    else if(gender.length <= 0 || gender == null) {
+    } else if(lastName.length <= 0 || lastName == null) {
+        $("#profile-success").hide();
+        $("#profile-error").show();
+    } else if(gender.length <= 0 || gender == null) {
         $("#profile-success").hide();
         $("#profile-error").show();
     } else {
@@ -26,7 +45,8 @@ function updateProfile(){
         birthdate = document.getElementById("birthdate").value;
         userPayload = JSON.parse(localStorage.getItem("userData"));
         try{
-            userPayload['firstName'] = name;
+            userPayload['firstName'] = firstName;
+            userPayload['lastName'] = lastName;
             userPayload['gender'] = gender;
             userPayload['birthdate'] = birthdate;
             setUser(userPayload['email'], userPayload);
@@ -35,7 +55,7 @@ function updateProfile(){
         } catch(error) {
             let user = firebase.auth().currentUser;
             userPayload = JSON.parse(localStorage.getItem("userData"));
-            setUser(user.email, generateUser(user.email, userPayload['firstName'], userPayload['lastName'], userPayload['gender'], userPayload['priv']));
+            setUser(user.email, generateUser(user.email, userPayload['firstName'], userPayload['lastName'], userPayload['gender'], userPayload['birthdate'], userPayload['priv']));
         }
         try {
             updateProfilePicture();
@@ -45,51 +65,6 @@ function updateProfile(){
         }
     }
 }
-
-// function updateProfile() {
-//     name = document.getElementById("user-name").value;
-//     email = document.getElementById("user-email").value;
-//     gender = document.getElementById("user-gender").value;
-//     if(name.length <= 0 || name == null) {
-//         $("#profile-success").hide();
-//         $("#profile-error").show();
-//     } 
-//     else if(email.length <= 0 || email == null) {
-//         $("#profile-success").hide();
-//         $("#profile-error").show();
-//     }
-//     else if(gender.length <= 0 || gender == null) {
-//         $("#profile-success").hide();
-//         $("#profile-error").show();
-//     } else {
-//         $("#profile-error").hide();
-//         birthdate = document.getElementById("birthdate").value;
-//         userPayload = JSON.parse(localStorage.getItem("userData"));
-//         original_email = userPayload['email'];
-//         try {   
-//             userPayload['firstName'] = name;
-//             userPayload['email'] = email;
-//             userPayload['gender'] = gender;
-//             userPayload['birthdate'] = birthdate;
-//             console.log("The data has been updated to :" + JSON.stringify(userPayload));   
-//             if(setUser(original_email, userPayload)) {
-//                 console.log("TEST TRUE");
-//                 localStorage.setItem("userData", JSON.stringify(userPayload));
-//                 console.log("User profile updated successfully");
-//                 $("#profile-success").show();
-//             }
-//             try {
-//                 updateProfilePicture();
-//             } catch(error) {
-//                 console.log("Profile picture not updated");
-//                 console.log(error);
-//             }
-//         } catch(error) {
-//             let user = firebase.auth().currentUser;
-//             setUser(user.email, generateUser(user.email, name));
-//         }
-//     }
-// }
 
 function updateProfilePicture() {
     let user = firebase.auth().currentUser;
@@ -139,7 +114,8 @@ let initEditProfile = () => {
     userData = JSON.parse(localStorage.getItem("userData"));
     console.log(userData['gender']);
     birthdateField.value = userData['birthdate'];
-    document.getElementById("user-name").value = userData['firstName'];
+    document.getElementById("user-first-name").value = userData['firstName'];
+    document.getElementById("user-last-name").value = userData['lastName'];
     document.getElementById("user-gender").value = userData['gender'];
     loadProfilePicture();
 };

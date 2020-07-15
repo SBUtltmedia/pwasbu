@@ -3,6 +3,7 @@
     padding: 0;
     --primary-color: #2C4477;  
 }
+
 body {
     background: #e9eaea;
     font-family: "Arial Black";
@@ -15,7 +16,6 @@ body {
     width: -webkit-fill-available;
     height: unset;
 }
-
 #app-warning {
     text-align: center;
     color: #dc3545;
