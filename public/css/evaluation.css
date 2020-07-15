@@ -17,13 +17,78 @@
     text-align: center;    
 }
 
+li{
+    list-style-type: none;
+    margin-bottom: 30px;
+}
+
+.skill-sec li{
+    border: 1px solid var(--primary-color);
+    border-radius: 15px;
+}
+
+.bby-skill-btn{
+    font-family: "Arial Black";
+    font-size: 1.3rem;
+}
+
+.bck-hme{
+    background-color: black !important;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#activities, #evaluations{
+    display: block;
+    text-align: center;
+}
+
+.quest{
+    font-size: 1.5rem;
+    text-align: center;
+}
+
 button.evaluation-but
 {
-    font-size: 2.5rem;
+    font-size: 1.8rem;
     color: white;
     display: block;
     width: 100%;
-    background-color: #840101;
+    background-color: var(--primary-color);
+    padding: 15px;
+    border-radius: 15px;
+    border: none;
+}
+
+.act-btns{
+    color: var(--primary-color);
+    background-color: inherit;
+    border-radius: 0;
+    border: 2px solid var(--primary-color);
+    padding: 10px;
+    width: 350px;
+}
+
+tr{
+    text-align: center;
+}
+
+.skll-comm{
+    display: inline-grid;
+}
+
+.sk-box{
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    border: 1px solid var(--primary-color);
+}
+
+.chcklst-tit, .chcklst-inpt{
+    font-size: 1.5rem;
 }
 
 #activityName
@@ -39,4 +104,26 @@ button.evaluation-but
 
 .dcl, .ev-title{
     font-size: 2.5rem;
+}
+
+.chcklst-sec{
+    border: 1px solid red;
+}
+
+#activities_wrapper{
+    text-align: center;
+}
+
+/* .dataTables_wrapper{
+    text-align: center;
+} */
+
+.subskill{
+    text-align: center;
+}
+
+.skillz{
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
 }

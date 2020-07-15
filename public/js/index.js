@@ -54,7 +54,7 @@ firebase.auth().onAuthStateChanged((user) => {
     } else {
         console.log("logged out", user);
         router.loadRoute('');
-        router.loadNavRoute('blank');
+        router.hideNav();
     }
 });
 
@@ -463,3 +463,12 @@ function googleSignIn(){
 
 //STORAGE Functions
 const storageRef = firebase.storage().ref();
+
+function toggleHide(id) {
+    let classes = document.getElementById(id).classList;
+    if(classes.contains("hiddenElement")) {
+        classes.remove("hiddenElement");
+    } else {
+        classes.add("hiddenElement");
+    }
+}
