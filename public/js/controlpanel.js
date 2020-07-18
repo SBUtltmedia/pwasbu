@@ -415,15 +415,16 @@ function initGroupsTable(){
                         }
                         $('#groups').DataTable().row.add([
                         coachName,
-                        `<select class="form-control" id="${"group-" + doc.id}"></select>`,
+                        `<select class="form-control" id="${"group-" + doc.id}" data-native-menu="false"></select>`,
                         `<button class='btn bdrlessBtn' onclick='updateGroupSelectr("${doc.id}")'>Update</button>`,
                         // `<button class='btn bdrlessBtn btn-danger' onclick='removeGroup("${doc.id}")'>Remove</button>`,
                         camperNames
                         ]).draw(); 
-                        new Selectr('#group-'+ doc.id, {
+                        let sObj = new Selectr('#group-'+ doc.id, {
                             data: camperSelection,
                             multiple:true
                         });
+                        sObj.mobileDevice = false;
                         // let coachSelectr = new Selectr("#group-select-" + doc.id, {
                         //     data:coachSelectrData
                         // });
