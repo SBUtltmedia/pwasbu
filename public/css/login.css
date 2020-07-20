@@ -1,4 +1,3 @@
-/* If I thought it was more generalised or it was css not for login it has been moved to app.css or its respective css page */
 .container{
     width: 100%;
     margin: 30px auto;
@@ -38,9 +37,7 @@
     box-sizing: border-box;
     height: auto;
 }
-
-.signup,
-.login{
+.input{
     width: 100%;
     padding: 20px;
     box-sizing: border-box;
@@ -62,14 +59,12 @@
 .input:focus{
     border: 2px solid #840101;
 }
-
 .pass-comment{
     margin-top: -25px;
     font-size: 1.5rem; 
     text-align: center;
     color: #dc3545;
 }
-
 .error-msg {
     margin-top: -25px;
     text-align: center;
@@ -101,9 +96,9 @@
     color: white;
 }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+span a{
+    text-decoration: none;
+    color: #000;
 }
 
 ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
@@ -123,14 +118,28 @@
     font-family: "Arial Black";
 }
 
-
- /* Previous css stuff for the signup page which has been "removed" & other stuff getting removed */
-  #google-button {
-    color: white;
-    font-size: 2.5rem;
+.loader {
+    margin-left: auto;
+    margin-right: auto;
+    border: 12px solid #f3f3f3; /* Light grey */
+    border-top: 12px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 2s linear infinite;
 }
 
-#signup-birthdate
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+.aspectwrapper {
+     display: inline-block; /* shrink to fit */
+     width: 100%;           /* whatever width you like */
+     position: relative;    /* so .content can use position: absolute */
+ }
+
+ #signup-birthdate
  {
      font-size: 1.8rem;
  }

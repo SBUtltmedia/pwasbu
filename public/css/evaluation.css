@@ -1,20 +1,10 @@
 .firstDropDownColor {
     color: #840101;
-    font-size: 2.5rem;
+    /*font-size: 1.5em;*/
 }
 .secondDropDownColor {
     color: #32a9ce;
-    font-size: 2.5rem;
-}
-
-#checklist1-1 /*unit of measure stuff*/{
-    font-size: 2.5rem;
-}
-
-#checklist1-1-input{
-    /* size of the input bar */
-    width: 10.5rem;
-    text-align: center;    
+    /*font-size: 1.5em;*/
 }
 
 li{
@@ -93,19 +83,16 @@ tr{
 
 #activityName
 {
-    font-size: 2.5rem;
-    text-align: center;
+    font-size: 2rem;
 }
 
 #checklist, #skills
 {
     font-size: 1.8rem;
 }
-
 .dcl, .ev-title{
     font-size: 2.5rem;
 }
-
 .chcklst-sec{
     border: 1px solid red;
 }

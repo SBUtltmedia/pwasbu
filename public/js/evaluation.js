@@ -32,13 +32,13 @@ function initCampersEvalTable() {
         let athletesTable = document.getElementById("campers");
         let campersTable = JSON.parse(localStorage.getItem('campers'))['0'];
         console.log(campersTable);
-        for(i = 0; i < campersTable.length; i++) {
+        for (i = 0; i < campersTable.length; i++) {
             createuserDetailsItem(athletesTable, campersTable[i]);
         }
-    } catch(err) {
+    } catch (err) {
         let athletesTable = document.getElementById("campers");
-        localStorage.setItem('campers', JSON.stringify({0:[]}));
-        fs.collection("users").where("email","==", email).get().then(res=>{
+        localStorage.setItem('campers', JSON.stringify({ 0: [] }));
+        fs.collection("users").where("email", "==", email).get().then(res => {
             res.docs[0].ref.get().then(doc => {
                 fs.collection("Groups").where("coach", "==", doc.data()['id']).get().then(res => {
                     res.docs[0].ref.get().then(doc => {
@@ -455,8 +455,9 @@ function editEval(actName, evalID, evalDoc) {
 
             });
 
-    });
-}
+        });
+    })
+};
 function removeEval(docID) {
     fs.collection("Evaluations").doc(docID).delete().then(() => {
         $('#evaluations').DataTable().clear();

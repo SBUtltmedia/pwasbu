@@ -1,58 +1,32 @@
-.btn{ /*strangely the background color doesn't show up when I put this in app.css or style.css*/
-    width: 100%;
-    background: #840101;
-    height: auto;
-    text-align: center;
-    line-height: 50px;
-    text-transform: uppercase;
-    color: #fff;
-    font-weight: bold;
-    font-size: 2.0rem;
-    letter-spacing: 1px;
-    cursor: pointer;
-    margin: 10px;
-  }
-
- /*this is on the home page*/
- #menu-user { 
+/*this is on the home page*/
+#menu-user { 
     font-size: 1.8rem;
     text-align: center;
     /* padding-top: 20px;
     padding-bottom: 20px; */
     padding-top: 3rem;
     font-weight: bold;
-
+}
+.btn-space {
+    margin-bottom: 10px;
+}
+#menu-signout{
+    background-color: firebrick;
 }
 
-.nav-item nav-link bdrlessBtn /*...bdrlessBtn is a class for a button found on the control panel, this doesn't work, color or size*/
-{   
+.nav-item nav-link bdrlessBtn /*Okay, this is a test, it did nothing, devastating*/
+{
     color:green;
-    font-size: 50rem;
+    font-size: 100em;
 }
 
-/* Things actually in the nav bar */
-.nav-item{ /*This is for the words in the nav bar*/
-    text-align:left;
-}
-
-#navbarNavDropdown /*Nothing happened with color, but the font-size changed for the Log out button in the nav bar*/
+#navbarNavDropdown /*Here we go, trying again to increase font size in nav bar, nothing happened again with color, oof but the font-size changed*/
 {
     color:yellow;
     font-size: 2rem;
 }
 
-div.navbar-brand /*This changes the size of the word 'Menu'*/
+div.navbar-brand
 {
     font-size: 2rem;
-}
-
-
-/* Things which I honestly don't know where they go currently */
-.btn-space {
-    margin-bottom: 10px;
-}
-
-#menu-signout{ /*Okay for this one I don't know what it does color and size doesn't change*/
-    background-color: rgb(58, 178, 34);
-    font-size: 50rem;
 }
