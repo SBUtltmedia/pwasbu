@@ -454,10 +454,10 @@ function editEval(actName, evalID, evalDoc) {
                 populateEval(evalDoc);
 
             });
-
         });
-    })
-};
+    });
+}
+
 function removeEval(docID) {
     fs.collection("Evaluations").doc(docID).delete().then(() => {
         $('#evaluations').DataTable().clear();
