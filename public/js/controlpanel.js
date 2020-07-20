@@ -99,7 +99,11 @@ function updateActivity(id){
             subSkills: subSkills
         });
     }
-    console.log(JSON.stringify({checklist: checklist, name: activityName, skills: skills}));
+    fs.collection('Activities').doc(id).update({checklist: checklist, name: activityName, skills: skills}).then(()=>{
+        alert(`${activityName} has been updated successfully!`);
+    }).catch(err => {
+        alert(err);
+    });
 }
 function getActivity(id) {
     fs.collection('Activities').doc(id).get().then(doc =>{
@@ -235,36 +239,77 @@ function addActivity(){
  * Populate the campers tables
  */
 function initCampersTable(){
-    fs.collection("users").where("priv", "==", "camper").get().then(res =>{
-        let data = [];
-        res.forEach(doc => {
-            data.push([
-                `<input type="text" id="${"camper-first" + doc.id}" class="form-control" value="${doc.data()['firstName']}">`, 
-                `<input type="text" id="${"camper-last" + doc.id}" class="form-control" value="${doc.data()['lastName']}">`, 
-                doc.data()['id'],
-                `<input type="file" id="camper-upload-${doc.id}" style="display:none" accept="image/*" capture="camera"/> 
-                <button id="camper-pic-button-${doc.id}">
-                    <img id="camper-profile-pic-${doc.id}" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left" width="100" height="100">
-                </button>`,
-                `<button class='btn bdrlessBtn' onclick='updateCamper("${doc.id}", "${doc.data()['id']}")'>Update</button>`,
-                `<button class='btn bdrlessBtn btn-danger' onclick='removeCamper("${doc.id}")'>Remove</button>`,
-                doc.data()['firstName'],
-                doc.data()['lastName']
-            ]);
+    $(document).ready(function() {
+        $('#campers').DataTable({     
+            columns: [
+                {"title" : "First Name", 'searchable': false},
+                {"title" : "Last Name", 'searchable': false},
+                {"title" : "Gender", 'searchable': false},
+                {"title" : "DoB", 'searchable': false},
+                {"title" : "Pronouns", 'searchable': false},
+                {"title" : "UID"},
+                {"title" : "Picture", 'searchable': false},
+                {"title" : ""},
+                {"title" : ""},
+                {"title": "", 'visible' : false},
+                {"title": "", 'visible' : false},
+                {"title": "", 'visible' : false},
+                {"title": "", 'visible' : false},
+                {"title": "", 'visible' : false}
+            ]
         });
-        $(document).ready(function() {
-            $('#campers').DataTable({        
-                data: data,
-                columns: [
-                    {"title" : "First Name", 'searchable': false},
-                    {"title" : "Last Name", 'searchable': false},
-                    {"title" : "UID"},
-                    {"title" : "Picture", 'searchable': false},
-                    {"title" : ""},
-                    {"title" : ""},
-                    {"title": "", 'visible' : false},
-                    {"title": "", 'visible' : false}
-                ]
+        fs.collection("users").where("priv", "==", "camper").get().then(res =>{
+            let data = [];
+            res.forEach(doc => {
+                let pronoun = "They/Them/Theirs";
+                // Retrieve Camper Pronouns
+                try {
+                    if(doc.data()['pronoun']){
+                        pronoun = doc.data()['pronoun'];
+                    }
+                } catch(err) { //Do Nothing 
+                }
+                // Retrieve Camper Gender
+                let gender = "Non-Binary";
+                try {
+                    if(doc.data()['gender']){
+                        gender = doc.data()['gender'];
+                    }
+                } catch(err) { //Do Nothing 
+                }
+                let birthdate = "1999/07/04";
+                try {
+                    birthdate = doc.data()['birthdate'];
+                } catch(err) {}
+                $('#campers').DataTable().row.add([
+                    `<input type="text" id="${"camper-first" + doc.id}" class="form-control" value="${doc.data()['firstName']}">`, 
+                    `<input type="text" id="${"camper-last" + doc.id}" class="form-control" value="${doc.data()['lastName']}">`, 
+                    `<select class="form-control" id="camper-gender${doc.id}"> 
+                        <option value="Female">Female</option>
+                        <option value="Male">Male</option>
+                        <option value="Non-Binary">Non-Binary</option>
+                    </select>`,
+                    `<input type="date" id="camper-dob-${doc.id}" min="1950-01-01" value="${birthdate}">`, 
+                    `<select class="form-control" id="camper-pronoun${doc.id}"> 
+                        <option value="She/Her/Hers">She/Her/Hers</option>
+                        <option value="He/Him/His">He/Him/His</option>
+                        <option value="They/Them/Theirs">They/Them/Theirs</option>
+                    </select>`,
+                    doc.data()['id'],
+                    `<input type="file" id="camper-upload-${doc.id}" style="display:none" accept="image/*" capture="camera"/> 
+                    <button id="camper-pic-button-${doc.id}">
+                        <img id="camper-profile-pic-${doc.id}" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left" width="100" height="100">
+                    </button>`,
+                    `<button class='btn bdrlessBtn' onclick='updateCamper("${doc.id}", "${doc.data()['id']}")'>Update</button>`,
+                    `<button class='btn bdrlessBtn btn-danger' onclick='removeCamper("${doc.id}")'>Remove</button>`,
+                    doc.data()['firstName'],
+                    doc.data()['lastName'],
+                    birthdate,
+                    pronoun,
+                    gender
+                ]).draw();
+                document.getElementById(`camper-pronoun${doc.id}`).value = pronoun;
+                document.getElementById(`camper-gender${doc.id}`).value = gender;
             });
             res.forEach(doc => {
                 document.getElementById(`camper-pic-button-${doc.id}`).onclick = () => {$(`#camper-upload-${doc.id}`).trigger('click');};
@@ -273,8 +318,8 @@ function initCampersTable(){
                     readURL(this, `camper-profile-pic-${doc.id}`);
                 });
             });
-            });
         });
+    });
 }
 
 function loadCamperImage(elementID, camperEmail) {
@@ -299,6 +344,9 @@ function addCamper(){
 function updateCamper(docid, camperId){
     let firstName = document.getElementById("camper-first" + docid).value;
     let lastName = document.getElementById("camper-last" + docid).value;
+    let pronoun = document.getElementById(`camper-pronoun${docid}`).value;
+    let gender = document.getElementById(`camper-gender${docid}`).value;
+    let birthdate = document.getElementById(`camper-dob-${docid}`).value;
     let file = document.getElementById(`camper-upload-${docid}`).files[0];
     try{
         clearProfilePictures(camperId, 
@@ -308,7 +356,10 @@ function updateCamper(docid, camperId){
     }
     fs.collection("users").doc(docid).update({
         firstName: firstName,
-        lastName: lastName
+        lastName: lastName,
+        pronoun: pronoun,
+        birthdate: birthdate,
+        gender: gender
     }).then(()=>{
         alert("User has been updated successfully!");
     });
@@ -618,4 +669,15 @@ function removeUserData(email){
 function initUserModal(){
     document.getElementById("modal-user-save").onclick = addModalUser;
     document.getElementById("modal-user-error").style = "display: none";
+}
+
+//** MISCELLANEOUS Functions */
+
+function togglePrimaryColor(id) {
+    let classes = document.getElementById(id).classList;
+    if(classes.contains("cp-toggleColor")) {
+        classes.remove("cp-toggleColor");
+    } else {
+        classes.add("cp-toggleColor");
+    }
 }

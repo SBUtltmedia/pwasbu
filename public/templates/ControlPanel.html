@@ -1,17 +1,36 @@
 <template>
-    <div>
+    <div id="controlPanel">
         <!-- <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#activities-control"
             aria-expanded="false" aria-controls="collapseExample"> -->
-        <div>Admin Console</div>
-        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#activities-control"
-            aria-expanded="false" aria-controls="collapseExample" onclick="toggleHide('activities-control'); document.getElementById('act-edit').style = 'display:none;';">
+        <div id="cp-title">Welcome to the Admin Console</div>
+
+        <button class="btn btn-primary cp-button" type="button" data-toggle="collapse" data-target="#activities-control"
+            aria-expanded="false" aria-controls="collapseExample" onclick="toggleHide('activities-control'); document.getElementById('act-edit').style = 'display:none;';
+            togglePrimaryColor('act-expand');" id="act-expand">
             Activities
         </button>
+
+        <button class="btn btn-primary cp-button" type="button" data-toggle="collapse" data-target="#campers-control"
+            aria-expanded="false" aria-controls="collapseExample" onclick="toggleHide('campers-control'); togglePrimaryColor('campers-expand');" id="campers-expand">
+            Campers
+        </button>
+        
+
+        <button class="btn btn-primary cp-button" type="button" data-toggle="collapse" data-target="#groups-control"
+            aria-expanded="false" aria-controls="collapseExample" onclick="toggleHide('groups-control'); togglePrimaryColor('groups-expand');" id="groups-expand">
+            Coach Groups
+        </button>
+
+        <button class="btn btn-primary cp-button" type="button" data-toggle="collapse" data-target="#users-control"
+            aria-expanded="false" aria-controls="collapseExample" onclick="toggleHide('users-control'); togglePrimaryColor('users-expand');" id="users-expand">
+            Users
+        </button>
+
         <div id="activities-control" class="collapse hiddenElement">
             <button class="btn ctr-add" type="button" onclick="addActivity()">
                 Add an Activity
             </button>
-            <div>Activities Table</div>
+            <div class="cp-subTitle">Activities Table</div>
             <table id="activities" class="block row-border">
 
                 <!-- <thead>
@@ -23,11 +42,11 @@
                 <!-- <tbody></tbody> -->
             </table>
             <div id="act-edit">
-                <div>Edit Activity</div> <br />
+                <div class="cp-subTitle">Edit Activity</div> <br />
                 <div>Name: </div> <input type="text" id='act-name'><br />
                 <button class="btn"
                     onclick="addCheckList()">Add a Checklist Item</button>
-                <div>Daily Checklist: </div>
+                <div class="cp-smallTitle">Daily Checklist: </div>
                 <!--Adding id's and class tags don't seem to be able to change the css-->
                 <table id="checklist" class="block row-border">
                     <thead>
@@ -40,7 +59,7 @@
                 </table>
                 <button class="btn" onclick="addSkill()">Add a
                     Skill</button>
-                <div>Skills: </div>
+                <div class="cp-smallTitle">Skills: </div>
                 <table id="skills" class="block row-border">
                     <thead>
                         <tr>
@@ -54,34 +73,25 @@
                 <button class="btn" id="update-activity">Submit Changes</button>
             </div>
         </div>
-        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#campers-control"
-            aria-expanded="false" aria-controls="collapseExample" onclick="toggleHide('campers-control');">
-            Campers
-        </button>
+
         <div id="campers-control" class="collapse hiddenElement">
             <button class="btn" type="button" onclick="addCamper()">
                 Add a Camper
             </button>
-            <div>All Campers</div>
+            <div class="cp-subTitle">All Campers</div>
             <table id="campers" class="block row-border" > </table>
         </div>
-        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#groups-control"
-            aria-expanded="false" aria-controls="collapseExample" onclick="toggleHide('groups-control');">
-            Coach Groups
-        </button>
+
         <div id="groups-control" class="collapse hiddenElement">
             <!-- <button class="btn" style="width: 50%;" type="button" onclick="addGroup()">
                 Add a Group
             </button> -->
-            <div>All Coach Groups</div>
+            <div class="cp-subTitle">All Coach Groups</div>
             <table id="groups" class="block row-border"></table>
         </div>
 
-        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#users-control"
-            aria-expanded="false" aria-controls="collapseExample" onclick="toggleHide('users-control');">
-            Users
-        </button>
         <div id="users-control" class="collapse hiddenElement">
+            <div class="cp-subTitle">All Users</div>
             <table id="users" class="block row-border"> </table>
             <button type="button" class="btn" data-toggle="modal" data-target="#modal-user" data-micromodal-trigge="modal-dialog">
                 Add User
@@ -98,36 +108,40 @@
                         </header>
                         <div class="modal__content" aria-hidden="true">
                             <div class="modal-body">
-                                <div class="row">
-                                    <div class="col">
-                                        <input id="modal-user-first" type="text" class="form-control"
-                                            placeholder="First name">
+                                <form>
+                                    <div class="row">
+                                        <div class="col">
+                                            <input id="modal-user-first" type="text" class="form-control"
+                                                placeholder="First name">
+                                        </div>
+                                        <div class="col">
+                                            <input id="modal-user-last" type="text" class="form-control"
+                                            placeholder="Last Name">
+                                        </div>
                                     </div>
-                                    <div class="col">
-                                        <input id="modal-user-last" type="text" class="form-control"
-                                        placeholder="Last Name">
-                                    </div>
-                                </div>
-                                <label for="modal-user-gender">User's Gender</label>
-                                <select class="form-control" id="modal-user-gender">
-                                <option>Male</option>
-                                <option>Female</option>
-                                <option>Non-Binary</option>
-                                </select>
-                                
-                                <label for="modal-user-priv">User Access Level</label>
-                                <select class="form-control" id="modal-user-priv">
-                                <option value=".">Basic</option>
-                                <option value="parent">Parent</option>
-                                <option value="coach">Coach</option>
-                                <option value="admin">Admin</option>
-                                </select>
-
-                                <label for="modal-user-email">User's Email</label>
-                                <input type="email" class="form-control" id="modal-user-email" placeholder="Enter the unique user email">
-                                <label for="modal-user-pass">User's Default Password</label>
-                                <input type="password" class="form-control" id="modal-user-pass" placeholder="(Default:password123)">
-                                <div id='modal-user-error' class='addTopPad'></div>
+                                    <label for="modal-user-gender">User's Gender</label> <br/>
+                                    <select class="form-control" id="modal-user-gender">
+                                    <option>Male</option>
+                                    <option>Female</option>
+                                    <option>Non-Binary</option>
+                                    </select>
+                                    <br/>
+                                    <label for="modal-user-priv">User Access Level</label><br/>
+                                    <select class="form-control" id="modal-user-priv">
+                                    <option value=".">Basic</option>
+                                    <option value="parent">Parent</option>
+                                    <option value="coach">Coach</option>
+                                    <option value="admin">Admin</option>
+                                    </select>
+                                    <br/>
+                                    <label for="modal-user-email">User's Email</label><br/>
+                                    <input type="email" class="form-control" id="modal-user-email" placeholder="Enter the unique user email">
+                                    <br/>
+                                    <label for="modal-user-pass">User's Default Password</label><br/>
+                                    <input type="password" class="form-control" id="modal-user-pass" placeholder="(Default:password123)">
+                                    <br/>
+                                    <div id='modal-user-error' class='addTopPad'></div>
+                                </form>
                             </div>
                         </div>
                         <div class="modal__footer">

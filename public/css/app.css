@@ -1,11 +1,17 @@
+
+:root {
+  --primary-color: #2C4477;  
+  --secondary-color: #ADD8E6;
+  --background-color: #e9eaea;
+}
+
 *{
     margin: 0;
     padding: 0;
-    --primary-color: #2C4477;  
 }
 
 body {
-    background: #e9eaea;
+    background: var(--background-color);
     font-family: "Arial Black";
     user-select: none;
 }
