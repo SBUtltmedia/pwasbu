@@ -55,8 +55,8 @@ function initActivitiesTable(){
                 data: data,
                 columns: [
                     {"title" : "Name"},
-                    {"title" : ""},
-                    {"title" : ""}
+                    {"title" : "", "searchable": false},
+                    {"title" : "", 'searchable': false}
                 ]
             });
         });
@@ -554,6 +554,7 @@ function initUsersTable(){
                 }
             }
         });
+        $("#users").css("width","100%");
     });
 }
 function updateUser(docid){

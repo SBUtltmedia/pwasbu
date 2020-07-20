@@ -1,0 +1,18 @@
+table.block td {
+    display: revert;
+}
+table.block {
+    font-family:monospace;
+    font-size: 1.5rem;
+    margin-left: 0rem;
+}
+table.block th {
+    font-size: 2rem;
+}
+table.block input {
+    font-size: 1.5rem;
+}
+
+table.block select {
+    font-size: 1.5rem;
+}
