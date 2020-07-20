@@ -3,6 +3,9 @@ Date.prototype.toDateInputValue = (function() {
     local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
     return local.toJSON().slice(0,10);
 });
+// Initialize use of micro modal
+MicroModal.init();
+
 // Your web app's Firebase configuration
 const routes = new RoutesObj(new Template());
 const router = new Router(routes);

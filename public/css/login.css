@@ -21,7 +21,6 @@
 }
 
 .signup-form{
-    color: #840101;
     background: #fff;
     padding: 40px;
     clear: both;
@@ -30,7 +29,6 @@
     height: 700px;
 }
 .login-form{
-    color: #840101;
     background: #fff;
     padding: 10px 40px 40px 40px;
     clear: both;
@@ -97,7 +95,7 @@
     /* margin-bottom: 30px; */
 }
 .btn:active {
-    background: var(--primary-color);
+    background: var(--secondary-color);
     color: white;
 }
 
