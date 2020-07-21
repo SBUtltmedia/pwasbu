@@ -28,7 +28,7 @@ function initCampersEvalTable() {
                 console.log("currEval.selectedYear: ", currEval.selectedYear)
                 res.docs.forEach(doc => {
                     if(doc.data()['year'] == currEval.selectedYear) {
-                        doc.data()['campers'].forEach(camper => {
+                        doc.data()['campers'].sort().forEach(camper => {
                             fs.collection('users').where("id", "==", camper).get().then(res => {
                                 res.docs[0].ref.get().then(doc => {
                                     let row = {
