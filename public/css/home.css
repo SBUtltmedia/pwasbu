@@ -55,3 +55,15 @@
     border: none;
     text-align: none;
 }
+
+.ui-datepicker-calendar {
+    display: none;
+ }
+ 
+ .ui-datepicker-month {
+    display: none;
+ }
+
+ .ui-datepicker-next,.ui-datepicker-prev {
+   display: none;
+ }

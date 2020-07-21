@@ -9,6 +9,7 @@ class Evaluation {
         this.instrID = instrID;
         this.evalID = evalID;
         this.date = "";
+        this.selectedYear = new Date().getFullYear();
     }
 }
 
@@ -17,70 +18,37 @@ const currEval = new Evaluation(); //Current Evaluation Object
 function initCampersEvalTable() {
     let user = firebase.auth().currentUser;
     let email = user.email;
-    // $(document).ready(function() {
-    //     $('#campers').DataTable({        
-    //         columns: [
-    //             {"title" : "First Name"},
-    //             {"title" : "Last Name"},
-    //             {"title" : "UID"},
-    //             {"title" : ""},
-    //             {"title" : ""}
-    //         ]
-    //     });
-    // });
-    try {
-        let athletesTable = document.getElementById("campers");
-        let campersTable = JSON.parse(localStorage.getItem('campers'))['0'];
-        console.log(campersTable);
-        for (i = 0; i < campersTable.length; i++) {
-            createuserDetailsItem(athletesTable, campersTable[i]);
-        }
-    } catch (err) {
-        let athletesTable = document.getElementById("campers");
-        localStorage.setItem('campers', JSON.stringify({ 0: [] }));
-        fs.collection("users").where("email", "==", email).get().then(res => {
-            res.docs[0].ref.get().then(doc => {
-                fs.collection("Groups").where("coach", "==", doc.data()['id']).get().then(res => {
-                    res.docs[0].ref.get().then(doc => {
+
+    let athletesTable = document.getElementById("campers");
+    localStorage.setItem('campers', JSON.stringify({ 0: [] }));
+    fs.collection("users").where("email", "==", email).get().then(res => {
+        res.docs[0].ref.get().then(doc => {
+            fs.collection("Groups").where("coach", "==", doc.data()['id']).get().then(res => {
+                currEval.selectedYear = document.getElementById("datepicker").value;
+                console.log("currEval.selectedYear: ", currEval.selectedYear)
+                res.docs.forEach(doc => {
+                    if(doc.data()['year'] == currEval.selectedYear) {
                         doc.data()['campers'].forEach(camper => {
                             fs.collection('users').where("id", "==", camper).get().then(res => {
                                 res.docs[0].ref.get().then(doc => {
-                                    // console.log(new Date(doc.data()["birthdate"]));
-                                    // console.log("doc.data()['email']: ", doc.data()["email"]);
                                     let row = {
                                         name: doc.data()['firstName'] + " " + doc.data()['lastName'],
                                         age: parseInt(((new Date()) - (new Date(doc.data()["birthdate"]))) / (1000 * 60 * 60 * 24 * 365)),
                                         gender: doc.data()["gender"],
-                                        pronouns: "She/Her/Hers", // This field needs to be added to the database
+                                        pronouns: doc.data()["pronoun"],
                                         team: "Purple Team", // This field needs to be added to the database
                                         id: doc.data()["id"],
                                         email: doc.data()["id"]
                                     };
-                                    let campersData = JSON.parse(localStorage.getItem('campers'));
-                                    campersData['0'].push(row);
-                                    localStorage.setItem('campers', JSON.stringify(campersData));
                                     createUserDetailsItem(athletesTable, row);
-
-                                    // let table = $('#campers').DataTable(); // Future improvements would use local storage caching
-                                    // let row = [
-                                    //     doc.data()['firstName'], 
-                                    //     doc.data()['lastName'],
-                                    //     doc.data()['id'],
-                                    //     `<button class='btn bdrlessBtn' onclick='eval("${doc.data()['id']}", "get")'>Get Evals</button>`,
-                                    //     `<button class='btn bdrlessBtn btn-danger' onclick='eval("${doc.data()['id']}", "add")'>Add Eval</button>`
-                                    // ];
-                                    // let campersData = JSON.parse(localStorage.getItem('campers'));
-                                    // campersData['0'].push(row);
-                                    // localStorage.setItem('campers', JSON.stringify(campersData));
-                                    // table.row.add(row).draw();
                                 });
                             });
                         });
-                    });
-                }).catch(err => { console.log(err); });
-            });
-        }).catch(err => { console.log(err); });
-    }
+                    }
+                });
+            }).catch(err => { console.log(err); });
+        });
+    }).catch(err => { console.log(err); });
 }
 
 function createUserDetailsItem(routerOutletElement, row) {
@@ -175,23 +143,26 @@ function actEvalInit() {
             });
             fs.collection("Evaluations").where("camper", "==", currEval.camperID).get().then(res => {
                 res.forEach(doc => {
-                    try {
-                        let listElement = document.createElement("li");
-                        let editButton = document.createElement("button");
-                        editButton.classList.add("btn", "bdrlessBtn", "act-btns");
-                        editButton.onclick = (evt) => {
-                            currEval.evalMode = "get";
-                            editEval("" + doc.data()['activityName'], "" + doc.id, doc.data());
+                    // if(doc.data()['date'].split("-")[0] == currEval.selectedYear) {
+                    if(doc.data()['year'] == currEval.selectedYear) {
+                        try {
+                            let listElement = document.createElement("li");
+                            let editButton = document.createElement("button");
+                            editButton.classList.add("btn", "bdrlessBtn", "act-btns");
+                            editButton.onclick = (evt) => {
+                                currEval.evalMode = "get";
+                                editEval("" + doc.data()['activityName'], "" + doc.id, doc.data());
+                            }
+                            editButton.innerHTML = doc.data()['activityName'];
+                            listElement.appendChild(editButton);
+                            table.appendChild(listElement);
+                            if (activities.hasOwnProperty(doc.data()['activityName'])) {
+                                delete activities[doc.data()['activityName']];
+                            }
+                        } catch (err) {
+                            console.log(err);
+                            console.log("Couldn't load the coach for the specified evaluation " + doc.id);
                         }
-                        editButton.innerHTML = doc.data()['activityName'];
-                        listElement.appendChild(editButton);
-                        table.appendChild(listElement);
-                        if (activities.hasOwnProperty(doc.data()['activityName'])) {
-                            delete activities[doc.data()['activityName']];
-                        }
-                    } catch (err) {
-                        console.log(err);
-                        console.log("Couldn't load the coach for the specified evaluation " + doc.id);
                     }
                 });
 
@@ -317,6 +288,7 @@ function submitEval(evalID = "DEFAULT") {
         evalDoc['dailyCheckList'] = { 1: [], 2: [], 3: [] };
         evalDoc['skills'] = {};
         evalDoc['date'] = currEval.date;
+        evalDoc['year'] = currEval.selectedYear;
         evalDoc['instructor'] = currEval.instrID;
         try {
             let checkLen = doc.data()['checklist'].length;
@@ -465,3 +437,22 @@ function removeEval(docID) {
         initEvalTable();
     });
 }
+
+// $(function() {
+//     $('#datepicker').datepicker({
+//         changeYear: true,
+//         showButtonPanel: true,
+//         dateFormat: 'yy',
+//         onClose: function(dateText, inst) { 
+//             var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+//             $(this).datepicker('setDate', new Date(year, 1));
+//         }
+//     });
+//     $(".date-picker-year").focus(function () {
+//         $(".ui-datepicker-month").hide();
+//     });
+// });
+
+// $(function() {
+//     $('.yearpicker').yearpicker();
+// })
