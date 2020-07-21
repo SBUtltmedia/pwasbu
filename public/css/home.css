@@ -5,7 +5,7 @@
 }
 
 .ath-hd{
-    font-size: 1.3rem;
+    font-size: 1.5rem;
     color: var(--primary-color);
     margin: 5px;
 }
@@ -27,13 +27,16 @@
 .home-btn {
     width: 12rem;
     font-weight: bold;  
-    background: #2C4477;
-    height: 2rem;
+    background: var(--primary-color);
+    height: fit-content;;
     text-align: center;
     text-transform: uppercase;
     color: #fff;
     cursor: pointer;
     margin-bottom: 20px;
+    border:none;
+    padding: 5px;
+    border-radius: 10px;
 }
 
 .get-evals {
@@ -41,8 +44,9 @@
     margin-bottom: 1.5rem;
 }
 
-.details-text, #user-first-name, #user-last-name {
-    font-size: 1.2rem;
+.details-text, #user-first-name, #user-last-name, .user-name {
+    /* I still use .username in the home page as the camper's name */
+    font-size: 1.5rem;
 }
 
 #camp-quote {
