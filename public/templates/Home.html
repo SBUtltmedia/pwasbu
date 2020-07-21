@@ -90,11 +90,32 @@
             <!-- <br/> -->
             <!-- <div class="largeText">ATHLETE'S INFORMATION:</div> -->
             <h4 class="ath-hd">ATHLETE'S INFORMATION:</h4>
+            <p>Year: <input type="text" id="datepicker"/></p>
             <table id="campers" class="table table-bordered"></table>
         </div>
 
         <script defer>
             loadProfilePicture(); // LOCATED IN settings.js
+
+            $(function() {
+                $('#datepicker').datepicker({
+                    changeYear: true,
+                    showButtonPanel: true,
+                    dateFormat: 'yy',
+                    onClose: function(dateText, inst) { 
+                        var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+                        $(this).datepicker('setDate', new Date(year, 1));
+                        document.getElementById("campers").innerHTML = "";
+                        initCampersEvalTable();
+                    }
+                });
+
+                $(".date-picker-year").focus(function () {
+                    $(".ui-datepicker-month").hide();
+                });
+
+                $('#datepicker').datepicker('setDate', Date.now());
+            });
 
             function addDumbData() {
                 fs.collection("bad egg").add({ data: "I have sent dummy data", dateAdded: new Date().toDateInputValue() }).then(() => {

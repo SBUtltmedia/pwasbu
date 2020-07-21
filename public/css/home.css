@@ -1,4 +1,3 @@
-
 .col-elem {
     /* display: flex; */
     justify-content: center;
@@ -6,7 +5,7 @@
 }
 
 .ath-hd{
-    font-size: 1.3rem;
+    font-size: 1.5rem;
     color: var(--primary-color);
     margin: 5px;
 }
@@ -28,13 +27,16 @@
 .home-btn {
     width: 12rem;
     font-weight: bold;  
-    background: #2C4477;
-    height: 2rem;
+    background: var(--primary-color);
+    height: fit-content;;
     text-align: center;
     text-transform: uppercase;
     color: #fff;
     cursor: pointer;
     margin-bottom: 20px;
+    border:none;
+    padding: 5px;
+    border-radius: 10px;
 }
 
 .get-evals {
@@ -42,8 +44,9 @@
     margin-bottom: 1.5rem;
 }
 
-.details-text, #user-first-name, #user-last-name {
-    font-size: 1.2rem;
+.details-text, #user-first-name, #user-last-name, .user-name {
+    /* I still use .username in the home page as the camper's name */
+    font-size: 1.5rem;
 }
 
 #camp-quote {
@@ -55,4 +58,37 @@
 #campers {
     border: none;
     text-align: none;
+}
+
+.ui-datepicker-calendar {
+    display: none;
+ }
+ 
+ .ui-datepicker-month {
+    display: none;
+ }
+
+ .ui-datepicker-next,.ui-datepicker-prev {
+   display: none;
+ }
+
+ #datepicker{
+     margin-bottom:15px;
+ }
+
+ 
+#ui-datepicker-div {
+    position: absolute;
+    top: 196.4px;
+    left: 60px !important;
+    z-index: 1;
+    display: none;
+}
+ 
+ #ui-datepicker-div:active {
+    position: absolute;
+    top: 196.4px;
+    left: 60px !important;
+    z-index: 1;
+    display: block;
 }
