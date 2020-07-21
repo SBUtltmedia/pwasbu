@@ -252,11 +252,11 @@ function loadNewEval(docID = currEval.actID, _callback = () => { }) {
                                         <td class="skll-score">
                                             <label for="skill-${skillCount}-${subSkillCount}-select">Score</label>
                                             <select class="form-control" id="skill-${skillCount}-${subSkillCount}-select">
-                                            <option>NA</option>
-                                            <option>PA</option>
-                                            <option>TA</option>
-                                            <option>IND.</option>
-                                            <option>V.CUE</option>
+                                            <option value="NA">Not Applicable</option>
+                                            <option value="PA">Partial Assistance</option>
+                                            <option value="TA">Total Assist</option>
+                                            <option value="I">Independent</option>
+                                            <option value="V.Cue">Visual Cue</option>
                                             </select>
                                         </td>
                                     </tr>
