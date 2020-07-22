@@ -69,6 +69,7 @@ function initActivitiesTable(){
 function removeActivity(id) {
     fs.collection('Activities').doc(id).delete().then(()=>{
         $(document).ready(function() {
+            $('#activities').DataTable().clear();
             $('#activities').DataTable().destroy();
             initActivitiesTable();
         });
@@ -327,6 +328,7 @@ function loadCamperImage(elementID, camperEmail) {
 }
 function updateCamperTable(){
     $(document).ready(function() {
+        $('#campers').DataTable().clear();
         $('#campers').DataTable().destroy();
         initCampersTable();
     });
