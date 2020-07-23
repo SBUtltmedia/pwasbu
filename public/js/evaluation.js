@@ -20,12 +20,13 @@ function initCampersEvalTable() {
     let email = user.email;
 
     let athletesTable = document.getElementById("campers");
+    athletesTable.innerHTML = "";
     localStorage.setItem('campers', JSON.stringify({ 0: [] }));
     fs.collection("users").where("email", "==", email).get().then(res => {
         res.docs[0].ref.get().then(doc => {
             fs.collection("Groups").where("coach", "==", doc.data()['id']).get().then(res => {
-                currEval.selectedYear = document.getElementById("datepicker").value;
-                console.log("currEval.selectedYear: ", currEval.selectedYear)
+                currEval.selectedYear = document.getElementById("yearPicker").value;
+                console.log("Selected Year: ", currEval.selectedYear)
                 res.docs.forEach(doc => {
                     if(doc.data()['year'] == currEval.selectedYear) {
                         doc.data()['campers'].sort().forEach(camper => {
@@ -438,21 +439,23 @@ function removeEval(docID) {
     });
 }
 
-// $(function() {
-//     $('#datepicker').datepicker({
-//         changeYear: true,
-//         showButtonPanel: true,
-//         dateFormat: 'yy',
-//         onClose: function(dateText, inst) { 
-//             var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
-//             $(this).datepicker('setDate', new Date(year, 1));
-//         }
-//     });
-//     $(".date-picker-year").focus(function () {
-//         $(".ui-datepicker-month").hide();
-//     });
-// });
+function populateYearPicker() {
+    let email = firebase.auth().currentUser.email;
 
-// $(function() {
-//     $('.yearpicker').yearpicker();
-// })
+    fs.collection("users").where("email", "==", email).get().then(res => {
+        let coach = res.docs[0].data()['id'];
+        let years = [];
+        fs.collection("Groups").where("coach", "==", coach).get().then(res => {
+            res.docs.forEach(group => {
+                if(!years.includes(group.data()['year'])) {
+                    years.push(group.data()['year']);
+                }
+            });
+            years.sort();
+            for(i = 0; i < years.length; i++) {
+                $("#yearPicker").append(`<option value="${years[i]}">${years[i]}</option>`);
+            }
+            document.getElementById("yearPicker").value = new Date().getFullYear();
+        });
+    });
+}

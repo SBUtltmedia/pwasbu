@@ -60,35 +60,6 @@
     text-align: none;
 }
 
-.ui-datepicker-calendar {
-    display: none;
- }
- 
- .ui-datepicker-month {
-    display: none;
- }
-
- .ui-datepicker-next,.ui-datepicker-prev {
-   display: none;
- }
-
- #datepicker{
-     margin-bottom:15px;
- }
-
- 
-#ui-datepicker-div {
-    position: absolute;
-    top: 196.4px;
-    left: 60px !important;
-    z-index: 1;
-    display: none;
-}
- 
- #ui-datepicker-div:active {
-    position: absolute;
-    top: 196.4px;
-    left: 60px !important;
-    z-index: 1;
-    display: block;
+#yearPickerContainer {
+    margin: 5px;
 }
