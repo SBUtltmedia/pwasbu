@@ -8,11 +8,14 @@
          <input type="text" onkeyup="validString('user-last-name')" onkeydown="validString('user-last-name')" class="input"
             id="user-last-name"><br />        
         <div class="ed-pr-nm">Gender: </div>
-        <input type="text" onkeyup="validString('user-gender')" onkeydown="validString('user-gender')" class="input"
-            id="user-gender"><br />
+        <select class="form-control input" id="user-gender">
+            <option>Male</option>
+            <option>Female</option>
+            <option>Non-Binary</option>
+        </select><br />
         <div class="ed-pr-nm">Date of Birth : </div>
         <input type="date" onchange="$('#profile-success').hide()" id="birthdate" name="birthdate"
-            min="1900-01-01"><br />
+            min="1900-01-01">
         <div id="profile-error">One or more of the above fields are in the wrong format or empty!</div> <br />
         <div id="profile-success">Profile was updated successfullly!</div> <br />
         <img id="profile-pic" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left"
