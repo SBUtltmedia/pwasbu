@@ -30,8 +30,8 @@ function initCampersEvalTable() {
                 res.docs.forEach(doc => {
                     if(doc.data()['year'] == currEval.selectedYear) {
                         doc.data()['campers'].sort().forEach(camper => {
-                            fs.collection('users').where("id", "==", camper).get().then(res => {
-                                res.docs[0].ref.get().then(doc => {
+                            fs.collection('users').where("id", "==", camper).orderBy("firstName", "desc").get().then(res => {
+                                res.forEach(doc => {
                                     let row = {
                                         name: doc.data()['firstName'] + " " + doc.data()['lastName'],
                                         age: parseInt(((new Date()) - (new Date(doc.data()["birthdate"]))) / (1000 * 60 * 60 * 24 * 365)),
