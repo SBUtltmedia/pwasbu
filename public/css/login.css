@@ -64,10 +64,10 @@
     color: #dc3545;
 }
 .error-msg {
-    margin-top: -25px;
+    margin-top: 25px;
     text-align: center;
     color: #dc3545;
-    font-size: 2rem;
+    font-size: 20px;
 }
 #google-button {
     color: white;
