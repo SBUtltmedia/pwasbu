@@ -26,7 +26,7 @@ li{
 }
 
 .bby-skill-btn{
-    font-size: 1.5rem;
+    font-size: 2.0rem;
     color: var(--primary-color);
     background-color: inherit;
     width: 100%;
@@ -88,7 +88,7 @@ tr{
 }
 
 .chcklst-tit, .chcklst-inpt{
-    font-size: 1.5rem;
+    font-size: 2.0rem;
 }
 
 #activityName
