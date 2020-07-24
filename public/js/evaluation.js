@@ -214,9 +214,9 @@ function loadNewEval(docID = currEval.actID, _callback = () => { }) {
                     </button>
                     <table id="checklist-day-${day}" class="hiddenElement sk-box"></table></li>`);
                 doc.data()['checklist'].forEach(item => {
-                    $(`#checklist-day-${day}`).append(`<tr class="chcklst-sec">
-                        <td class="chcklst-tit">${item['name']}</td>
-                        <td class="chcklst-inpt"><input type="number" id="${'checklist' + itemID + '-' + day}-input">${item['type']}</td>
+                    $(`#checklist-day-${day}`).append(`<tr class="chcklst-sec bordered-row">
+                        <td class="chcklst-tit padded-td">${item['name']}</td>
+                        <td class="chcklst-inpt padded-td"><input type="number" id="${'checklist' + itemID + '-' + day}-input"><span class="left-pad-10">${item['type']}</span></td>
                         </tr>`);
                     itemID++;
                 });
@@ -239,19 +239,19 @@ function loadNewEval(docID = currEval.actID, _callback = () => { }) {
                     <table id="skill-${skillCount}" class="hiddenElement skillz"></table></li>`);
                 let subSkillCount = 1;
                 skill['subSkills'].forEach(subSkill => {
-                    $(`#skill-${skillCount}`).append(`<tr>
-                            <td>
+                    $(`#skill-${skillCount}`).append(`<tr class="bordered-row change-color-on-hover">
+                            <td class="padded-td">
                                 <button class="bdrlessBtn bby-skill-btn" onclick="toggleHide('skill-${skillCount}-${subSkillCount}');">
                                 ${subSkill}
                                 </button>
                             </td>
                         </tr>
-                        <tr id="skill-${skillCount}-${subSkillCount}" class="hiddenElement subskill">
-                            <td>
+                        <tr id="skill-${skillCount}-${subSkillCount}" class="hiddenElement subskill bordered-row">
+                            <td class="padded-td">
                                 <table>
                                     <tr>
-                                        <td class="skll-score">
-                                            <label for="skill-${skillCount}-${subSkillCount}-select">Score</label>
+                                        <td class="skll-score padded-td">
+                                            <span class="right-pad-10">Score: </span>
                                             <select class="form-control" id="skill-${skillCount}-${subSkillCount}-select">
                                             <option value="NA">Not Applicable</option>
                                             <option value="PA">Partial Assistance</option>
@@ -262,9 +262,8 @@ function loadNewEval(docID = currEval.actID, _callback = () => { }) {
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="skll-comm">
-                                            <label for="skill-${skillCount}-${subSkillCount}-comment">Comments</label>
-                                            <textarea class="form-control" id="skill-${skillCount}-${subSkillCount}-comment" rows="3"></textarea>
+                                        <td class="skll-comm padded-td">
+                                            <textarea class="form-control" id="skill-${skillCount}-${subSkillCount}-comment" rows="3" placeholder="Comments"></textarea>
                                         </td>
                                     </tr>
                                 </table>
