@@ -2,6 +2,7 @@
     color: #840101;
     /*font-size: 1.5em;*/
 }
+
 .secondDropDownColor {
     color: #32a9ce;
     /*font-size: 1.5em;*/
@@ -17,9 +18,18 @@ li{
     border-radius: 15px;
 }
 
+@media(hover: hover) and (pointer: fine) {
+    .bby-skill-btn:hover {
+        font-weight: bold;
+        cursor: pointer;
+    }
+}
+
 .bby-skill-btn{
-    font-family: "Arial Black";
     font-size: 1.5rem;
+    color: var(--primary-color);
+    background-color: inherit;
+    width: 100%;
 }
 
 .bck-hme{
@@ -67,6 +77,7 @@ tr{
 
 .skll-comm{
     display: inline-grid;
+    width: 100%;
 }
 
 .sk-box{
@@ -74,7 +85,6 @@ tr{
     margin-left: auto;
     margin-right: auto;
     width: 100%;
-    border: 1px solid var(--primary-color);
 }
 
 .chcklst-tit, .chcklst-inpt{
@@ -90,11 +100,18 @@ tr{
 {
     font-size: 1.8rem;
 }
+
 .dcl, .ev-title{
     font-size: 2.5rem;
 }
-.chcklst-sec{
-    border: 1px solid red;
+
+tr.bordered-row {
+    width: 100%;
+    outline: 2px solid var(--primary-color);
+}
+
+td.padded-td {
+    padding: 10px;
 }
 
 #activities_wrapper{
@@ -113,4 +130,13 @@ tr{
     text-align: center;
     margin-left: auto;
     margin-right: auto;
+    width: 100%;
+}
+
+.left-pad-10 {
+    padding-left: 10px;
+}
+
+.right-pad-10 {
+    padding-right: 10px;
 }
