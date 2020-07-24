@@ -32,8 +32,8 @@ body {
 }
 
 /* small tablet styles */
-@media screen and (min-width: 320px){
-    body{
+@media screen and (min-width: 320px){ 
+  body{
         font-size: 18px;
       }
       #data-router-outlet{

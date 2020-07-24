@@ -48,7 +48,7 @@
 
 .details-text, #user-first-name, #user-last-name, .user-name {
     /* I still use .username in the home page as the camper's name */
-    font-size: 1.5rem;
+    font-size: 2.5rem;
     font-family: 'Roboto', sans-serif;
 }
 
