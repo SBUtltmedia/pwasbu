@@ -216,7 +216,8 @@ function loadNewEval(docID = currEval.actID, _callback = () => { }) {
                 doc.data()['checklist'].forEach(item => {
                     $(`#checklist-day-${day}`).append(`<tr class="chcklst-sec bordered-row">
                         <td class="chcklst-tit padded-td">${item['name']}</td>
-                        <td class="chcklst-inpt padded-td"><input type="number" id="${'checklist' + itemID + '-' + day}-input"><span class="left-pad-10">${item['type']}</span></td>
+                        <td class="chcklst-inpt padded-td"><input type="number" min="0" id="${'checklist' + itemID + '-' + day}-input" class="padded-input"></td>
+                        <td class="chcklst-inpt padded-td"><span>${item['type']}</span></td>
                         </tr>`);
                     itemID++;
                 });
@@ -250,9 +251,9 @@ function loadNewEval(docID = currEval.actID, _callback = () => { }) {
                             <td class="padded-td">
                                 <table>
                                     <tr>
+                                        <td><span>Score:</span></td>
                                         <td class="skll-score padded-td">
-                                            <span class="right-pad-10">Score: </span>
-                                            <select class="form-control" id="skill-${skillCount}-${subSkillCount}-select">
+                                            <select class="form-control padded-input" id="skill-${skillCount}-${subSkillCount}-select">
                                             <option value="NA">Not Applicable</option>
                                             <option value="PA">Partial Assistance</option>
                                             <option value="TA">Total Assist</option>
@@ -263,7 +264,7 @@ function loadNewEval(docID = currEval.actID, _callback = () => { }) {
                                     </tr>
                                     <tr>
                                         <td class="skll-comm padded-td">
-                                            <textarea class="form-control" id="skill-${skillCount}-${subSkillCount}-comment" rows="3" placeholder="Comments"></textarea>
+                                            <textarea class="form-control padded-input" id="skill-${skillCount}-${subSkillCount}-comment" rows="3" placeholder="Comments"></textarea>
                                         </td>
                                     </tr>
                                 </table>

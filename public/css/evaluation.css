@@ -133,10 +133,7 @@ td.padded-td {
     width: 100%;
 }
 
-.left-pad-10 {
-    padding-left: 10px;
-}
-
-.right-pad-10 {
-    padding-right: 10px;
+.padded-input {
+    padding: 1rem;
+    font-size: 2rem;
 }
