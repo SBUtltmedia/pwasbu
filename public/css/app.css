@@ -12,7 +12,7 @@
 
 body {
     background: var(--background-color);
-    font-family: "Arial Black";
+    font-family: 'Roboto', sans-serif;
     user-select: none;
 }
 #login_logo {

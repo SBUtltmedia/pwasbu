@@ -19,7 +19,7 @@ body {
 }
 body {
   background: #e9eaea;
-  font-family: "Arial Black";
+  font-family: 'Roboto', sans-serif;
   user-select: none;
 }
 #app-warning {
