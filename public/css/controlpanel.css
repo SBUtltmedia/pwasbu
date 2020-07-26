@@ -81,5 +81,5 @@ table.block th {
 }
 
 .cp-table {
-    width: 100%;
+    width: 100% !important;
 }

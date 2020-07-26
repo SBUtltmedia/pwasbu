@@ -354,7 +354,7 @@ function updateCamper(docid, camperId){
         clearProfilePictures(camperId, 
             storageRef.child(`users/${camperId}/profile-picture/` + file.name).put(file)); 
     } catch(err) {
-        console.log(err);
+        console.log(`The user ${firstName} ${lastName} does not have a profile picture`);
     }
     fs.collection("users").doc(docid).update({
         firstName: firstName,
@@ -364,6 +364,7 @@ function updateCamper(docid, camperId){
         gender: gender
     }).then(()=>{
         alert("User has been updated successfully!");
+        updateGroupsTable();
     });
 }
 /////////////////////////////////////////// GROUPS FUNCTIONS ///////////////////////////////////////////
@@ -510,6 +511,7 @@ function updateGroupsTable(){
     $(document).ready(function() {
         $('#groups').DataTable().clear();
         $('#groups').DataTable().destroy(); // The destroy function literally does nothing to contents of table. requires override
+        $("#groups tr").remove(); 
         initGroupsTable();
     });
 }
@@ -613,8 +615,9 @@ function updateUser(docid){
         priv: priv
     }).then(()=> {
         alert("User has been updated!");
+        updateUsersTable();
+        updateGroupsTable();
     });
-    updateUsersTable();
 }
 function newAccountPasswordReset(firstName, email){
     firebase.auth().sendPasswordResetEmail(email).then(function() {
