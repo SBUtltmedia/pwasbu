@@ -637,16 +637,16 @@ function updateUser(docid){
     fs.collection("users").doc(docid).get().then(doc => { 
         try{
             clearProfilePictures(doc.data()['email'], 
-                storageRef.child(`users/${doc.data()['email']}/profile-picture/` + file.name).put(file)); 
+                storageRef.child(`users/${doc.data()['email']}/profile-picture/` + file.name).put(file));
         } catch(err) {
             console.log(`The user ${doc.data()['firstName']} ${doc.data()['lastName']} does not have a profile picture`);
         }
     });
+    
     fs.collection("users").doc(docid).update({ 
         priv: priv
     }).then(()=> {
         alert("User has been updated!");
-        updateUsersTable();
         updateGroupsTable();
     });
 }
