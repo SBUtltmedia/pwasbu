@@ -31,7 +31,7 @@
                 Add an Activity
             </button>
             <div class="cp-subTitle">Activities Table</div>
-            <table id="activities" class="block row-border">
+            <table id="activities" class="block cp-table row-border">
 
                 <!-- <thead>
                 <tr>
@@ -48,7 +48,7 @@
                     onclick="addCheckList()">Add a Checklist Item</button>
                 <div class="cp-smallTitle">Daily Checklist: </div>
                 <!--Adding id's and class tags don't seem to be able to change the css-->
-                <table id="checklist" class="block row-border">
+                <table id="checklist" class="block cp-table row-border">
                     <thead>
                         <tr>
                             <th>Name</th>
@@ -60,7 +60,7 @@
                 <button class="btn" onclick="addSkill()">Add a
                     Skill</button>
                 <div class="cp-smallTitle">Skills: </div>
-                <table id="skills" class="block row-border">
+                <table id="skills" class="block cp-table row-border">
                     <thead>
                         <tr>
                             <th>Name</th>
@@ -79,7 +79,7 @@
                 Add an Athlete
             </button>
             <div class="cp-subTitle">All Athletes</div>
-            <table id="campers" class="block row-border" > </table>
+            <table id="campers" class="block cp-table row-border" > </table>
         </div>
 
         <div id="groups-control" class="collapse hiddenElement">
@@ -87,12 +87,14 @@
                 Add a Group
             </button> -->
             <div class="cp-subTitle">All Coach Groups</div>
-            <table id="groups" class="block row-border"></table>
+            <table id="groups" class="block cp-table row-border">
+            <tbody> </tbody>
+            </table>
         </div>
 
         <div id="users-control" class="collapse hiddenElement">
             <div class="cp-subTitle">All Users</div>
-            <table id="users" class="block row-border"> </table>
+            <table id="users" class="block cp-table row-border"> </table>
             <button type="button" class="btn" data-toggle="modal" data-target="#modal-user" data-micromodal-trigge="modal-dialog">
                 Add User
             </button>

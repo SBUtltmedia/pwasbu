@@ -79,3 +79,7 @@ table.block th {
 .cp-toggleColor {
     background-color: var(--secondary-color);
 }
+
+.cp-table {
+    width: 100%;
+}
