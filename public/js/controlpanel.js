@@ -20,6 +20,21 @@ function removeEmptyIndices(array){
     });
     return array;
 }
+
+function createSelectElement(options, values, selected, id, classes) {
+    let select = document.createElement("select"); 
+    select.classList.add(...classes);
+    select.id = id;
+    for (let i = 0; i < options.length; i++) {
+        let selectedTxt = "";
+        if(values[i] == selected) {
+            selectedTxt = "selected";
+        }
+        let optionTxt = `<option value="${values[i]}" ${selectedTxt}>${options[i]}</option>`;
+        select.innerHTML += optionTxt;
+    }
+    return select;
+}
 //////////////////////////////// ACTIVITY FUNCTIONS //////////////////////////////////////////////
 const editor = "";
 /**
@@ -241,24 +256,6 @@ function addActivity(){
  */
 function initCampersTable(){
     $(document).ready(function() {
-        $('#campers').DataTable({     
-            columns: [
-                {"title" : "First Name", 'searchable': false},
-                {"title" : "Last Name", 'searchable': false},
-                {"title" : "Gender", 'searchable': false},
-                {"title" : "DoB", 'searchable': false},
-                {"title" : "Pronouns", 'searchable': false},
-                {"title" : "UID"},
-                {"title" : "Picture", 'searchable': false},
-                {"title" : ""},
-                {"title" : ""},
-                {"title": "", 'visible' : false},
-                {"title": "", 'visible' : false},
-                {"title": "", 'visible' : false},
-                {"title": "", 'visible' : false},
-                {"title": "", 'visible' : false}
-            ]
-        });
         fs.collection("users").where("priv", "==", "camper").get().then(res =>{
             let data = [];
             res.forEach(doc => {
@@ -282,42 +279,64 @@ function initCampersTable(){
                 try {
                     birthdate = doc.data()['birthdate'];
                 } catch(err) {}
-                $('#campers').DataTable().row.add([
-                    `<input type="text" id="${"camper-first" + doc.id}" class="form-control" value="${doc.data()['firstName']}">`, 
-                    `<input type="text" id="${"camper-last" + doc.id}" class="form-control" value="${doc.data()['lastName']}">`, 
-                    `<select class="form-control" id="camper-gender${doc.id}"> 
-                        <option value="Female">Female</option>
-                        <option value="Male">Male</option>
-                        <option value="Non-Binary">Non-Binary</option>
-                    </select>`,
-                    `<input type="date" id="camper-dob-${doc.id}" min="1950-01-01" value="${birthdate}">`, 
-                    `<select class="form-control" id="camper-pronoun${doc.id}"> 
+                
+                let insertedRow = document.getElementById('campers').insertRow();
+                // Insert a cell in the row at cell index 0
+                insertedRow.insertCell().innerHTML = `<input type="text" id="${"camper-first" + doc.id}" class="form-control" value="${doc.data()['firstName']}">`;
+                insertedRow.insertCell().innerHTML = `<input type="text" id="${"camper-last" + doc.id}" class="form-control" value="${doc.data()['lastName']}">`;
+                insertedRow.insertCell().innerHTML = 
+                `<select class="form-control" id="camper-gender${doc.id}"> 
+                    <option value="Female">Female</option>
+                    <option value="Male">Male</option>
+                    <option value="Non-Binary">Non-Binary</option>
+                </select>`;
+                insertedRow.insertCell().innerHTML = `<input type="date" id="camper-dob-${doc.id}" min="1950-01-01" value="${birthdate}">`;
+                insertedRow.insertCell().innerHTML = 
+                `<select class="form-control" id="camper-pronoun${doc.id}"> 
                         <option value="She/Her/Hers">She/Her/Hers</option>
                         <option value="He/Him/His">He/Him/His</option>
                         <option value="They/Them/Theirs">They/Them/Theirs</option>
-                    </select>`,
-                    doc.data()['id'],
-                    `<input type="file" id="camper-upload-${doc.id}" style="display:none" accept="image/*" capture="camera"/> 
-                    <button id="camper-pic-button-${doc.id}">
-                        <img id="camper-profile-pic-${doc.id}" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left" width="100" height="100">
-                    </button>`,
-                    `<button class='btn bdrlessBtn' onclick='updateCamper("${doc.id}", "${doc.data()['id']}")'>Update</button>`,
-                    `<button class='btn bdrlessBtn btn-danger' onclick='removeCamper("${doc.id}")'>Remove</button>`,
-                    doc.data()['firstName'],
-                    doc.data()['lastName'],
-                    birthdate,
-                    pronoun,
-                    gender
-                ]).draw();
+                    </select>`;
+                insertedRow.insertCell().innerHTML =  doc.data()['id'];
+                insertedRow.insertCell().innerHTML = 
+                `<input type="file" id="camper-upload-${doc.id}" style="display:none" accept="image/*" capture="camera"/> 
+                <button id="camper-pic-button-${doc.id}">
+                    <img id="camper-profile-pic-${doc.id}" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left" width="100" height="100">
+                </button>`;
+                insertedRow.insertCell().innerHTML =  `<button class='btn bdrlessBtn' onclick='updateCamper("${doc.id}", "${doc.data()['id']}")'>Update</button>`;
+                insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn btn-danger' onclick='removeCamper("${doc.id}")'>Remove</button>`;
+                insertedRow.insertCell().innerHTML = doc.data()['firstName'];
+                insertedRow.insertCell().innerHTML = doc.data()['lastName'];
+                insertedRow.insertCell().innerHTML = birthdate;
+                insertedRow.insertCell().innerHTML = pronoun;
+                insertedRow.insertCell().innerHTML = gender;
+                //Load in selected values
                 document.getElementById(`camper-pronoun${doc.id}`).value = pronoun;
                 document.getElementById(`camper-gender${doc.id}`).value = gender;
-            });
-            res.forEach(doc => {
+                //Load image
                 document.getElementById(`camper-pic-button-${doc.id}`).onclick = () => {$(`#camper-upload-${doc.id}`).trigger('click');};
                 loadCamperImage(`camper-profile-pic-${doc.id}`, doc.data()['id']);
                 $(`#camper-upload-${doc.id}`).on("change", function () {
                     readURL(this, `camper-profile-pic-${doc.id}`);
                 });
+            });
+            $('#campers').DataTable({     
+                columns: [
+                    {"title" : "First Name", 'searchable': false},
+                    {"title" : "Last Name", 'searchable': false},
+                    {"title" : "Gender", 'searchable': false},
+                    {"title" : "DoB", 'searchable': false},
+                    {"title" : "Pronouns", 'searchable': false},
+                    {"title" : "UID"},
+                    {"title" : "Picture", 'searchable': false},
+                    {"title" : ""},
+                    {"title" : ""},
+                    {"title": "", 'visible' : false},
+                    {"title": "", 'visible' : false},
+                    {"title": "", 'visible' : false},
+                    {"title": "", 'visible' : false},
+                    {"title": "", 'visible' : false}
+                ]
             });
         });
     });
@@ -330,6 +349,7 @@ function updateCamperTable(){
     $(document).ready(function() {
         $('#campers').DataTable().clear();
         $('#campers').DataTable().destroy();
+        $("#campers tr").remove(); 
         initCampersTable();
     });
 }
@@ -552,65 +572,76 @@ function updateGroupSelectr(docid) {
 
 /////////////////////////////////// USERS FUNCTIONS ////////////////////////////////////////////////////
 function initUsersTable(){
-    let syncData = {}
-    $('#users').DataTable({   
-        columns: [
-            {"title" : "Name"},
-            {"title" : "Role",
-            "searchable": false},
-            {"title" : "",
-            "searchable": false},
-            // {"title" : "",
-            //  "searchable": false},
-             {"title" : "",
-              "visible": false}
-        ]
-    });
-    fs.collection("users").get().then( res => {
-        users = [] // Dictionary of userIDs !!!!!!!!!!!!!!!!!!!! IGNORES CAMPERS !!!!!!!!!!!!!!!!!!!
-        let userData = JSON.parse(localStorage.getItem("userData"));
-        res.forEach(doc => {
-            if(doc.data()['email'] != userData['email']){
-                if(doc.data()['priv'] != "camper") {
-                    let options = ["Admin", "Coach", "Basic", "Parent"];
-                    let values = ["admin", "coach", ".", "parent"];
-                    let select = document.createElement("select"); 
-                    select.classList.add("form-control");
-                    select.id = `users-priv-${doc.id}`;
-                    for (let i = 0; i < options.length; i++) {
-                        let selected = "";
-                        if(values[i] == doc.data()['priv']) {
-                            selected = "selected";
+    $(document).ready(function() {
+        fs.collection("users").get().then( res => {
+            let userData = JSON.parse(localStorage.getItem("userData"));
+            users = [] // Dictionary of userIDs !!!!!!!!!!!!!!!!!!!! IGNORES CAMPERS !!!!!!!!!!!!!!!!!!!
+            res.forEach(doc => {
+                if(doc.data()['email'] != userData['email']){
+                    if(doc.data()['priv'] != "camper") {
+                        let options = ["Admin", "Coach", "Basic", "Parent"];
+                        let values = ["admin", "coach", ".", "parent"];
+                        let classes = ['form-control'];
+                        let select = createSelectElement(options, values, doc.data()['priv'], "users-priv-" + doc.id, classes);
+                        let insertedRow = document.getElementById('users').insertRow();
+                        // Insert a cell in the row at cell index 0
+                        insertedRow.insertCell().innerHTML =  
+                        `<input type="file" id="user-upload-${doc.id}" style="display:none" accept="image/*" capture="camera"/> 
+                        <button id="user-pic-button-${doc.id}">
+                            <img id="user-profile-pic-${doc.id}" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left" width="100" height="100">
+                        </button>`;
+                        insertedRow.insertCell().innerHTML = doc.data()['firstName'] + " " + doc.data()['lastName'];
+                        insertedRow.insertCell().innerHTML = select.outerHTML;
+                        insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn' onclick='updateUser("${doc.id}")'>Update</button>`;
+                        insertedRow.insertCell().innerHTML = doc.data()['priv'];
+                        //Loading images
+                        try {
+                            document.getElementById(`user-pic-button-${doc.id}`).onclick = () => {$(`#user-upload-${doc.id}`).trigger('click');};
+                            loadCamperImage(`user-profile-pic-${doc.id}`, doc.data()['email']);
+                            $(`#user-upload-${doc.id}`).on("change", function () {
+                                readURL(this, `user-profile-pic-${doc.id}`);
+                            });
+                        } catch(err) {
+                            console.log(`Something wrong with user : ${doc.data()['firstName']} ${doc.data()['lastName']}`);
                         }
-                        let optionTxt = `<option value="${values[i]}" ${selected}>${options[i]}</option>`;
-                        select.innerHTML += optionTxt;
                     }
-                    $('#users').DataTable().row.add([
-                        doc.data()['firstName'] + " " + doc.data()['lastName'],
-                        // `<select class="form-control" id="users-priv-${doc.id}"> 
-                        //     <option value="admin">Admin</option>
-                        //     <option value="coach">Coach</option>
-                        //     <option value=".">Basic</option>
-                        //     <option value="parent">Parent</option>`,
-                        select.outerHTML,
-                        `<button class='btn bdrlessBtn' onclick='updateUser("${doc.id}")'>Update</button>`,
-                        // `<button class='btn bdrlessBtn btn-danger' onclick='removeUser("${doc.id}")'>Remove</button>`,
-                        doc.data()['priv']
-                    ]);
-                    syncData[doc.id] = doc.data()['priv'];
                 }
-            }
+            });
+            $('#users').DataTable({   
+                columns: [
+                    {"title" : "Picture",
+                    "searchable": false},
+                    {"title" : "Name"},
+                    {"title" : "Role",
+                    "searchable": false},
+                    {"title" : "",
+                    "searchable": false},
+                    // {"title" : "",
+                    //  "searchable": false},
+                    {"title" : "",
+                    "visible": false}
+                ]
+            });
         });
-        $('#users').DataTable().draw();
     });
 }
 function updateUsersTable(){
     $('#users').DataTable().clear();
     $('#users').DataTable().destroy();
+    $("#users tr").remove(); 
     initUsersTable();
 }
 function updateUser(docid){
     let priv = document.getElementById("users-priv-" + docid).value;
+    let file = document.getElementById(`user-upload-${docid}`).files[0];
+    fs.collection("users").doc(docid).get().then(doc => { 
+        try{
+            clearProfilePictures(doc.data()['email'], 
+                storageRef.child(`users/${doc.data()['email']}/profile-picture/` + file.name).put(file)); 
+        } catch(err) {
+            console.log(`The user ${doc.data()['firstName']} ${doc.data()['lastName']} does not have a profile picture`);
+        }
+    });
     fs.collection("users").doc(docid).update({ 
         priv: priv
     }).then(()=> {
