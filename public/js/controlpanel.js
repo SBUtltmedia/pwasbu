@@ -282,6 +282,11 @@ function initCampersTable(){
                 
                 let insertedRow = document.getElementById('campers').insertRow();
                 // Insert a cell in the row at cell index 0
+                insertedRow.insertCell().innerHTML = 
+                `<input type="file" id="camper-upload-${doc.id}" style="display:none" accept="image/*" capture="camera"/> 
+                <button id="camper-pic-button-${doc.id}">
+                    <img id="camper-profile-pic-${doc.id}" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left" width="100" height="100">
+                </button>`;
                 insertedRow.insertCell().innerHTML = `<input type="text" id="${"camper-first" + doc.id}" class="form-control" value="${doc.data()['firstName']}">`;
                 insertedRow.insertCell().innerHTML = `<input type="text" id="${"camper-last" + doc.id}" class="form-control" value="${doc.data()['lastName']}">`;
                 insertedRow.insertCell().innerHTML = 
@@ -298,11 +303,6 @@ function initCampersTable(){
                         <option value="They/Them/Theirs">They/Them/Theirs</option>
                     </select>`;
                 insertedRow.insertCell().innerHTML =  doc.data()['id'];
-                insertedRow.insertCell().innerHTML = 
-                `<input type="file" id="camper-upload-${doc.id}" style="display:none" accept="image/*" capture="camera"/> 
-                <button id="camper-pic-button-${doc.id}">
-                    <img id="camper-profile-pic-${doc.id}" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left" width="100" height="100">
-                </button>`;
                 insertedRow.insertCell().innerHTML =  `<button class='btn bdrlessBtn' onclick='updateCamper("${doc.id}", "${doc.data()['id']}")'>Update</button>`;
                 insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn btn-danger' onclick='removeCamper("${doc.id}")'>Remove</button>`;
                 insertedRow.insertCell().innerHTML = doc.data()['firstName'];
@@ -322,13 +322,13 @@ function initCampersTable(){
             });
             $('#campers').DataTable({     
                 columns: [
+                    {"title" : "Picture", 'searchable': false},
                     {"title" : "First Name", 'searchable': false},
                     {"title" : "Last Name", 'searchable': false},
                     {"title" : "Gender", 'searchable': false},
                     {"title" : "DoB", 'searchable': false},
                     {"title" : "Pronouns", 'searchable': false},
                     {"title" : "UID"},
-                    {"title" : "Picture", 'searchable': false},
                     {"title" : ""},
                     {"title" : ""},
                     {"title": "", 'visible' : false},
@@ -590,10 +590,14 @@ function initUsersTable(){
                         <button id="user-pic-button-${doc.id}">
                             <img id="user-profile-pic-${doc.id}" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left" width="100" height="100">
                         </button>`;
-                        insertedRow.insertCell().innerHTML = doc.data()['firstName'] + " " + doc.data()['lastName'];
+                        insertedRow.insertCell().innerHTML = doc.data()['firstName'] + " " + doc.data()['lastName'] + " (ID:" + doc.data()['id'] + ")";
+                        insertedRow.insertCell().innerHTML = doc.data()['gender'];
+                        insertedRow.insertCell().innerHTML = doc.data()['email'];
+                        insertedRow.insertCell().innerHTML = doc.data()['creationDate'];
                         insertedRow.insertCell().innerHTML = select.outerHTML;
                         insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn' onclick='updateUser("${doc.id}")'>Update</button>`;
                         insertedRow.insertCell().innerHTML = doc.data()['priv'];
+
                         //Loading images
                         try {
                             document.getElementById(`user-pic-button-${doc.id}`).onclick = () => {$(`#user-upload-${doc.id}`).trigger('click');};
@@ -612,6 +616,9 @@ function initUsersTable(){
                     {"title" : "Picture",
                     "searchable": false},
                     {"title" : "Name"},
+                    {"title" : "Gender"},
+                    {"title" : "Email"},
+                    {"title" : "Created"},
                     {"title" : "Role",
                     "searchable": false},
                     {"title" : "",
