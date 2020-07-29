@@ -6,38 +6,5 @@
             <h4 class="ath-hd">ATHLETE'S INFORMATION:</h4>
             <table id="campers" class="table table-bordered"></table>
         </div>
-
-        <script defer>
-            function userWelcome() {
-                let user = firebase.auth().currentUser;
-                try {
-                    let userData = JSON.parse(localStorage.getItem("userData"));
-                    // document.getElementById("menu-user").innerHTML = "Welcome " + userData['firstName'];
-                    document.getElementById("menu-user").innerHTML = (userData['firstName'] + "'S HOME PAGE").toUpperCase();
-                } catch (error) {
-                    fs.collection("users").where('email', '==', user.email).get().then(function (res) {
-                        if (res.docs.length > 0) {
-                            res.docs[0].ref.get().then(doc => {
-                                // document.getElementById("menu-user").innerHTML = "Welcome " + doc.data()["firstName"];
-                                document.getElementById("menu-user").innerHTML = (doc.data()["firstName"] + "'S HOME PAGE").toUpperCase();
-                                localStorage.setItem("userData", JSON.stringify(doc.data()));
-                                initNavBar();
-                            });
-                        } else {
-                            console.log("There is no such user");
-                            document.getElementById("menu-user").innerHTML = "Error loading user, please refresh";
-                        }
-                    }).catch((error) => {
-                        console.log(error);
-                        document.getElementById("menu-user").innerHTML = "Error loading user, please refresh";
-                    });
-                }
-            }
-
-            userWelcome();
-            populateYearPicker(); // LOCATED in evaluation.js
-            initNavBar(); // LOCATED in navbar.js
-            initCampersEvalTable(); // LOCATED in evaluation.js
-        </script>
     </div>
 </template>

@@ -370,7 +370,7 @@ function updateCamper(docid, camperId){
     let lastName = document.getElementById("camper-last" + docid).value;
     let pronoun = document.getElementById(`camper-pronoun${docid}`).value;
     let gender = document.getElementById(`camper-gender${docid}`).value;
-    let birthdate = document.getElementById(`camper-dob-${docid}`).value;
+    let birthdate = document.getElementById(`camper-dob-${docid}`).value || "1999-07-04";
     let file = document.getElementById(`camper-upload-${docid}`).files[0];
     try{
         clearProfilePictures(camperId, 

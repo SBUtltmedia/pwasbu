@@ -31,26 +31,5 @@
             onclick="router.loadRoute('accountSettings')">Change Email or Password</button>
         <button type="button" class="btn btn-secondary btn-lg btn-space" onclick="updateProfile()">Submit
             Changes</button>
-        <script>
-            $(".loader").hide();
-            $("#profile-error").hide();
-            $("#profile-success").hide();
-            //Date is in YYYY-MM-DD Format
-            console.log("loading in fields");
-            initEditProfile();
-            function changePhoto() {
-                let fileReader = new FileReader();
-                fileReader.readAsDataURL(document.getElementById("cameraInput").value);
-                fileReader.onloadend = () => {
-                    console.log(this);
-                };
-                console.log(document.getElementById("cameraInput").value);
-            }
-
-            $("#cameraInput").on("change", function () {
-                readURL(this, "profile-pic");
-            });
-            initNavBar();
-        </script>
     </div>
 </template>
