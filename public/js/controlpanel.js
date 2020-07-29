@@ -5,6 +5,8 @@ $(function () {
     $('[data-toggle="tooltip"]').tooltip()
 });
 
+const selectrIDs = {};
+
 //////////////////////////////// Helper Functions /////////////////////////////////////////////////
 /**
  * An empty indice is an element with value ''
@@ -395,7 +397,8 @@ function updateCamper(docid, camperId){
 function addCoachGroup(coachID){
     let data = {
         campers: [],
-        coach: coachID
+        coach: coachID,
+        year: document.getElementById("yearPicker").value
     };
     fs.collection("Groups").add(data);
 }
@@ -421,7 +424,7 @@ function initGroupsTable(){
                     coaches[doc.data()['id']] = doc.data();
                     coaches[doc.data()['id']]['hasGroup'] = false; 
                 });
-                fs.collection("Groups").get().then(res =>{
+                fs.collection("Groups").where("year", "==", document.getElementById("yearPicker").value).get().then(res =>{
                     let selectrData = [];
                     let data = [];
                     res.forEach(doc => {
@@ -472,12 +475,19 @@ function initGroupsTable(){
                             insertedRow.insertCell().innerHTML = `<select class="form-control" id="${"group-" + doc.id}" data-native-menu="false"></select>`;
                             insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn' onclick='updateGroupSelectr("${doc.id}")'>Update</button>`;
                             insertedRow.insertCell().innerHTML = camperNames;
-                            selectrData.push({id:'#group-'+ doc.id, data: camperSelection});
-                            let sObj = new Selectr("#group-" + doc.id, {
-                                data: camperSelection,
-                                multiple:true
-                            });
-                            sObj.mobileDevice = false;
+                            if(!(doc.id in selectrIDs)) {
+                                selectrData.push({id:'#group-'+ doc.id, data: camperSelection});
+                                let sObj = new Selectr("#group-" + doc.id, {
+                                    data: camperSelection,
+                                    multiple:true
+                                });
+                                sObj.mobileDevice = false;
+                                selectrIDs[doc.id] = sObj;
+                            } else {
+                                let sObj = selectrIDs[doc.id];
+                                sObj.removeAll();
+                                sObj.add(camperSelection);
+                            }
                             passed = false;
                         }catch(err) {
                             console.log(err);
@@ -489,9 +499,9 @@ function initGroupsTable(){
                     });            
                     $(document).ready(function() {
                         $('#groups').DataTable({   
+                            destroy: true,
                             columns: [
-                                {"title" : "Coach Name",
-                                "searchable": false},
+                                {"title" : "Coach Name"},
                                 {"title" : "Athletes",
                                 "searchable": false},
                                 {"title" : "",
@@ -529,15 +539,36 @@ function initGroupsTable(){
 
 function updateGroupsTable(){
     $(document).ready(function() {
-        $('#groups').DataTable().clear();
-        $('#groups').DataTable().destroy(); // The destroy function literally does nothing to contents of table. requires override
         $("#groups tr").remove(); 
+        $('#groups').DataTable().clear();
+        selectrPtrs.forEach(ptr => {
+            ptr.disable(true);
+            delete ptr;
+        });
         initGroupsTable();
     });
 }
 function removeGroup(docid) {
     fs.collection('Groups').doc(docid).delete().then(()=>{
         updateGroupsTable();
+    });
+}
+function initYearPicker() {
+    let years = [];
+    fs.collection("Groups").get().then(res => {
+        res.docs.forEach(group => {
+            if(!years.includes(group.data()['year'])) {
+                years.push(group.data()['year']);
+            }
+        });
+        years.sort();
+        for(i = 0; i < years.length; i++) {
+            $("#yearPicker").append(`<option value="${years[i]}">${years[i]}</option>`);
+        }
+        if(years.indexOf(new Date().getFullYear()) < 0){
+            $("#yearPicker").append(`<option value="${new Date().getFullYear()}">${new Date().getFullYear()}</option>`);
+        }
+        document.getElementById("yearPicker").value = new Date().getFullYear();
     });
 }
 // function addGroup(){
@@ -567,7 +598,9 @@ function updateGroupSelectr(docid) {
     let data = {
         campers: $('#group-'+ docid).val()
     };
-    fs.collection("Groups").doc(docid).update(data);
+    fs.collection("Groups").doc(docid).update(data).then(()=>{
+        alert("Updated coach group successfully!");
+    });
 }
 
 /////////////////////////////////// USERS FUNCTIONS ////////////////////////////////////////////////////
@@ -719,4 +752,13 @@ function togglePrimaryColor(id) {
     } else {
         classes.add("cp-toggleColor");
     }
+}
+
+function resetSelectrs(){
+    for (let ptr in selectrIDs) {
+        if (selectrIDs.hasOwnProperty(ptr)) {
+            delete selectrIDs[ptr];
+        }
+    }
+    console.log("I am resetting selectrIDs");
 }

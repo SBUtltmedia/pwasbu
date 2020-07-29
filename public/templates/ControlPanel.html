@@ -86,6 +86,7 @@
             <!-- <button class="btn" style="width: 50%;" type="button" onclick="addGroup()">
                 Add a Group
             </button> -->
+            <select id="yearPicker" onchange="initGroupsTable()"></select>
             <div class="cp-subTitle">All Coach Groups</div>
             <table id="groups" class="block cp-table row-border">
             <tbody> </tbody>
@@ -155,12 +156,14 @@
             </div>
         </div>
         <script>
+            resetSelectrs();
             initActivitiesTable();
             initNavBar();
             initCampersTable();
             initGroupsTable();
             initUsersTable();
             initUserModal();
+            initYearPicker(); // LOCATED in evaluation.js
         </script>
     </div>
 </template>
