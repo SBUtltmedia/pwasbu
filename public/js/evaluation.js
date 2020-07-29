@@ -162,7 +162,7 @@ function actEvalInit() {
                             }
                         } catch (err) {
                             console.log(err);
-                            console.log("Couldn't load the coach for the specified evaluation " + doc.id);
+                            console.log("Couldn't load the coach for the specified assessment " + doc.id);
                         }
                     }
                 });
@@ -365,7 +365,7 @@ function initEvalTable() {
                     listElement.appendChild(editButton);
                     table.appendChild(listElement);
                 } catch (err) {
-                    console.log("Couldn't load the coach for the specified evaluation " + doc.id + ": ", err);
+                    console.log("Couldn't load the coach for the specified assessment " + doc.id + ": ", err);
                 }
             });
             // table.draw();
