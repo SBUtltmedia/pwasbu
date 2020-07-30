@@ -425,7 +425,6 @@ function initGroupsTable(){
                     coaches[doc.data()['id']]['hasGroup'] = false; 
                 });
                 fs.collection("Groups").where("year", "==", document.getElementById("yearPicker").value).get().then(res =>{
-                    let selectrData = [];
                     let data = [];
                     res.forEach(doc => {
                         let changedDoc = false;
@@ -475,8 +474,9 @@ function initGroupsTable(){
                             insertedRow.insertCell().innerHTML = `<select class="form-control" id="${"group-" + doc.id}" data-native-menu="false"></select>`;
                             insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn' onclick='updateGroupSelectr("${doc.id}")'>Update</button>`;
                             insertedRow.insertCell().innerHTML = camperNames;
+                            console.log(camperSelection);
+                            console.log(doc.data());
                             if(!(doc.id in selectrIDs)) {
-                                selectrData.push({id:'#group-'+ doc.id, data: camperSelection});
                                 let sObj = new Selectr("#group-" + doc.id, {
                                     data: camperSelection,
                                     multiple:true
@@ -539,12 +539,10 @@ function initGroupsTable(){
 
 function updateGroupsTable(){
     $(document).ready(function() {
+        resetSelectrs();
         $("#groups tr").remove(); 
         $('#groups').DataTable().clear();
-        selectrPtrs.forEach(ptr => {
-            ptr.disable(true);
-            delete ptr;
-        });
+        $('#groups').DataTable().destroy();
         initGroupsTable();
     });
 }
@@ -555,21 +553,26 @@ function removeGroup(docid) {
 }
 function initYearPicker() {
     let years = [];
-    fs.collection("Groups").get().then(res => {
-        res.docs.forEach(group => {
-            if(!years.includes(group.data()['year'])) {
-                years.push(group.data()['year']);
-            }
-        });
-        years.sort();
-        for(i = 0; i < years.length; i++) {
-            $("#yearPicker").append(`<option value="${years[i]}">${years[i]}</option>`);
-        }
-        if(years.indexOf(new Date().getFullYear()) < 0){
-            $("#yearPicker").append(`<option value="${new Date().getFullYear()}">${new Date().getFullYear()}</option>`);
-        }
-        document.getElementById("yearPicker").value = new Date().getFullYear();
-    });
+    years = ['2020'];
+    // years.sort();
+    for(i = 0; i < years.length; i++) {
+        $("#yearPicker").append(`<option value="${years[i]}">${years[i]}</option>`);
+    }
+    // fs.collection("Groups").get().then(res => {
+    //     res.docs.forEach(group => {
+    //         if(!years.includes(group.data()['year'])) {
+    //             years.push(group.data()['year']);
+    //         }
+    //     });
+    //     years.sort();
+    //     for(i = 0; i < years.length; i++) {
+    //         $("#yearPicker").append(`<option value="${years[i]}">${years[i]}</option>`);
+    //     }
+    //     if(years.indexOf(new Date().getFullYear()) < 0){
+    //         $("#yearPicker").append(`<option value="${new Date().getFullYear()}">${new Date().getFullYear()}</option>`);
+    //     }
+    //     document.getElementById("yearPicker").value = new Date().getFullYear();
+    // });
 }
 // function addGroup(){
 //     let payload = {
