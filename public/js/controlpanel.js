@@ -548,8 +548,7 @@ function removeGroup(docid) {
     });
 }
 function initYearPicker() {
-    let years = [];
-    years = ['2020', '2019'];
+    let years = ['2020'];
     // years.sort();
     for(i = 0; i < years.length; i++) {
         $("#yearPicker").append(`<option value="${years[i]}">${years[i]}</option>`);
