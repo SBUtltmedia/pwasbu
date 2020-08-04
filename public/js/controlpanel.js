@@ -431,7 +431,8 @@ function initGroupsTable(){
                         let docData = JSON.parse(JSON.stringify(doc.data()));
                         try{
                             let camperNames = "";
-                            let camperSelection = [];
+                            // let camperSelection = [];
+                            let camperOptionHTML = "";
                             doc.data()['campers'].forEach(camperId => {
                                 try{
                                     camperName = campers[camperId]['firstName'] + " " + campers[camperId]['lastName'] + " (id:" + camperId + ")";
@@ -445,15 +446,17 @@ function initGroupsTable(){
                             });
                             Object.keys(campers).forEach(camperId => {
                                 try{
-                                    camperName = campers[camperId]['firstName'] + " " + campers[camperId]['lastName'] + " (id:" + camperId + ")";
-                                    data = {
-                                        text: camperName,
-                                        value: camperId
-                                    };
-                                    if(doc.data()['campers'].indexOf(camperId) >= 0) {
-                                        data['selected'] = true;
-                                    }
-                                    camperSelection.push(data);
+                                    let camperName = campers[camperId]['firstName'] + " " + campers[camperId]['lastName'] + " (id:" + camperId + ")";
+                                    let optionStr = `<option value="${camperId}" ${(doc.data()['campers'].indexOf(camperId) >= 0 ? 'selected': '')}> ${camperName}</option>`;
+                                    camperOptionHTML += optionStr;
+                                    // data = {
+                                    //     text: camperName,
+                                    //     value: camperId
+                                    // };
+                                    // if(doc.data()['campers'].indexOf(camperId) >= 0) {
+                                    //     data['selected'] = true;
+                                    // }
+                                    // camperSelection.push(data);
                                 } catch(err) {
                                     // Camper doesn't exist
                                 }
@@ -471,23 +474,22 @@ function initGroupsTable(){
                             let insertedRow = document.getElementById('groups').insertRow();
                             // Insert a cell in the row at cell index 0
                             insertedRow.insertCell().innerHTML = coachName;
-                            insertedRow.insertCell().innerHTML = `<select class="form-control" id="${"group-" + doc.id}" data-native-menu="false"></select>`;
+                            insertedRow.insertCell().innerHTML = `<select class="" id="${"group-" + doc.id}" multiple="multiple">${camperOptionHTML}</select>`;
                             insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn' onclick='updateGroupSelectr("${doc.id}")'>Update</button>`;
                             insertedRow.insertCell().innerHTML = camperNames;
-                            console.log(camperSelection);
-                            console.log(doc.data());
-                            if(!(doc.id in selectrIDs)) {
-                                let sObj = new Selectr("#group-" + doc.id, {
-                                    data: camperSelection,
-                                    multiple:true
-                                });
-                                sObj.mobileDevice = false;
-                                selectrIDs[doc.id] = sObj;
-                            } else {
-                                let sObj = selectrIDs[doc.id];
-                                sObj.removeAll();
-                                sObj.add(camperSelection);
-                            }
+                            $("#group-" + doc.id).select2();
+                            // if(!(doc.id in selectrIDs)) {
+                            //     let sObj = new Selectr("#group-" + doc.id, {
+                            //         data: camperSelection,
+                            //         multiple:true
+                            //     });
+                            //     sObj.mobileDevice = false;
+                            //     selectrIDs[doc.id] = sObj;
+                            // } else {
+                            //     let sObj = selectrIDs[doc.id];
+                            //     sObj.removeAll();
+                            //     sObj.add(camperSelection);
+                            // }
                             passed = false;
                         }catch(err) {
                             console.log(err);
@@ -497,21 +499,18 @@ function initGroupsTable(){
                             fs.collection("Groups").doc(doc.id).set(docData);
                         }
                     });            
-                    $(document).ready(function() {
-                        $('#groups').DataTable({   
-                            destroy: true,
-                            columns: [
-                                {"title" : "Coach Name"},
-                                {"title" : "Athletes",
-                                "searchable": false},
-                                {"title" : "",
-                                "searchable": false},
-                                // {"title" : "",
-                                // "searchable": false},
-                                {"title" : "",
-                                "visible": false}
-                            ]
-                        });
+                    $('#groups').DataTable({   
+                        columns: [
+                            {"title" : "Coach Name"},
+                            {"title" : "Athletes",
+                            "searchable": false},
+                            {"title" : "",
+                            "searchable": false},
+                            // {"title" : "",
+                            // "searchable": false},
+                            {"title" : "",
+                            "visible": false}
+                        ]
                     });
                     // Check for any inconsistency in the data
                     let reset = false;
@@ -538,13 +537,10 @@ function initGroupsTable(){
 }
 
 function updateGroupsTable(){
-    $(document).ready(function() {
-        resetSelectrs();
-        $("#groups tr").remove(); 
-        $('#groups').DataTable().clear();
-        $('#groups').DataTable().destroy();
-        initGroupsTable();
-    });
+    $('#groups').DataTable().clear();
+    $('#groups').DataTable().destroy();
+    $("#groups tr").remove(); 
+    initGroupsTable();
 }
 function removeGroup(docid) {
     fs.collection('Groups').doc(docid).delete().then(()=>{
@@ -553,11 +549,12 @@ function removeGroup(docid) {
 }
 function initYearPicker() {
     let years = [];
-    years = ['2020'];
+    years = ['2020', '2019'];
     // years.sort();
     for(i = 0; i < years.length; i++) {
         $("#yearPicker").append(`<option value="${years[i]}">${years[i]}</option>`);
     }
+    document.getElementById("yearPicker").value = '2020';
     // fs.collection("Groups").get().then(res => {
     //     res.docs.forEach(group => {
     //         if(!years.includes(group.data()['year'])) {

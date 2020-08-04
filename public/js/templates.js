@@ -8,14 +8,14 @@ function accountsetting_template(){
 }
 
 function controlpanel_template(){
-    resetSelectrs();
+    // resetSelectrs();
+    initYearPicker(); // LOCATED in evaluation.js
     initActivitiesTable();
     initNavBar();
     initCampersTable();
     initGroupsTable();
     initUsersTable();
     initUserModal();
-    initYearPicker(); // LOCATED in evaluation.js
 }
 
 function editprofile_template(){
