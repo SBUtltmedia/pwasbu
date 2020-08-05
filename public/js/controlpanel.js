@@ -138,12 +138,12 @@ function updateActivity(id){
         });
     }
     let data = {checklist: checklist, name: activityName, skills: skills};
-    console.log(JSON.stringify(data));
-    // fs.collection('Activities').doc(id).update(data).then(()=>{
-    //     alert(`${activityName} has been updated successfully!`);
-    // }).catch(err => {
-    //     alert(err);
-    // });
+    // console.log(JSON.stringify(data));
+    fs.collection('Activities').doc(id).update(data).then(()=>{
+        alert(`${activityName} has been updated successfully!`);
+    }).catch(err => {
+        alert(err);
+    });
 }
 function getActivity(id) {
     if($('#skills').DataTable()){
@@ -248,7 +248,7 @@ function getActivity(id) {
             });
             document.getElementById("update-activity").onclick = function(){updateActivity(id)};
         });
-    }).catch(err => {console.log(err);});
+    }).catch(err => {alert(err);});
 }
 function addSkill(){
     let id = Math.random().toString(36).substring(2, 8) + Math.random().toString(36).substring(2, 8);
