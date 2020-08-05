@@ -37,6 +37,25 @@ function createSelectElement(options, values, selected, id, classes) {
     }
     return select;
 }
+
+/**
+ * Data has to be formated with as the following
+ * { 
+ *      id: "",
+ *      text: ""
+ * }
+ *  */ 
+function findSelect2Option(id, data){
+    // Set the value, creating a new option if necessary
+    if ($(`#${id}`).find("option[value='" + data.id + "']").length) {
+        $(`#${id}`).val(data.id).trigger('change');
+    } else { 
+        // Create a DOM Option and pre-select by default
+        var newOption = new Option(data.text, data.id, true, true);
+        // Append it to the select
+        $('#mySelect2').append(newOption).trigger('change');
+    } 
+}
 //////////////////////////////// ACTIVITY FUNCTIONS //////////////////////////////////////////////
 const editor = "";
 /**
@@ -85,11 +104,11 @@ function initActivitiesTable(){
  */
 function removeActivity(id) {
     fs.collection('Activities').doc(id).delete().then(()=>{
-        $(document).ready(function() {
-            $('#activities').DataTable().clear();
-            $('#activities').DataTable().destroy();
-            initActivitiesTable();
-        });
+        $('#activities').DataTable().clear();
+        $('#activities').DataTable().destroy();
+        $('#activities tr').remove();
+        document.getElementById('act-edit').style = "display: none;";
+        initActivitiesTable();
     });
 }
 function updateActivity(id){
@@ -109,21 +128,29 @@ function updateActivity(id){
     for(let i = 0; i < skillsTable.length; i++){
         let id = skillsTable[i][5];
         let skillName = document.getElementById("skill-" + id).value;
-        let subSkillStr = document.getElementById("subskill-" + id).value;
-        let subSkills = subSkillStr.split(",");
-        subSkills = removeEmptyIndices(subSkills);
+        // let subSkillStr = document.getElementById("subskill-" + id).value;
+        // let subSkills = subSkillStr.split(",");
+        // subSkills = removeEmptyIndices(subSkills);
+        let subSkills = $("#subskill-" + id).val();
         skills.push({
             skillName: skillName,
             subSkills: subSkills
         });
     }
-    fs.collection('Activities').doc(id).update({checklist: checklist, name: activityName, skills: skills}).then(()=>{
-        alert(`${activityName} has been updated successfully!`);
-    }).catch(err => {
-        alert(err);
-    });
+    let data = {checklist: checklist, name: activityName, skills: skills};
+    console.log(JSON.stringify(data));
+    // fs.collection('Activities').doc(id).update(data).then(()=>{
+    //     alert(`${activityName} has been updated successfully!`);
+    // }).catch(err => {
+    //     alert(err);
+    // });
 }
 function getActivity(id) {
+    if($('#skills').DataTable()){
+        $('#skills').DataTable().clear();
+        $('#skills').DataTable().destroy();
+        $('#skills tr').remove();
+    }
     fs.collection('Activities').doc(id).get().then(doc =>{
         document.getElementById('act-name').value = doc.data()['name'];
         document.getElementById('act-edit').style = "display: block";
@@ -140,20 +167,57 @@ function getActivity(id) {
             checklist.push(temp);
         });
         ///////////////////////////////////////     init Skills Table  //////////////////////////////////////////
-        let skills = []
         doc.data()['skills'].forEach((skill) => {
-            let subSkillsStr = "";
+            let subSkillOptions = "";
+            let subSkillStr = "";
             skill['subSkills'].forEach((subSkill)=> {
-                subSkillsStr += '' + subSkill + ",";
+                subSkillOptions += `<option value="${subSkill}" selected> ${subSkill}</option>`;
+                subSkillStr += ` ${subSkill}`;
             });
-            let id = skill['skillName'] + Math.random().toString(36).substring(2, 8);
-            let temp = [
-                `<input type="text" id="${"skill-" + id}" class="input" value="${skill['skillName']}">`,
-                `<input type="text" id="${"subskill-" + id}" class="input" value="${subSkillsStr}">`,
-                `<button class='btn bdrlessBtn' onclick='removeSkill("${id}")'>Remove</button>`,
-                skill['skillName'], subSkillsStr, id
-            ];
-            skills.push(temp);
+            let id = skill['name'] + Math.random().toString(36).substring(2, 8);
+            let insertedRow = document.getElementById('skills').insertRow();
+            insertedRow.insertCell().innerHTML = `<input type="text" id="${"skill-" + id}" class="input" value="${skill['skillName']}">`;
+            insertedRow.insertCell().innerHTML = `<select class="" id="${"subskill-" + id}" multiple="multiple">${subSkillOptions}</select>`;
+            insertedRow.insertCell().innerHTML =  `<button class='btn bdrlessBtn' onclick='removeSkill("${id}")'>Remove</button>`;
+            insertedRow.insertCell().innerHTML = skill['skillName'];
+            insertedRow.insertCell().innerHTML = subSkillStr;
+            insertedRow.insertCell().innerHTML = id;
+            $(`#${"subskill-" + id}`).select2({
+                tags: true,
+                createTag: function (params) {
+                    var term = $.trim(params.term);
+                    var existsVar = false;
+                    //check if there is any option already
+                    if($('#keywords option').length > 0){
+                        $('#keywords option').each(function(){
+                            if ($(this).text().toUpperCase() == term.toUpperCase()) {
+                                existsVar = true
+                                return false;
+                            }else{
+                                existsVar = false
+                            }
+                        });
+                        if(existsVar){
+                            return null;
+                        }
+                        return {
+                            id: params.term,
+                            text: params.term,
+                            newTag: true
+                        }
+                    }
+                    //since select has 0 options, add new without comparing
+                    else{
+                        return {
+                            id: params.term,
+                            text: params.term,
+                            newTag: true
+                        }
+                    }
+                },
+                maximumInputLength: 100, // only allow terms up to 100 characters long
+                closeOnSelect: true
+            })
         });
         $(document).ready(function() {
             ////////////////// add data to checklist table //////////////////////////
@@ -172,20 +236,16 @@ function getActivity(id) {
             $('#checklist').DataTable().clear();
             $('#checklist').DataTable().rows.add(checklist).draw();
             ////////////////// add data to Skills Table ////////////////////////////
-            if(!$('#skills').DataTable()) {
-                $('#skills').DataTable({  
-                    columns: [
-                        {"title" : "Skill Name", 'searchable': false},
-                        {"title" : "Subskills", 'searchable': false},
-                        {"title" : "", 'searchable': false},
-                        {"title": "", 'visible' : false},
-                        {"title": "", 'visible' : false},
-                        {"title": "", 'visible' : false,'searchable': false}
-                    ]
-                });
-            }
-            $('#skills').DataTable().clear();
-            $('#skills').DataTable().rows.add(skills).draw();
+            $('#skills').DataTable({  
+                columns: [
+                    {"title" : "Skill Name", 'searchable': false},
+                    {"title" : "Subskills", 'searchable': false},
+                    {"title" : "", 'searchable': false},
+                    {"title": "", 'visible' : false},
+                    {"title": "", 'visible' : false},
+                    {"title": "", 'visible' : false,'searchable': false}
+                ]
+            });
             document.getElementById("update-activity").onclick = function(){updateActivity(id)};
         });
     }).catch(err => {console.log(err);});
