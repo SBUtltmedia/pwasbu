@@ -179,12 +179,14 @@ function saveCurrentUserData(){
             console.error("Error writing document: ", error);
         });
 }
-// Disabling the service worker for now
-// if ('serviceWorker' in navigator) {
-//     navigator.serviceWorker
-//         .register('sw.js')
-//         .then(function () { console.log('Service Worker Registered'); });
-// }
+
+// Enable Service Worker
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker
+        .register('sw.js')
+        .then((reg) => console.log('Service Worker Registered', reg))
+        .catch((err) => console.log('Service Worker not registered', err));
+}
 
 // Code to handle install prompt on desktop
 
