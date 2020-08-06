@@ -23,6 +23,11 @@ li{
         font-weight: bold;
         cursor: pointer;
     }
+
+    .add-day-btn:hover {
+        font-weight: bold;
+        cursor: pointer;
+    }
 }
 
 .bby-skill-btn{
@@ -45,9 +50,11 @@ li{
     text-align: center;
 }
 
-.quest{
+#quest{
     font-size: 1.5rem;
     text-align: center;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
 
 button.evaluation-but
@@ -93,7 +100,9 @@ tr{
 
 #activityName
 {
-    font-size: 2rem;
+    text-align: center;
+    font-size: 3rem;
+    margin-top: 1rem;
 }
 
 #checklist, #skills
@@ -118,10 +127,6 @@ td.padded-td {
     text-align: center;
 }
 
-/* .dataTables_wrapper{
-    text-align: center;
-} */
-
 .subskill{
     text-align: center;
 }
@@ -136,4 +141,44 @@ td.padded-td {
 .padded-input {
     padding: 1rem;
     font-size: 2rem;
+}
+
+.centeredRow {
+    text-align: center;
+    margin-top: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.add-day-btn {
+    font-size: 2.0rem;
+    color: var(--primary-color);
+    background-color: inherit;
+    border: 1px solid var(--primary-color);
+    padding: 0.5rem;
+}
+
+.add-trial-btn {
+    font-size: 2.0rem;
+    color: white;
+    background-color: var(--primary-color);
+    border: 1px solid white;
+    border-radius: 10px;
+    padding: 0.5rem;
+    width: 100%;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.remove-btn {
+    font-size: 2.0rem;
+    color: white;
+    background-color: red;
+    border: 1px solid white;
+    border-radius: 10px;
+    padding: 0.5rem;
+    margin: 0.5rem;
+}
+
+.trials-row {
+    margin-top: 0.75rem;
 }

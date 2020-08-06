@@ -1,4 +1,4 @@
-function accountsetting_template(){
+function accountsettings_template(){
     $("#loader").hide();
     $("#profile-error").hide();
     $("#profile-success").hide();
