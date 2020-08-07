@@ -26,22 +26,25 @@ function initCampersEvalTable() {
         res.docs[0].ref.get().then(doc => {
             fs.collection("Groups").where("coach", "==", doc.data()['id']).get().then(res => {
                 currEval.selectedYear = document.getElementById("yearPicker").value;
-                console.log("Selected Year: ", currEval.selectedYear)
+                // console.log("Selected Year: ", currEval.selectedYear);
                 res.docs.forEach(doc => {
                     if(doc.data()['year'] == currEval.selectedYear) {
                         doc.data()['campers'].sort().forEach(camper => {
+                            let rowElem = document.createElement("tr");
+                            athletesTable.appendChild(rowElem);
+
                             fs.collection('users').where("id", "==", camper).orderBy("firstName", "desc").get().then(res => {
                                 res.forEach(doc => {
                                     let row = {
                                         name: doc.data()['firstName'] + " " + doc.data()['lastName'],
-                                        age: parseInt(((new Date()) - (new Date(doc.data()["birthdate"]))) / (1000 * 60 * 60 * 24 * 365)),
+                                        age: parseInt(((new Date()) - (new Date(doc.data()["birthdate"]))) / (1000 * 60 * 60 * 24 * 365)) || 0,
                                         gender: doc.data()["gender"],
                                         pronouns: doc.data()["pronoun"],
                                         team: "Purple Team", // This field needs to be added to the database
                                         id: doc.data()["id"],
                                         email: doc.data()["id"]
                                     };
-                                    createUserDetailsItem(athletesTable, row);
+                                    createUserDetailsItem(rowElem, row);
                                 });
                             });
                         });
@@ -52,8 +55,7 @@ function initCampersEvalTable() {
     }).catch(err => { console.log(err); });
 }
 
-function createUserDetailsItem(routerOutletElement, row) {
-    // console.log(row);
+function createUserDetailsItem(rowElem, row) {
     const matchedRoute = router._matchUrlToRoute(['userDetails']);
     matchedRoute.getTemplate(matchedRoute.params).then((userDetailsItem) => {
         userDetailsItem.content.querySelectorAll(".user-name")[0].innerHTML = row.name;
@@ -62,10 +64,7 @@ function createUserDetailsItem(routerOutletElement, row) {
         userDetailsItem.content.querySelectorAll(".user-pronouns")[0].innerHTML = row.pronouns;
         userDetailsItem.content.querySelectorAll(".user-team")[0].innerHTML = row.team;
 
-        //userDetailsItem.content.querySelectorAll(".get-evals")[0].onclick = (event) => { eval(row['id'], "get") };
         userDetailsItem.content.querySelectorAll(".add-evals")[0].onclick = (event) => { eval(row['id'], "get") };
-
-        let rowElem = document.createElement("tr");
 
         let imgCol = document.createElement("td");
         let detailsCol = document.createElement("td");
@@ -75,7 +74,6 @@ function createUserDetailsItem(routerOutletElement, row) {
         detailsCol.classList.add("col-elem")
         btnsCol.classList.add("col-elem")
 
-        // console.log("row.email: ", row.email);
         loadProfilePictureInElement(userDetailsItem.content.querySelectorAll(".user-img")[0], row.email);
 
         imgCol.appendChild(userDetailsItem.content.querySelectorAll(".img-col")[0]);
@@ -85,26 +83,19 @@ function createUserDetailsItem(routerOutletElement, row) {
         rowElem.appendChild(imgCol);
         rowElem.appendChild(detailsCol);
         rowElem.appendChild(btnsCol);
-        routerOutletElement.appendChild(rowElem);
     });
 }
 
 function loadProfilePictureInElement(element, email) {
-    // console.log(email);
     let listRef = storageRef.child(encodeURI(`users/${email}/profile-picture`));
-    // console.log("Trying to get a file from " + email);
     listRef.listAll().then(function (res) {
         let profilePic = res.items[0];
         storageRef.child(encodeURI(`users/${email}/profile-picture/${profilePic.name}`)).getDownloadURL().then(function (url) {
-            // console.log("Loading " + url + " as profile image");
             element.src = url;
         }).catch(function (error) {
-            // console.log(error);
             element.src = '../img/user/default/user-480.png';
         });
     }).catch(function (error) {
-        // console.log(error);
-        // console.log("List all failed to work");
         element.src = '../img/user/default/user-480.png';
     });
 }
@@ -143,9 +134,10 @@ function actEvalInit() {
                 activities[doc.data()['name']] = doc.id;
             });
             fs.collection("Evaluations").where("camper", "==", currEval.camperID).get().then(res => {
+                listElements = {};
                 res.forEach(doc => {
                     // if(doc.data()['date'].split("-")[0] == currEval.selectedYear) {
-                    if(doc.data()['year'] == currEval.selectedYear) {
+                    if(doc.data()['year'] == currEval.selectedYear && doc.data()['instructor'] == currEval.instrID) {
                         try {
                             let listElement = document.createElement("li");
                             let editButton = document.createElement("button");
@@ -156,7 +148,8 @@ function actEvalInit() {
                             }
                             editButton.innerHTML = doc.data()['activityName'];
                             listElement.appendChild(editButton);
-                            table.appendChild(listElement);
+                            listElements[doc.data()['activityName']] = listElement;
+                            // table.appendChild(listElement);
                             if (activities.hasOwnProperty(doc.data()['activityName'])) {
                                 delete activities[doc.data()['activityName']];
                             }
@@ -177,9 +170,13 @@ function actEvalInit() {
                     }
                     editButton.innerHTML = name;
                     listElement.appendChild(editButton);
-                    table.appendChild(listElement);
+                    listElements[name] = listElement;
+                    // table.appendChild(listElement);
+                    // console.log(name, activities[name]);
+                });
 
-                    console.log(name, activities[name]);
+                Object.keys(listElements).sort().forEach(function(activityName) {
+                    table.appendChild(listElements[activityName]);
                 });
             });
         });
@@ -190,6 +187,10 @@ function actEvalInit() {
  * Loads an Add evaluation form 
  */
 function loadNewEval(docID = currEval.actID, _callback = () => { }) {
+    if(document.getElementById("quest")) {
+        $("#quest").hide();
+    }
+
     currEval.actID = docID;
     if (currEval.evalMode == "add") {
         document.getElementById("activities").style = "display: none;";
@@ -200,32 +201,13 @@ function loadNewEval(docID = currEval.actID, _callback = () => { }) {
         document.getElementById("activityName").innerHTML = doc.data()['name'];
         // Adding daily checklist
         $("#evaluation").append(`<div class="sec-tit">Daily Check List</div>
-                                <ul id="checklist"></ul>`);
-        try {
-            let day = 1;
-            while (day < 4) {
-                let itemID = 1;
-                $("#checklist").append(`<li>
-                    <button class="btn bdrlessBtn evaluation-but" 
-                        onclick="console.log('checklist-day-${day}');
-                            console.log(document.getElementById('checklist-day-${day}'));
-                            toggleHide('checklist-day-${day}');">
-                        Day ${day}
-                    </button>
-                    <table id="checklist-day-${day}" class="hiddenElement sk-box"></table></li>`);
-                doc.data()['checklist'].forEach(item => {
-                    $(`#checklist-day-${day}`).append(`<tr class="chcklst-sec bordered-row">
-                        <td class="chcklst-tit padded-td">${item['name']}</td>
-                        <td class="chcklst-inpt padded-td"><input type="number" min="0" id="${'checklist' + itemID + '-' + day}-input" class="padded-input"></td>
-                        <td class="chcklst-inpt padded-td"><span>${item['type']}</span></td>
-                        </tr>`);
-                    itemID++;
-                });
-                day++;
-            }
-        } catch (err) {
-            console.log("Checklist doesn't exist in this activity: ", err);
-        }
+                                <ul id="checklist">
+                                    <li class="centeredRow">
+                                        <button class="add-day-btn" onclick="addDay('${docID}')">
+                                            Add Day
+                                        </button>
+                                    </li>
+                                </ul>`);
         //Adding Skills
         $("#evaluation").append(`<div class="sec-tit">Skills</div>
                                 <ul id="skills" class="skill-sec"></ul>`);
@@ -281,31 +263,156 @@ function loadNewEval(docID = currEval.actID, _callback = () => { }) {
     });
 }
 
+function addDay(docID, _callback = (dates, day) => {}, dates = [], day = 0) {
+    fs.collection("Activities").doc(docID).get().then(doc => {
+        try {
+            // let day = document.getElementsByClassName("day-btn").length + 1;
+            let day = 1;
+            while(document.getElementById("checklist-item-" + day)) {
+                day++;
+            }
+            
+            let itemID = 1;
+            $("#checklist").append(
+                `<li class="checklist-item" id="checklist-item-${day}">
+                    <ul>
+                        <button class="btn bdrlessBtn evaluation-but day-btn" onclick="toggleHide('checklist-day-${day}');">
+                            <input id="day-${day}-date" type="date"></input>
+                        </button>
+                    </ul>
+                    <ul>
+                        <table id="checklist-day-${day}" class="hiddenElement sk-box">
+                            <tr class="chcklst-sec bordered-row">
+                                <td>
+                                    <button class="remove-btn" onclick="removeDay(${day})">Delete Day</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </ul>
+                </li>`)
+                .ready(() => {
+                    _callback(dates, day);
+                });
+            doc.data()['checklist'].forEach(item => {
+                $(`#checklist-day-${day}`).append(
+                    `<tr class="chcklst-sec bordered-row">
+                            <td class="padded-td">
+                                <button class="bdrlessBtn bby-skill-btn" onclick="toggleHide('${'checklist' + itemID + '-' + day}-row');">
+                                    ${item['name']}
+                                </button>
+                            </td> ` +
+                                // <td class="chcklst-tit padded-td">${item['name']}</td>
+                                // <td class="chcklst-inpt padded-td"><input type="number" min="0" id="${'checklist' + itemID + '-' + day}-input" class="padded-input"></td>
+                                // <td class="chcklst-inpt padded-td"><span>${item['type']}</span></td>
+                    `</tr>
+                    <tr id="${'checklist' + itemID + '-' + day}-row" class="hiddenElement chcklst-sec bordered-row">
+                        <td>
+                            <table id="${'checklist' + itemID + '-' + day}" class="sk-box trials-row">
+                                <tr id="${item['name'].split(" ").join("") + "-" + day}" class="subskill">
+                                    <td>
+                                        <button class="add-trial-btn" onclick="addTrial('${day}', '${itemID}', '${item['name']}', '${item['type']}')">
+                                            Add Trial
+                                        </button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>`);
+                itemID++;
+            });
+        } catch (err) {
+            console.log("Checklist doesn't exist in this activity: ", err);
+        }
+    });
+}
+
+function removeDay(day) {
+    if(confirm("Are you sure you want to delete this day? NOTE: this action cannot be reversed.")) {
+        // console.log("YES: " + day);
+        document.getElementById('checklist-item-' + day).remove();
+    } else {
+        // console.log("NO: " + day);
+    }
+}
+
+function addTrial(day, itemID, itemName, units, _callback = (day, itemID, items, trialNum) => {}, items = [], trialNum = 0) {
+    document.getElementById(itemName.split(" ").join("") + "-" + day).remove();
+    let trial = document.getElementsByClassName('checklist' + itemID + '-' + day + "-trial").length + 1;
+    $(`#${'checklist' + itemID + '-' + day}`).append(
+        `<tr id="${'checklist' + itemID + '-' + day + '-' + trial}" class="chcklst-sec ${'checklist' + itemID + '-' + day}-trial">
+            <td class="chcklst-tit padded-td"><span>Trial #${trial}: </span></td>
+            <td class="chcklst-inpt padded-td"><input type="number" min="0" id="${'checklist' + itemID + '-' + day + '-' + trial}-input" class="padded-input trial-input-${itemID}-${day}"></td>
+            <td class="chcklst-inpt padded-td"><span>${units}</span></td>
+            <td class="chcklst-inpt padded-td">
+                <button class="remove-btn" onclick="removeTrial('${itemID}', '${day}', '${trial}');">X</button>
+            </td>
+        </tr>
+        <tr id="${itemName.split(" ").join("") + "-" + day}" class="subskill">
+            <td>
+                <button class="add-trial-btn" onclick="addTrial('${day}', '${itemID}', '${itemName}', '${units}');">
+                    Add Trial
+                </button>
+            </td>
+        </tr>`
+    ).ready(() => {
+        _callback(day, itemID, items, trialNum);
+    });
+}
+
+function removeTrial(itemID, day, trial) {
+    document.getElementById('checklist' + itemID + '-' + day + '-' + trial).remove();
+    let trials = document.getElementsByClassName('checklist' + itemID + '-' + day + "-trial");
+    let trialNum = parseInt(trial);
+    for(i = trialNum + 1; i <= trials.length + 1; i++) {
+        document.getElementById('checklist' + itemID + '-' + day + '-' + i)
+            .getElementsByClassName("chcklst-tit")[0].innerHTML = "Trial #" + (i - 1);
+        document.getElementById('checklist' + itemID + '-' + day + '-' + i)
+            .getElementsByClassName("remove-btn")[0].setAttribute("onclick", `removeTrial(${itemID}, ${day}, ${"" + (i - 1)});`);
+        document.getElementById(`${'checklist' + itemID + '-' + day + '-' + i}-input`).id = `${'checklist' + itemID + '-' + day + '-' + (i - 1)}-input`;
+        document.getElementById('checklist' + itemID + '-' + day + '-' + i).id = 'checklist' + itemID + '-' + day + '-' + (i - 1);
+    }
+}
+
 function submitEval(evalID = "DEFAULT") {
     let evalDoc = {};
     fs.collection("Activities").doc(currEval.actID).get().then(doc => {
         evalDoc['activityName'] = doc.data()['name'];
         evalDoc['camper'] = currEval.camperID;
-        evalDoc['dailyCheckList'] = { 1: [], 2: [], 3: [] };
+        evalDoc['dailyCheckList'] = {};
         evalDoc['skills'] = {};
         evalDoc['date'] = currEval.date;
         evalDoc['year'] = currEval.selectedYear;
         evalDoc['instructor'] = currEval.instrID;
         try {
             let checkLen = doc.data()['checklist'].length;
-            let day = 1;
-            while (day < 4) {
-                let itemID = 1;
-                while (itemID < checkLen + 1) {
-                    evalDoc['dailyCheckList'][day].push(document.getElementById(`${"checklist" + itemID + "-" + day}-input`).value);
-                    itemID++;
+            let days = document.getElementsByClassName("checklist-item");
+            for (let checklistItem of days) {
+                let day = checklistItem.id.split("-")[2];
+                let evalDate = document.getElementById(`day-${day}-date`).value;
+                if(evalDate) {
+                    if(evalDate.split("-")[0] == evalDoc['year']) {
+                        if(!(evalDate in evalDoc['dailyCheckList'])) {
+                            evalDoc['dailyCheckList'][evalDate] = {};
+                            let itemID = 1;
+                            while (itemID <= checkLen) {
+                                evalDoc['dailyCheckList'][evalDate][itemID] = [];
+                                let trials = document.getElementsByClassName(`trial-input-${itemID}-${day}`);
+                                for (let trial = 1; trial <= trials.length; trial++) {
+                                    evalDoc['dailyCheckList'][evalDate][itemID].push(document.getElementById(`${'checklist' + itemID + '-' + day + '-' + trial}-input`).value);
+                                }
+                                itemID++;
+                            }
+                        } else {
+                            throw "There are multiple assessments on " + evalDate;
+                        }
+                    } else {
+                        throw evalDate + " is not within the selected year of " + evalDoc['year'];
+                    }
+                } else {
+                    throw "Every assessment must be filled out with a valid date";
                 }
-                day++;
             }
-        } catch (err) {
-            console.log("Checklist does not exist when submitting for this activity: ", err);
-        }
-        try {
+
             let skillsLen = doc.data()['skills'].length;
             let skillCount = 1;
             while (skillCount < skillsLen + 1) {
@@ -321,22 +428,20 @@ function submitEval(evalID = "DEFAULT") {
                 }
                 skillCount++;
             }
+
+            if (currEval.evalMode == "add") {
+                fs.collection("Evaluations").add(evalDoc).then(() => {
+                    alert("Evaluation updated successfully!");
+                    router.loadRoute("home");
+                });
+            } else {
+                fs.collection("Evaluations").doc(currEval.evalID).set(evalDoc).then(() => {
+                    alert("Evaluation updated successfully!");
+                    router.loadRoute("home");
+                });
+            }
         } catch (err) {
-
-            console.log("Skills does not exist when submitting for this activity: ", err)
-        }
-        if (currEval.evalMode == "add") {
-            fs.collection("Evaluations").add(evalDoc).then(() => {
-                alert("Evaluation updated successfully!");
-
-                router.loadRoute("home")
-            });
-        } else {
-            //console.log(`The ID ${currEval.evalID} has been updated to ` + JSON.stringify(evalDoc));
-            fs.collection("Evaluations").doc(currEval.evalID).set(evalDoc).then(() => {
-                alert("Evaluation updated successfully!");
-                router.loadRoute("home")
-            });
+            alert("Could not successfully update this assessment: " + err);
         }
     });
 }
@@ -348,16 +453,13 @@ function initEvalTable() {
             coaches[doc.data()['id']] = doc.data();
         });
         fs.collection("Evaluations").where("camper", "==", currEval.camperID).get().then(res => {
-            // let table = $('#evaluations').DataTable(); 
             let table = document.getElementById("evaluations");
             res.forEach(doc => {
                 try {
-                    // console.log("coaches: ", coaches);
                     let listElement = document.createElement("li");
                     let editButton = document.createElement("button");
                     editButton.classList.add("btn", "bdrlessBtn", "act-btns");
                     editButton.onclick = (evt) => {
-                        // editEval("" + doc.data()['activityName'], "" + doc.id, JSON.stringify(doc.data()));
                         editEval("" + doc.data()['activityName'], "" + doc.id, doc.data());
                     }
                     editButton.innerHTML = doc.data()['activityName'];
@@ -368,28 +470,35 @@ function initEvalTable() {
                     console.log("Couldn't load the coach for the specified assessment " + doc.id + ": ", err);
                 }
             });
-            // table.draw();
         });
     });
 }
 
-function populateEval(evalDoc) {
+function populateEval(evalDoc, checklist) {
     $(document).ready(function () {
         try {
-            // evalDoc = JSON.parse(evalDoc);
-            let checkLen = evalDoc['dailyCheckList'][1].length;
-            let day = 1;
-            while (day < 4) {
-                let itemID = 1;
-                while (itemID < checkLen + 1) {
-                    console.log(`SOmething wrong with ${"checklist" + itemID + "-" + day}`);
-                    document.getElementById(`${"checklist" + itemID + "-" + day}-input`).value = evalDoc['dailyCheckList'][day][itemID - 1];
-                    itemID++;
+            let dates = Object.keys(evalDoc['dailyCheckList']);
+            let days = dates.length;
+            for(let day = 1; day <= days; day ++) {
+                let populateDay = (dates, day) => {
+                    document.getElementById(`day-${day}-date`).value = dates[day - 1];
+                    let itemIDs = Object.keys(evalDoc['dailyCheckList'][dates[day - 1]]);
+                    let items = evalDoc['dailyCheckList'][dates[day - 1]];
+                    for(let itemID of itemIDs) {
+                        let trials = items[itemID];
+                        for(let trial = 1; trial <= trials.length; trial++) {
+                            let populateTrial = (day, itemID, items, trialNum) => {
+                                document.getElementById(`${'checklist' + itemID + '-' + day + '-' + trialNum}-input`).value = items[itemID][trialNum - 1];
+                            }
+                            addTrial(day, itemID, checklist[itemID - 1]['name'], checklist[itemID - 1]['type'], populateTrial, items, trial);
+                        }
+                        itemID++;
+                    }
                 }
-                day++;
+                addDay(currEval.actID, populateDay, dates, day);
             }
         } catch (err) {
-            console.log("Checklist does not exist in this Evaluation Document: ", err);
+            console.log("Could not populate evaluation: ", err);
         }
         try {
             let skillsLen = Object.getOwnPropertyNames(evalDoc['skills']).length;
@@ -422,10 +531,8 @@ function editEval(actName, evalID, evalDoc) {
             currEval.actID = doc.id;
             document.getElementById("evaluations").style = "display: none;";
             document.getElementById("activities").style = "display: none;";
-            // $('#evaluations').DataTable().destroy();
             loadNewEval(doc.id).then(() => {
-                populateEval(evalDoc);
-
+                populateEval(evalDoc, doc.data()['checklist']);
             });
         });
     });
@@ -459,3 +566,14 @@ function populateYearPicker() {
         });
     });
 }
+
+
+
+
+
+// fs.collection("Evaluations").get().then(function(querySnapshot) {
+//     querySnapshot.forEach(function(doc) {
+//         let checklistData = doc.data()['dataCheckList'];
+//         let newChecklistData = {};
+//     });
+// });

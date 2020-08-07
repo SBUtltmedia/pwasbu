@@ -27,8 +27,10 @@ class Router {
     const routerOutletElement = document.querySelectorAll('[data-router-outlet]')[0];
     // routerOutletElement.innerHTML = matchedRoute.getTemplate(matchedRoute.params);
     matchedRoute.getTemplate(matchedRoute.params).then((page)=>{
-      routerOutletElement.innerHTML='';
-      routerOutletElement.appendChild(page.content.querySelectorAll('div')[0]);
+      if(routerOutletElement) {
+        routerOutletElement.innerHTML='';
+        routerOutletElement.appendChild(page.content.querySelectorAll('div')[0]);
+      }
      });
   }
 

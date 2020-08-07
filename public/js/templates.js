@@ -1,8 +1,8 @@
-function accountsetting_template(){
+function accountsettings_template(){
     $("#loader").hide();
     $("#profile-error").hide();
     $("#profile-success").hide();
-    console.log("loading in fields");
+    // console.log("loading in fields");
     initAccountSettings();
     initNavBar();
 }
@@ -23,7 +23,7 @@ function editprofile_template(){
     $("#profile-error").hide();
     $("#profile-success").hide();
     //Date is in YYYY-MM-DD Format
-    console.log("loading in fields");
+    // console.log("loading in fields");
     initEditProfile();
     function changePhoto() {
         let fileReader = new FileReader();
@@ -123,7 +123,6 @@ function login_template(){
     $(".btn").click(function () {
         $(".input").val("");
     });
-    console.log("Hi there");
 }
 
 function missinginfo_template(){
