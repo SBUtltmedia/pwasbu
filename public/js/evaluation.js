@@ -26,7 +26,7 @@ function initCampersEvalTable() {
         res.docs[0].ref.get().then(doc => {
             fs.collection("Groups").where("coach", "==", doc.data()['id']).get().then(res => {
                 currEval.selectedYear = document.getElementById("yearPicker").value;
-                console.log("Selected Year: ", currEval.selectedYear);
+                // console.log("Selected Year: ", currEval.selectedYear);
                 res.docs.forEach(doc => {
                     if(doc.data()['year'] == currEval.selectedYear) {
                         doc.data()['campers'].sort().forEach(camper => {
@@ -134,9 +134,10 @@ function actEvalInit() {
                 activities[doc.data()['name']] = doc.id;
             });
             fs.collection("Evaluations").where("camper", "==", currEval.camperID).get().then(res => {
+                listElements = {};
                 res.forEach(doc => {
                     // if(doc.data()['date'].split("-")[0] == currEval.selectedYear) {
-                    if(doc.data()['year'] == currEval.selectedYear) {
+                    if(doc.data()['year'] == currEval.selectedYear && doc.data()['instructor'] == currEval.instrID) {
                         try {
                             let listElement = document.createElement("li");
                             let editButton = document.createElement("button");
@@ -147,7 +148,8 @@ function actEvalInit() {
                             }
                             editButton.innerHTML = doc.data()['activityName'];
                             listElement.appendChild(editButton);
-                            table.appendChild(listElement);
+                            listElements[doc.data()['activityName']] = listElement;
+                            // table.appendChild(listElement);
                             if (activities.hasOwnProperty(doc.data()['activityName'])) {
                                 delete activities[doc.data()['activityName']];
                             }
@@ -168,9 +170,13 @@ function actEvalInit() {
                     }
                     editButton.innerHTML = name;
                     listElement.appendChild(editButton);
-                    table.appendChild(listElement);
+                    listElements[name] = listElement;
+                    // table.appendChild(listElement);
+                    // console.log(name, activities[name]);
+                });
 
-                    console.log(name, activities[name]);
+                Object.keys(listElements).sort().forEach(function(activityName) {
+                    table.appendChild(listElements[activityName]);
                 });
             });
         });
@@ -560,3 +566,14 @@ function populateYearPicker() {
         });
     });
 }
+
+
+
+
+
+// fs.collection("Evaluations").get().then(function(querySnapshot) {
+//     querySnapshot.forEach(function(doc) {
+//         let checklistData = doc.data()['dataCheckList'];
+//         let newChecklistData = {};
+//     });
+// });

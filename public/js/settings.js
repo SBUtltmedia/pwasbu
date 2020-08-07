@@ -87,7 +87,7 @@ let loadProfilePicture = () => {
     listRef.listAll().then(function(res) {
         let profilePic = res.items[0];
         storageRef.child(encodeURI(`users/${user.email}/profile-picture/${profilePic.name}`)).getDownloadURL().then(function(url) {
-            console.log("Loading " + url + " as profile image");
+            // console.log("Loading " + url + " as profile image");
             document.getElementById("profile-pic").src = url;
         }).catch(function(error) {
             console.log(error);
@@ -112,7 +112,7 @@ let initEditProfile = () => {
     birthdateField = document.getElementById("birthdate");
     birthdateField.max = new Date().toDateInputValue();
     userData = JSON.parse(localStorage.getItem("userData"));
-    console.log(userData['gender']);
+    // console.log(userData['gender']);
     birthdateField.value = userData['birthdate'];
     document.getElementById("user-first-name").value = userData['firstName'];
     document.getElementById("user-last-name").value = userData['lastName'];

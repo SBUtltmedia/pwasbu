@@ -51,11 +51,11 @@ var ui = new firebaseui.auth.AuthUI(firebase.auth());
 
 firebase.auth().onAuthStateChanged((user) => {
     if (user) {
-        console.log("logged in", user);
+        console.log("LOGGED IN WITH EMAIL: " + user.email);
         router.loadRoute('home');
         router.loadNavRoute('navbar');
     } else {
-        console.log("logged out", user);
+        console.log("LOGGED OUT");
         router.loadRoute('');
         router.hideNav();
     }
