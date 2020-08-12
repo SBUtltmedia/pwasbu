@@ -36,5 +36,8 @@
     "hosting": {
       "port": 5000
     }
+  },
+  "database": {
+    "rules": "database.rules.json"
   }
 }
