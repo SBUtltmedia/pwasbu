@@ -38,6 +38,45 @@ function createSelectElement(options, values, selected, id, classes) {
     return select;
 }
 
+function select2Init(id) {
+    $(`#${id}`).select2({
+        tags: true,
+        createTag: function (params) {
+            var term = $.trim(params.term);
+            var existsVar = false;
+            //check if there is any option already
+            if($('#keywords option').length > 0){
+                $('#keywords option').each(function(){
+                    if ($(this).text().toUpperCase() == term.toUpperCase()) {
+                        existsVar = true
+                        return false;
+                    }else{
+                        existsVar = false
+                    }
+                });
+                if(existsVar){
+                    return null;
+                }
+                return {
+                    id: params.term,
+                    text: params.term,
+                    newTag: true
+                }
+            }
+            //since select has 0 options, add new without comparing
+            else{
+                return {
+                    id: params.term,
+                    text: params.term,
+                    newTag: true
+                }
+            }
+        },
+        maximumInputLength: 100, // only allow terms up to 100 characters long
+        closeOnSelect: true
+    });
+}
+
 /**
  * Data has to be formated with as the following
  * { 
@@ -182,47 +221,16 @@ function getActivity(id) {
             insertedRow.insertCell().innerHTML = skill['skillName'];
             insertedRow.insertCell().innerHTML = subSkillStr;
             insertedRow.insertCell().innerHTML = id;
-            $(`#${"subskill-" + id}`).select2({
-                tags: true,
-                createTag: function (params) {
-                    var term = $.trim(params.term);
-                    var existsVar = false;
-                    //check if there is any option already
-                    if($('#keywords option').length > 0){
-                        $('#keywords option').each(function(){
-                            if ($(this).text().toUpperCase() == term.toUpperCase()) {
-                                existsVar = true
-                                return false;
-                            }else{
-                                existsVar = false
-                            }
-                        });
-                        if(existsVar){
-                            return null;
-                        }
-                        return {
-                            id: params.term,
-                            text: params.term,
-                            newTag: true
-                        }
-                    }
-                    //since select has 0 options, add new without comparing
-                    else{
-                        return {
-                            id: params.term,
-                            text: params.term,
-                            newTag: true
-                        }
-                    }
-                },
-                maximumInputLength: 100, // only allow terms up to 100 characters long
-                closeOnSelect: true
-            })
+            select2Init("subskill-" + id);
         });
         $(document).ready(function() {
             ////////////////// add data to checklist table //////////////////////////
             if(!$('#checklist').DataTable()){
                 $('#checklist').DataTable({  
+                    // createdRow: function ( row, data, index ) {
+                    //     console.log("I am working");
+                    //     console.log(JSON.stringify(data));
+                    // },
                     columns: [
                         {"title" : "Checklist Name", 'searchable': false},
                         {"title" : "Unit of Measure", 'searchable': false},
@@ -252,11 +260,19 @@ function getActivity(id) {
 }
 function addSkill(){
     let id = Math.random().toString(36).substring(2, 8) + Math.random().toString(36).substring(2, 8);
+    // Really ugly method but works...
+    $('#skills').on( 'draw.dt', function () {
+        select2Init("subskill-" + id);
+    } );
     let tempSkill = [
-        `<input type="text" id="${"skill-" + id}" class="input" value="Skill">`, 
-        `<input type="text" id="${"subskill-" + id}" class="input" value="Subskill, Subskill">`,
+        `<input type="text" id="${"skill-" + id}" class="input" value="Example Skill">`,
+        `<select class="" id="${"subskill-" + id}" multiple="multiple">
+            <option value="example subskill" selected>example subskill</option>
+        </select>`,
         `<button class='btn bdrlessBtn' onclick='removeSkill("${id}")'>Remove</button>`,
-        "Skill", "Subskill, Subskill", id
+        "Example Skill",
+        "example subskill",
+        id
     ]
     $('#skills').DataTable().row.add(tempSkill).draw();
 }
@@ -272,13 +288,57 @@ function removeSkill(id){
 }
 function addCheckList(){
     let id = Math.random().toString(36).substring(2, 8) + Math.random().toString(36).substring(2, 8);
-    let checklist = [
-        `<input type="text" id="${"check-" + id}" class="input" value="Example Checklist name">`, 
-        `<input type="text" id="${"check-unit-" + id}" class="input" value="inches">`,
-        `<button class='btn bdrlessBtn' onclick='removeCheck("${id}")'>Remove</button>`,
-        "Example Checklist name", "inches", id
-    ]
-    $('#checklist').DataTable().row.add(checklist).draw();
+    // Old Asynchronous method. Now deprecated //
+    // let checklist = [
+    //     `<input type="text" id="${"check-" + id}" class="input" value="Example Checklist name">`, 
+    //     `<input type="text" id="${"check-unit-" + id}" class="input" value="inches">`,
+    //     `<button class='btn bdrlessBtn' onclick='removeCheck("${id}")'>Remove</button>`,
+    //     "Example Checklist name", "inches", id
+    // ]
+    // $('#checklist').DataTable().row.add(checklist).draw();
+    let insertedRow = document.getElementById('skills').insertRow();
+    insertedRow.insertCell().innerHTML = `<input type="text" id="${"skill-" + id}" class="input" value="${skill['skillName']}">`;
+    insertedRow.insertCell().innerHTML = `<select class="" id="${"subskill-" + id}" multiple="multiple">${subSkillOptions}</select>`;
+    insertedRow.insertCell().innerHTML =  `<button class='btn bdrlessBtn' onclick='removeSkill("${id}")'>Remove</button>`;
+    insertedRow.insertCell().innerHTML = skill['skillName'];
+    insertedRow.insertCell().innerHTML = subSkillStr;
+    insertedRow.insertCell().innerHTML = id;
+    $(`#${"subskill-" + id}`).select2({
+        tags: true,
+        createTag: function (params) {
+            var term = $.trim(params.term);
+            var existsVar = false;
+            //check if there is any option already
+            if($('#keywords option').length > 0){
+                $('#keywords option').each(function(){
+                    if ($(this).text().toUpperCase() == term.toUpperCase()) {
+                        existsVar = true
+                        return false;
+                    }else{
+                        existsVar = false
+                    }
+                });
+                if(existsVar){
+                    return null;
+                }
+                return {
+                    id: params.term,
+                    text: params.term,
+                    newTag: true
+                }
+            }
+            //since select has 0 options, add new without comparing
+            else{
+                return {
+                    id: params.term,
+                    text: params.term,
+                    newTag: true
+                }
+            }
+        },
+        maximumInputLength: 100, // only allow terms up to 100 characters long
+        closeOnSelect: true
+    });
 }
 function removeCheck(id){
     let checkTable = $('#checklist').DataTable().rows().data();
