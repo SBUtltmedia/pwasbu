@@ -107,7 +107,7 @@ function populateAct(data) {
     data.forEach((d, i) => {
         finishedArray.push([d['name'],
         `<button class='btn bdrlessBtn' onclick='getActivity("${d['id']}")'>Edit</button>`,
-        `<button class='btn bdrlessBtn btn-danger' onclick='removeActivity("${d['id']}")'>Remove</button>`
+        `<button class='btn bdrlessBtn btn-danger' onclick='removeActivity("${d['id']}", "${d['name']}")'>Remove</button>`
     ]);
     });
     return finishedArray;
@@ -141,14 +141,16 @@ function initActivitiesTable(){
  * Populates the edit activity field
  * @param {*} id 
  */
-function removeActivity(id) {
-    fs.collection('Activities').doc(id).delete().then(()=>{
-        $('#activities').DataTable().clear();
-        $('#activities').DataTable().destroy();
-        $('#activities tr').remove();
-        document.getElementById('act-edit').style = "display: none;";
-        initActivitiesTable();
-    });
+function removeActivity(id, name) {
+    if(confirm(`Are you sure you would like to remove the activity : ${name}`)) {
+        fs.collection('Activities').doc(id).delete().then(()=>{
+            $('#activities').DataTable().clear();
+            $('#activities').DataTable().destroy();
+            $('#activities tr').remove();
+            document.getElementById('act-edit').style = "display: none;";
+            initActivitiesTable();
+        });
+    }
 }
 function updateActivity(id){
     let skillsTable = $("#skills").DataTable().rows().data();
@@ -179,6 +181,9 @@ function updateActivity(id){
     let data = {checklist: checklist, name: activityName, skills: skills};
     // console.log(JSON.stringify(data));
     fs.collection('Activities').doc(id).update(data).then(()=>{
+        $('#activities').DataTable().clear();
+        $('#activities').DataTable().destroy();
+        initActivitiesTable();
         alert(`${activityName} has been updated successfully!`);
     }).catch(err => {
         alert(err);
@@ -288,57 +293,13 @@ function removeSkill(id){
 }
 function addCheckList(){
     let id = Math.random().toString(36).substring(2, 8) + Math.random().toString(36).substring(2, 8);
-    // Old Asynchronous method. Now deprecated //
-    // let checklist = [
-    //     `<input type="text" id="${"check-" + id}" class="input" value="Example Checklist name">`, 
-    //     `<input type="text" id="${"check-unit-" + id}" class="input" value="inches">`,
-    //     `<button class='btn bdrlessBtn' onclick='removeCheck("${id}")'>Remove</button>`,
-    //     "Example Checklist name", "inches", id
-    // ]
-    // $('#checklist').DataTable().row.add(checklist).draw();
-    let insertedRow = document.getElementById('skills').insertRow();
-    insertedRow.insertCell().innerHTML = `<input type="text" id="${"skill-" + id}" class="input" value="${skill['skillName']}">`;
-    insertedRow.insertCell().innerHTML = `<select class="" id="${"subskill-" + id}" multiple="multiple">${subSkillOptions}</select>`;
-    insertedRow.insertCell().innerHTML =  `<button class='btn bdrlessBtn' onclick='removeSkill("${id}")'>Remove</button>`;
-    insertedRow.insertCell().innerHTML = skill['skillName'];
-    insertedRow.insertCell().innerHTML = subSkillStr;
-    insertedRow.insertCell().innerHTML = id;
-    $(`#${"subskill-" + id}`).select2({
-        tags: true,
-        createTag: function (params) {
-            var term = $.trim(params.term);
-            var existsVar = false;
-            //check if there is any option already
-            if($('#keywords option').length > 0){
-                $('#keywords option').each(function(){
-                    if ($(this).text().toUpperCase() == term.toUpperCase()) {
-                        existsVar = true
-                        return false;
-                    }else{
-                        existsVar = false
-                    }
-                });
-                if(existsVar){
-                    return null;
-                }
-                return {
-                    id: params.term,
-                    text: params.term,
-                    newTag: true
-                }
-            }
-            //since select has 0 options, add new without comparing
-            else{
-                return {
-                    id: params.term,
-                    text: params.term,
-                    newTag: true
-                }
-            }
-        },
-        maximumInputLength: 100, // only allow terms up to 100 characters long
-        closeOnSelect: true
-    });
+    let checklist = [
+        `<input type="text" id="${"check-" + id}" class="input" value="Example Checklist name">`, 
+        `<input type="text" id="${"check-unit-" + id}" class="input" value="inches">`,
+        `<button class='btn bdrlessBtn' onclick='removeCheck("${id}")'>Remove</button>`,
+        "Example Checklist name", "inches", id
+    ]
+    $('#checklist').DataTable().row.add(checklist).draw();
 }
 function removeCheck(id){
     let checkTable = $('#checklist').DataTable().rows().data();
@@ -356,7 +317,7 @@ function addActivity(){
         name: "Example Activity",
         skills: [
             {
-                name: "Example Skill",
+                skillName: "Example Skill",
                 subSkills: ["subSkill Example", "Another subskill"]
             }
         ]
@@ -367,7 +328,7 @@ function addActivity(){
             table.row.add([
                 "Example Activity", 
                 `<button class='btn bdrlessBtn' onclick='getActivity("${docRef.id}")'>Edit</button>`,
-                `<button class='btn bdrlessBtn btn-danger' onclick='removeActivity("${docRef.id}")'>Remove</button>`
+                `<button class='btn bdrlessBtn btn-danger' onclick='removeActivity("${docRef.id}", "${data['name']}")'>Remove</button>`
             ]).draw();
         });
     });
@@ -476,10 +437,12 @@ function updateCamperTable(){
     });
 }
 function removeCamper(docid) {
-    fs.collection('users').doc(docid).delete().then(()=>{
-        updateCamperTable();
-        updateGroupsTable();
-    });
+    if(confirm("Are you sure you would like to remove this camper?")){
+        fs.collection('users').doc(docid).delete().then(()=>{
+            updateCamperTable();
+            updateGroupsTable();
+        });
+    }
 }
 function addCamper(){
     let userPayload = generateUser("", "John", "Doe", "Female", "", "camper");
