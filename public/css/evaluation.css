@@ -2,6 +2,7 @@
     color: #840101;
     /*font-size: 1.5em;*/
 }
+
 .secondDropDownColor {
     color: #32a9ce;
     /*font-size: 1.5em;*/
@@ -17,9 +18,23 @@ li{
     border-radius: 15px;
 }
 
+@media(hover: hover) and (pointer: fine) {
+    .bby-skill-btn:hover {
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .add-day-btn:hover {
+        font-weight: bold;
+        cursor: pointer;
+    }
+}
+
 .bby-skill-btn{
-    font-family: "Arial Black";
-    font-size: 1.5rem;
+    font-size: 2.0rem;
+    color: var(--primary-color);
+    background-color: inherit;
+    width: 100%;
 }
 
 .bck-hme{
@@ -35,9 +50,11 @@ li{
     text-align: center;
 }
 
-.quest{
+#quest{
     font-size: 1.5rem;
     text-align: center;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
 
 button.evaluation-but
@@ -67,6 +84,7 @@ tr{
 
 .skll-comm{
     display: inline-grid;
+    width: 100%;
 }
 
 .sk-box{
@@ -74,36 +92,40 @@ tr{
     margin-left: auto;
     margin-right: auto;
     width: 100%;
-    border: 1px solid var(--primary-color);
 }
 
 .chcklst-tit, .chcklst-inpt{
-    font-size: 1.5rem;
+    font-size: 2.0rem;
 }
 
 #activityName
 {
-    font-size: 2rem;
+    text-align: center;
+    font-size: 3rem;
+    margin-top: 1rem;
 }
 
 #checklist, #skills
 {
     font-size: 1.8rem;
 }
+
 .dcl, .ev-title{
     font-size: 2.5rem;
 }
-.chcklst-sec{
-    border: 1px solid red;
+
+tr.bordered-row {
+    width: 100%;
+    outline: 2px solid var(--primary-color);
+}
+
+td.padded-td {
+    padding: 10px;
 }
 
 #activities_wrapper{
     text-align: center;
 }
-
-/* .dataTables_wrapper{
-    text-align: center;
-} */
 
 .subskill{
     text-align: center;
@@ -113,4 +135,50 @@ tr{
     text-align: center;
     margin-left: auto;
     margin-right: auto;
+    width: 100%;
+}
+
+.padded-input {
+    padding: 1rem;
+    font-size: 2rem;
+}
+
+.centeredRow {
+    text-align: center;
+    margin-top: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.add-day-btn {
+    font-size: 2.0rem;
+    color: var(--primary-color);
+    background-color: inherit;
+    border: 1px solid var(--primary-color);
+    padding: 0.5rem;
+}
+
+.add-trial-btn {
+    font-size: 2.0rem;
+    color: white;
+    background-color: var(--primary-color);
+    border: 1px solid white;
+    border-radius: 10px;
+    padding: 0.5rem;
+    width: 100%;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.remove-btn {
+    font-size: 2.0rem;
+    color: white;
+    background-color: red;
+    border: 1px solid white;
+    border-radius: 10px;
+    padding: 0.5rem;
+    margin: 0.5rem;
+}
+
+.trials-row {
+    margin-top: 0.75rem;
 }

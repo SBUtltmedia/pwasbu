@@ -67,7 +67,7 @@ table.block th {
 /* Desktop */
 @media screen and (min-width: 800px) {
     .cp-button {
-        width: 24%;
+        width: 23vw;
         margin: 0.5rem;
     }
 }
@@ -78,4 +78,14 @@ table.block th {
 
 .cp-toggleColor {
     background-color: var(--secondary-color);
+}
+
+.cp-table {
+    width: 100% !important;
+}
+
+#update-activity {
+    position: fixed; /* Set the navbar to fixed position */
+    bottom: 0; /* Position the navbar at the top of the page */
+    width: 100%; /* Full width */
 }

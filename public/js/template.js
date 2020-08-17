@@ -1,8 +1,9 @@
 class Template {
     async load (filename) {
-         console.log(filename);
+        //  console.log(filename);
         const url = new URL(`../templates/${filename}.html`,
           document.currentScript && document.currentScript.src || location.href)
+
       //  if (url in this) return this[url]
         // fetch and parse template as string
         let template = await fetch(url)
@@ -19,6 +20,13 @@ class Template {
         }
         document.head.append(template)
         this[url] = template
+        $(document).ready(function(){
+          // function we want to run
+          // find object
+          var fn = window[filename.toLowerCase()+"_template"];
+          // is object a function?
+          if (typeof fn === "function") fn();
+        });
         return template
       }
 }

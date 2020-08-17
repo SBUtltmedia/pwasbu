@@ -20,7 +20,9 @@ function initNavBar(){
                 if(res.docs.length > 0) {
                     res.docs[0].ref.get().then(doc=> {
                       if(doc.data()['priv'] != "admin") {
-                        document.getElementById("nav-act").remove();
+                        if(document.getElementById("nav-act")) {
+                            document.getElementById("nav-act").remove();
+                        }
                       }
                     });
                 } else {

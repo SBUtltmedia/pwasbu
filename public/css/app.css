@@ -12,7 +12,7 @@
 
 body {
     background: var(--background-color);
-    font-family: "Arial Black";
+    font-family: 'Roboto', sans-serif;
     user-select: none;
 }
 #login_logo {
@@ -32,8 +32,8 @@ body {
 }
 
 /* small tablet styles */
-@media screen and (min-width: 320px){
-    body{
+@media screen and (min-width: 320px){ 
+  body{
         font-size: 18px;
       }
       #data-router-outlet{
@@ -118,5 +118,6 @@ td{
 } 
 
 .sec-tit{
-  font-size: 1.5rem;
+  text-align: center;
+  font-size: 2rem;
 }

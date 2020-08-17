@@ -51,33 +51,5 @@
                 </div>
             </div>
         </div>
-        <script>
-            $(".navbar").hide();
-            $("#signup-birthdate").val(new Date().toDateInputValue());
-            $(".signup-form").hide();
-            $(".loader").hide();
-            $(".signup").css("background", "none");
-            $("#pass_tip").hide();
-            $("#pass_error").hide();
-            $("#login_error").hide();
-            $('#pass_match').hide();
-            $(".login").click(function () {
-                $(".signup-form").hide();
-                $(".login-form").show();
-                $(".signup").css("background", "none");
-                $(".login").css("background", "#fff");
-            });
-
-            $(".signup").click(function () {
-                $(".signup-form").show();
-                $(".login-form").hide();
-                $(".login").css("background", "none");
-                $(".signup").css("background", "#fff");
-            });
-
-            $(".btn").click(function () {
-                $(".input").val("");
-            });
-        </script>
     </div>
 </template>

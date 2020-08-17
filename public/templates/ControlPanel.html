@@ -12,7 +12,7 @@
 
         <button class="btn btn-primary cp-button" type="button" data-toggle="collapse" data-target="#campers-control"
             aria-expanded="false" aria-controls="collapseExample" onclick="toggleHide('campers-control'); togglePrimaryColor('campers-expand');" id="campers-expand">
-            Campers
+            Athletes
         </button>
         
 
@@ -31,7 +31,7 @@
                 Add an Activity
             </button>
             <div class="cp-subTitle">Activities Table</div>
-            <table id="activities" class="block row-border">
+            <table id="activities" class="block cp-table row-border">
 
                 <!-- <thead>
                 <tr>
@@ -48,7 +48,7 @@
                     onclick="addCheckList()">Add a Checklist Item</button>
                 <div class="cp-smallTitle">Daily Checklist: </div>
                 <!--Adding id's and class tags don't seem to be able to change the css-->
-                <table id="checklist" class="block row-border">
+                <table id="checklist" class="block cp-table row-border">
                     <thead>
                         <tr>
                             <th>Name</th>
@@ -60,7 +60,7 @@
                 <button class="btn" onclick="addSkill()">Add a
                     Skill</button>
                 <div class="cp-smallTitle">Skills: </div>
-                <table id="skills" class="block row-border">
+                <table id="skills" class="block cp-table row-border">
                     <thead>
                         <tr>
                             <th>Name</th>
@@ -70,29 +70,32 @@
                         </tr>
                     </thead>
                 </table> <br /> <br />
-                <button class="btn" id="update-activity">Submit Changes</button>
+                <button class="btn" id="update-activity">Submit Activity Changes</button>
             </div>
         </div>
 
         <div id="campers-control" class="collapse hiddenElement">
             <button class="btn" type="button" onclick="addCamper()">
-                Add a Camper
+                Add an Athlete
             </button>
-            <div class="cp-subTitle">All Campers</div>
-            <table id="campers" class="block row-border" > </table>
+            <div class="cp-subTitle">All Athletes</div>
+            <table id="campers" class="block cp-table row-border" > </table>
         </div>
 
         <div id="groups-control" class="collapse hiddenElement">
             <!-- <button class="btn" style="width: 50%;" type="button" onclick="addGroup()">
                 Add a Group
             </button> -->
+            <select id="yearPicker" onchange="updateGroupsTable()"></select>
             <div class="cp-subTitle">All Coach Groups</div>
-            <table id="groups" class="block row-border"></table>
+            <table id="groups" class="block cp-table row-border">
+            <tbody> </tbody>
+            </table>
         </div>
 
         <div id="users-control" class="collapse hiddenElement">
             <div class="cp-subTitle">All Users</div>
-            <table id="users" class="block row-border"> </table>
+            <table id="users" class="block cp-table row-border"> </table>
             <button type="button" class="btn" data-toggle="modal" data-target="#modal-user" data-micromodal-trigge="modal-dialog">
                 Add User
             </button>
@@ -152,13 +155,5 @@
                 </div>
             </div>
         </div>
-        <script>
-            initActivitiesTable();
-            initNavBar();
-            initCampersTable();
-            initGroupsTable();
-            initUsersTable();
-            initUserModal();
-        </script>
     </div>
 </template>
