@@ -61,7 +61,7 @@ firebase use facultycommonskiosk
 You can see a list of projects you have access to   
 firebase projects:list  
 MAKE SURE IT SHOWS "facultycommonskiosk (current)"   
-firebase auth:import .\pwasbu_users.csv --hash-algo=scrypt --rounds=8 --mem-cost=14 --hash-key=<key from above> --salt-separator=<salt from above>  
+firebase auth:import .\pwasbu_users.csv --hash-algo=scrypt --rounds=8 --mem-cost=14 --hash-key=&lt;key from above&gt; --salt-separator=&lt;salt from above&gt; 
 
 
 # Exporting images (buckets):
