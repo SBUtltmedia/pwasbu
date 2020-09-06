@@ -70,7 +70,39 @@ table.block th {
         width: 23vw;
         margin: 0.5rem;
     }
+    .alert {
+        display: none;
+      }
+      
+      .closebtn {
+        display: none;
+      }
+      
 }
+
+@media only screen and (max-width: 600px) {
+    .alert {
+        padding: 20px;
+        background-color: #f44336;
+        color: white;
+        font-size:2.5rem;
+      }
+      
+      .closebtn {
+        margin-left: 15px;
+        color: white;
+        font-weight: bold;
+        float: right;
+        font-size: 22px;
+        line-height: 20px;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+      
+      .closebtn:hover {
+        color: black;
+      }
+  }
 
 .blackBar {
     border-top: 50px solid #000;
@@ -89,9 +121,6 @@ table.block th {
     bottom: 0; /* Position the navbar at the top of the page */
     width: 100%; /* Full width */
 }
-            body {
-                font-family: Arial;
-            }
 
             /* Style the tab */
             .tab {
@@ -129,3 +158,5 @@ table.block th {
                 border: 1px solid #ccc;
                 border-top: none;
             }
+
+            
