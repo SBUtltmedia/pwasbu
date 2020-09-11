@@ -81,7 +81,9 @@
                 </thead> -->
                 <!-- <tbody></tbody> -->
             </table>
+
             <div id="act-edit" style='display:none;'>
+                <a id="anchor-name">Edit Activity Anchor</a>
                 <div class="cp-subTitle">Edit Activity</div> <br />
                 <div>Name: </div> <input type="text" id='act-name'><br />
                 <button class="btn" onclick="addCheckList()">Add a Checklist Item</button>
@@ -117,6 +119,59 @@
             <button class="btn" type="button" onclick="addCamper()">
                 Add an Athlete
             </button>
+
+            <!-- Trigger/Open The Modal -->
+            <button id="addAthlete" class="btn">Add an Athlete Modal</button>
+
+            <!-- The Modal -->
+            <div id="athleteModal" class="modal">
+
+                <!-- Modal content -->
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <p>Add athlete stuff</p>
+                    <label for="fname"><b>First Name</b></label>
+                    <input type="text" placeholder="First Name" name="fname" required>
+                    <br>
+                    <label for="lname"><b>Last Name</b></label>
+                    <input type="text" placeholder="Last Name" name="lname" required>
+                    <br>
+                    <label for="birthday"><b>Birthday</b></label>
+                    <input type="text" placeholder="Birthday" name="birthday" required>
+
+                    <button>Add New Athlete</button>
+                </div>
+            </div>
+
+            <!-- I know this is bad practice but for some reason this script won't work when I place it in js -->
+            <script>
+                // Get the modal
+                var modal = document.getElementById("athleteModal");
+
+                // Get the button that opens the modal
+                var btn = document.getElementById("addAthlete");
+
+                // Get the <span> element that closes the modal
+                var span = document.getElementsByClassName("close")[0];
+
+                // When the user clicks the button, open the modal 
+                btn.onclick = function () {
+                    modal.style.display = "block";
+                }
+
+                // When the user clicks on <span> (x), close the modal
+                span.onclick = function () {
+                    modal.style.display = "none";
+                }
+
+                // When the user clicks anywhere outside of the modal, close it
+                window.onclick = function (event) {
+                    if (event.target == modal) {
+                        modal.style.display = "none";
+                    }
+                }
+            </script>
+
             <div class="cp-subTitle">All Athletes</div>
             <table id="campers" class="block cp-table row-border"> </table>
         </div>
