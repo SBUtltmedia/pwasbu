@@ -40,23 +40,22 @@ function editprofile_template(){
     initNavBar();
 }
 
-
 function evaluation_template(){
-    if (currEval.evalMode == "add") {
-        document.getElementById("eval-add").style = "display: none;";
-        document.getElementById('activities').style = "display: block;";
-        actEvalInit();
-    } else if (currEval.evalMode == "get") {
-        // document.getElementById('evaluations').style = "display: block;";
-        // initEvalTable();
-        document.getElementById('activities').style = "display: block;";
-        actEvalInit();
-    } else {
+    document.getElementById('activities').style = "display: block;";
+
+    if(currEval.evalMode === "add") {
+        let currEvalCamperID = currEval.camperID;
+        let currEvalDate = new Date().toDateInputValue();
+        let currEvalInstrID = currEval.instrID;
+        let currEvalSelectedYear = currEval.selectedYear;
+        currEval.reset();
+        currEval.camperID = currEvalCamperID;
+        currEval.date = currEvalDate;
+        currEval.instrID = currEvalInstrID;
+        currEval.selectedYear = currEvalSelectedYear;
     }
-    function evalAdd() {
-        document.getElementById("eval-add").style = "display: none;";
-        eval(currEval.camperID, 'add');
-    }
+
+    actEvalInit();
 }
 
 function forgotpassword_template(){
