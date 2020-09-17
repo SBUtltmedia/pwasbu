@@ -16,6 +16,13 @@ function controlpanel_template(){
     initGroupsTable();
     initUsersTable();
     initUserModal();
+
+    // When the user clicks anywhere outside of the athlete modal, close it
+    window.onclick = function (event) {
+        if (event.target == document.getElementById("athleteModal")) {
+            document.getElementById("athleteModal").style.display = "none";
+        }
+    }
 }
 
 function editprofile_template(){

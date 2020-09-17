@@ -290,6 +290,7 @@ function addUser(payload, _callback = ()=> {}){
                 payload['id'] = id + (res.docs.length + 1);
                 fs.collection("users").add(payload).then(function(){
                     console.log("Added user successfully");
+                    alert("Added user successfully");
                     _callback();
                 }).catch(function(error) { console.log(error)});
             });
@@ -312,15 +313,16 @@ function addUser(payload, _callback = ()=> {}){
 //     };   
 // }
 
-function generateUser(email, firstName="", lastName="", gender="", birthdate="", priv="."){
+function generateUser(email, firstName="", lastName="", gender="", birthdate="", priv=".", pronoun="They/Them/Theirs"){
     return {
         email: email,
         birthdate : birthdate,
         creationDate : new Date().toDateInputValue(),
         firstName: firstName,
         lastName : lastName, 
-        gender: gender, // Needs to be implemented with field`
-        priv: priv
+        gender: gender,
+        priv: priv,
+        pronoun: pronoun
     };   
 }
 

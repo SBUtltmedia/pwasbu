@@ -116,61 +116,46 @@
         </div>
 
         <div id="campers-control" class="tabcontent adminheader">
-            <button class="btn" type="button" onclick="addCamper()">
+            <!-- <button class="btn" type="button" onclick="addCamper()">
                 Add an Athlete
-            </button>
+            </button> -->
 
             <!-- Trigger/Open The Modal -->
-            <button id="addAthlete" class="btn">Add an Athlete Modal</button>
+            <button id="addAthlete" class="btn" onclick="document.getElementById('athleteModal').style.display = 'block';">Add an Athlete</button>
 
             <!-- The Modal -->
             <div id="athleteModal" class="modal">
-
                 <!-- Modal content -->
                 <div class="modal-content">
-                    <span class="close">&times;</span>
-                    <p>Add athlete stuff</p>
-                    <label for="fname"><b>First Name</b></label>
-                    <input type="text" placeholder="First Name" name="fname" required>
+                    <span class="close" onclick="document.getElementById('athleteModal').style.display = 'none';">&times;</span>
+                    <h2>New Athlete's Info</h2>
                     <br>
-                    <label for="lname"><b>Last Name</b></label>
-                    <input type="text" placeholder="Last Name" name="lname" required>
+                    <label for="camper-fname"><b>First Name:</b></label>
+                    <input type="text" placeholder="First Name" id="camper-fname" class="camper-modal-input" required>
                     <br>
-                    <label for="birthday"><b>Birthday</b></label>
-                    <input type="text" placeholder="Birthday" name="birthday" required>
-
-                    <button>Add New Athlete</button>
+                    <label for="camper-lname"><b>Last Name:</b></label>
+                    <input type="text" placeholder="Last Name" id="camper-lname" class="camper-modal-input" required>
+                    <br>
+                    <label for="camper-birthday"><b>Birthday:</b></label>
+                    <input type="date" id="camper-birthday" min="1950-01-01" class="camper-modal-input" required>
+                    <br>
+                    <label for="camper-gender"><b>Gender:</b></label>
+                    <select class="form-control" id="camper-gender" class="camper-modal-input"> 
+                        <option value="Female">Female</option>
+                        <option value="Male">Male</option>
+                        <option value="Non-Binary">Non-Binary</option>
+                    </select>
+                    <br>
+                    <label for="camper-pronouns"><b>Pronouns:</b></label>
+                    <select class="form-control" id="camper-pronouns" class="camper-modal-input">
+                        <option value="She/Her/Hers">She/Her/Hers</option>
+                        <option value="He/Him/His">He/Him/His</option>
+                        <option value="They/Them/Theirs">They/Them/Theirs</option>
+                    </select>
+                    <br><br>
+                    <button onclick="addCamperFromModal()">Add New Athlete</button>
                 </div>
             </div>
-
-            <!-- I know this is bad practice but for some reason this script won't work when I place it in js -->
-            <script>
-                // Get the modal
-                var modal = document.getElementById("athleteModal");
-
-                // Get the button that opens the modal
-                var btn = document.getElementById("addAthlete");
-
-                // Get the <span> element that closes the modal
-                var span = document.getElementsByClassName("close")[0];
-
-                // When the user clicks the button, open the modal 
-                btn.onclick = function () {
-                    modal.style.display = "block";
-                }
-
-                // When the user clicks on <span> (x), close the modal
-                span.onclick = function () {
-                    modal.style.display = "none";
-                }
-
-                // When the user clicks anywhere outside of the modal, close it
-                window.onclick = function (event) {
-                    if (event.target == modal) {
-                        modal.style.display = "none";
-                    }
-                }
-            </script>
 
             <div class="cp-subTitle">All Athletes</div>
             <table id="campers" class="block cp-table row-border"> </table>

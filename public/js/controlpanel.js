@@ -370,8 +370,9 @@ function initCampersTable() {
                         <option value="They/Them/Theirs">They/Them/Theirs</option>
                     </select>`;
                 insertedRow.insertCell().innerHTML = doc.data()['id'];
-                insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn' onclick='updateCamper("${doc.id}", "${doc.data()['id']}")'>Update</button>`;
+                insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn' onclick='updateCamper("${doc.id}", "${doc.data()['id']}")'>Edit</button>`;
                 insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn btn-danger' onclick='removeCamper("${doc.id}")'>Remove</button>`;
+                insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn'>Assessments</button>`;
                 insertedRow.insertCell().innerHTML = doc.data()['firstName'];
                 insertedRow.insertCell().innerHTML = doc.data()['lastName'];
                 insertedRow.insertCell().innerHTML = birthdate;
@@ -398,6 +399,7 @@ function initCampersTable() {
                     { "title": "DoB", 'searchable': false, 'visible': false },
                     { "title": "Pronouns", 'searchable': false, 'visible': false },
                     { "title": "UID" },
+                    { "title": "" },
                     { "title": "" },
                     { "title": "" },
                     { "title": "", 'visible': false },
@@ -431,6 +433,23 @@ function removeCamper(docid) {
 function addCamper() {
     let userPayload = generateUser("", "John", "Doe", "Female", "", "camper");
     addUser(userPayload, updateCamperTable);
+}
+function addCamperFromModal() {
+    let firstName = document.getElementById("camper-fname").value;
+    let lastName = document.getElementById("camper-lname").value;
+    let birthday = document.getElementById("camper-birthday").value;
+    let gender = document.getElementById("camper-gender").value;
+    let pronouns = document.getElementById("camper-pronouns").value;
+    if(!firstName || !lastName || !birthday || !gender || !pronouns) {
+        alert("Could not add camper successfully, please make sure all New Athlete Info is filled out.");
+    } else {
+        let userPayload = generateUser("", firstName, lastName, gender, birthday, "camper", pronouns);
+        addUser(userPayload, updateCamperTable);
+        for(elem of document.getElementsByClassName("camper-modal-input")) {
+            elem.value = "";
+        }
+        document.getElementById('athleteModal').style.display = 'none';
+    }
 }
 
 function updateCamper(docid, camperId) {
