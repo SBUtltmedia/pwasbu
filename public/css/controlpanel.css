@@ -194,7 +194,12 @@ table.block th {
     margin: auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 90%;
+    width: fit-content;
+    text-align: center;
+}
+
+.camper-modal-input, .form-control{
+    margin-bottom: 20px;
 }
 
 /* The Close Button */
@@ -209,5 +214,17 @@ table.block th {
 .close:focus {
     color: #000;
     text-decoration: none;
+    cursor: pointer;
+}
+
+.add-athlete-btn{
+    border-radius: 10px;
+    padding: 4px;
+    background: var(--primary-color);
+    text-align: center;
+    text-transform: uppercase;
+    color: #fff;
+    font-size: 1.8rem;
+    letter-spacing: 1px;
     cursor: pointer;
 }
