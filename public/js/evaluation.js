@@ -186,6 +186,7 @@ function actEvalInit() {
                     editButton.onclick = (evt) => {
                         currEval.evalMode = "add";
                         loadNewEval(activities[name]);
+                        $("#backToActivities").removeClass("hiddenElement");
                     }
                     editButton.innerHTML = name;
                     listElement.appendChild(editButton);
