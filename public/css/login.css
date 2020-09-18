@@ -156,6 +156,12 @@ span a{
      font-size: 2rem;
  }
 
+ .link:hover{
+    color: var(--primary-color);
+    text-decoration: none;
+    cursor: pointer;
+ }
+
  .link{
     padding: 0;
     border: none;

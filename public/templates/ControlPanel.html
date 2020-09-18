@@ -123,13 +123,15 @@
             </button> -->
 
             <!-- Trigger/Open The Modal -->
-            <button id="addAthlete" class="btn" onclick="document.getElementById('athleteModal').style.display = 'block';">Add an Athlete</button>
+            <button id="addAthlete" class="btn"
+                onclick="document.getElementById('athleteModal').style.display = 'block';">Add an Athlete</button>
 
             <!-- The Modal -->
             <div id="athleteModal" class="modal">
                 <!-- Modal content -->
                 <div class="modal-content">
-                    <span class="close" onclick="document.getElementById('athleteModal').style.display = 'none';">&times;</span>
+                    <span class="close"
+                        onclick="document.getElementById('athleteModal').style.display = 'none';">&times;</span>
                     <h2>New Athlete's Info</h2>
                     <br>
                     <label for="camper-fname"><b>First Name:</b></label>
@@ -142,7 +144,7 @@
                     <input type="date" id="camper-birthday" min="1950-01-01" class="camper-modal-input" required>
                     <br>
                     <label for="camper-gender"><b>Gender:</b></label>
-                    <select class="form-control" id="camper-gender" class="camper-modal-input"> 
+                    <select class="form-control" id="camper-gender" class="camper-modal-input">
                         <option value="Female">Female</option>
                         <option value="Male">Male</option>
                         <option value="Non-Binary">Non-Binary</option>
@@ -155,7 +157,7 @@
                         <option value="They/Them/Theirs">They/Them/Theirs</option>
                     </select>
                     <br><br>
-                    <button onclick="addCamperFromModal()">Add New Athlete</button>
+                    <button onclick="addCamperFromModal()" class="add-athlete-btn">Add New Athlete</button>
                 </div>
             </div>
 
