@@ -123,33 +123,36 @@
             </button> -->
 
             <!-- Trigger/Open The Modal -->
-            <button id="addAthlete" class="btn" onclick="document.getElementById('athleteModal').style.display = 'block';">Add an Athlete</button>
+            <button id="addAthlete" class="btn" onclick="document.getElementById('addAthleteModal').style.display = 'block';">Add an Athlete</button>
 
-            <!-- The Modal -->
-            <div id="athleteModal" class="modal">
+            <!-- The Add Athlete Modal -->
+            <div id="addAthleteModal" class="modal adminConsoleModal">
                 <!-- Modal content -->
                 <div class="modal-content">
-                    <span class="close" onclick="document.getElementById('athleteModal').style.display = 'none';">&times;</span>
+                    <span class="close" onclick="document.getElementById('addAthleteModal').style.display = 'none';">&times;</span>
                     <h2>New Athlete's Info</h2>
                     <br>
-                    <label for="camper-fname"><b>First Name:</b></label>
-                    <input type="text" placeholder="First Name" id="camper-fname" class="camper-modal-input" required>
+                    <img id="add-camper-profile-pic" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left" width="100" height="100">
+                    <input type="file" id="add-camper-pic" class="camper-modal-input" accept="image/*" capture="camera"/> 
                     <br>
-                    <label for="camper-lname"><b>Last Name:</b></label>
-                    <input type="text" placeholder="Last Name" id="camper-lname" class="camper-modal-input" required>
+                    <label for="add-camper-fname"><b>First Name:</b></label>
+                    <input type="text" placeholder="First Name" id="add-camper-fname" class="camper-modal-input" required>
                     <br>
-                    <label for="camper-birthday"><b>Birthday:</b></label>
-                    <input type="date" id="camper-birthday" min="1950-01-01" class="camper-modal-input" required>
+                    <label for="add-camper-lname"><b>Last Name:</b></label>
+                    <input type="text" placeholder="Last Name" id="add-camper-lname" class="camper-modal-input" required>
                     <br>
-                    <label for="camper-gender"><b>Gender:</b></label>
-                    <select class="form-control" id="camper-gender" class="camper-modal-input"> 
+                    <label for="add-camper-birthday"><b>Birthday:</b></label>
+                    <input type="date" id="add-camper-birthday" min="1950-01-01" class="camper-modal-input" required>
+                    <br>
+                    <label for="add-camper-gender"><b>Gender:</b></label>
+                    <select class="form-control" id="add-camper-gender" class="camper-modal-input"> 
                         <option value="Female">Female</option>
                         <option value="Male">Male</option>
                         <option value="Non-Binary">Non-Binary</option>
                     </select>
                     <br>
-                    <label for="camper-pronouns"><b>Pronouns:</b></label>
-                    <select class="form-control" id="camper-pronouns" class="camper-modal-input">
+                    <label for="add-camper-pronouns"><b>Pronouns:</b></label>
+                    <select class="form-control" id="add-camper-pronouns" class="camper-modal-input">
                         <option value="She/Her/Hers">She/Her/Hers</option>
                         <option value="He/Him/His">He/Him/His</option>
                         <option value="They/Them/Theirs">They/Them/Theirs</option>
@@ -160,6 +163,48 @@
             </div>
 
             <div class="cp-subTitle">All Athletes</div>
+
+            <!-- The Edit Athlete Modal -->
+            <div id="editAthleteModal" class="modal adminConsoleModal">
+                <!-- Modal content -->
+                <div class="modal-content">
+                    <span class="close" onclick="document.getElementById('editAthleteModal').style.display = 'none';">&times;</span>
+                    <h2>Athlete's Info</h2>
+                    <br>
+                    <!-- Hidden IDs to know which document to update in Cloud Firestore and which filepath to update in Firebase Storage -->
+                    <span id="edit-camper-uid" class="camper-modal-input" style="display: 'none'"></span>
+                    <span id="edit-camper-camperId" class="camper-modal-input" style="display: 'none'"></span>
+                    <!-- Hidden IDs to know which document to update in Cloud Firestore and which filepath to update in Firebase Storage -->
+                    <img id="edit-camper-profile-pic" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left" width="100" height="100">
+                    <input type="file" id="edit-camper-pic" class="camper-modal-input" accept="image/*" capture="camera"/> 
+                    <br>
+                    <label for="edit-camper-fname"><b>First Name:</b></label>
+                    <input type="text" placeholder="First Name" id="edit-camper-fname" class="camper-modal-input" required>
+                    <br>
+                    <label for="edit-camper-lname"><b>Last Name:</b></label>
+                    <input type="text" placeholder="Last Name" id="edit-camper-lname" class="camper-modal-input" required>
+                    <br>
+                    <label for="edit-camper-birthday"><b>Birthday:</b></label>
+                    <input type="date" id="edit-camper-birthday" min="1950-01-01" class="camper-modal-input" required>
+                    <br>
+                    <label for="edit-camper-gender"><b>Gender:</b></label>
+                    <select class="form-control" id="edit-camper-gender" class="camper-modal-input"> 
+                        <option value="Female">Female</option>
+                        <option value="Male">Male</option>
+                        <option value="Non-Binary">Non-Binary</option>
+                    </select>
+                    <br>
+                    <label for="edit-camper-pronouns"><b>Pronouns:</b></label>
+                    <select class="form-control" id="edit-camper-pronouns" class="camper-modal-input">
+                        <option value="She/Her/Hers">She/Her/Hers</option>
+                        <option value="He/Him/His">He/Him/His</option>
+                        <option value="They/Them/Theirs">They/Them/Theirs</option>
+                    </select>
+                    <br><br>
+                    <button onclick="updateCamperFromModal()">Update Athlete Info</button>
+                </div>
+            </div>
+            
             <table id="campers" class="block cp-table row-border"> </table>
         </div>
 

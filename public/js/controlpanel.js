@@ -370,7 +370,7 @@ function initCampersTable() {
                         <option value="They/Them/Theirs">They/Them/Theirs</option>
                     </select>`;
                 insertedRow.insertCell().innerHTML = doc.data()['id'];
-                insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn' onclick='updateCamper("${doc.id}", "${doc.data()['id']}")'>Edit</button>`;
+                insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn' onclick='loadEditCamperButton("${doc.id}", "${doc.data()['id']}", "${birthdate}", "${gender}", "${pronoun}")'>Edit</button>`;
                 insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn btn-danger' onclick='removeCamper("${doc.id}")'>Remove</button>`;
                 insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn'>Assessments</button>`;
                 insertedRow.insertCell().innerHTML = doc.data()['firstName'];
@@ -424,58 +424,119 @@ function updateCamperTable() {
         initCampersTable();
     });
 }
+
 function removeCamper(docid) {
     fs.collection('users').doc(docid).delete().then(() => {
         updateCamperTable();
         updateGroupsTable();
     });
 }
-function addCamper() {
-    let userPayload = generateUser("", "John", "Doe", "Female", "", "camper");
-    addUser(userPayload, updateCamperTable);
-}
+
+// function addCamper() {
+//     let userPayload = generateUser("", "John", "Doe", "Female", "", "camper");
+//     addUser(userPayload, updateCamperTable);
+// }
+
 function addCamperFromModal() {
-    let firstName = document.getElementById("camper-fname").value;
-    let lastName = document.getElementById("camper-lname").value;
-    let birthday = document.getElementById("camper-birthday").value;
-    let gender = document.getElementById("camper-gender").value;
-    let pronouns = document.getElementById("camper-pronouns").value;
+    let file = document.getElementById(`add-camper-pic`).files[0];
+    let firstName = document.getElementById("add-camper-fname").value;
+    let lastName = document.getElementById("add-camper-lname").value;
+    let birthday = document.getElementById("add-camper-birthday").value;
+    let gender = document.getElementById("add-camper-gender").value;
+    let pronouns = document.getElementById("add-camper-pronouns").value;
     if(!firstName || !lastName || !birthday || !gender || !pronouns) {
         alert("Could not add camper successfully, please make sure all New Athlete Info is filled out.");
     } else {
         let userPayload = generateUser("", firstName, lastName, gender, birthday, "camper", pronouns);
-        addUser(userPayload, updateCamperTable);
         for(elem of document.getElementsByClassName("camper-modal-input")) {
             elem.value = "";
         }
-        document.getElementById('athleteModal').style.display = 'none';
+        document.getElementById('addAthleteModal').style.display = 'none';
+        let camperId = addUser(userPayload, updateCamperTable);
+        console.log(camperId);
+        try {
+            // console.log(camperId);
+            // storageRef.child(`users/${camperId}/profile-picture/` + file.name).put(file);
+            // console.log(camperId);
+        } catch (err) {
+            console.log("Could not upload profile picture successfully")
+        }
     }
 }
 
-function updateCamper(docid, camperId) {
-    let firstName = document.getElementById("camper-first" + docid).value;
-    let lastName = document.getElementById("camper-last" + docid).value;
-    let pronoun = document.getElementById(`camper-pronoun${docid}`).value;
-    let gender = document.getElementById(`camper-gender${docid}`).value;
-    let birthdate = document.getElementById(`camper-dob-${docid}`).value || "1999-07-04";
-    let file = document.getElementById(`camper-upload-${docid}`).files[0];
-    try {
-        clearProfilePictures(camperId,
-            storageRef.child(`users/${camperId}/profile-picture/` + file.name).put(file));
-    } catch (err) {
-        console.log(`The user ${firstName} ${lastName} does not have a profile picture`);
-    }
-    fs.collection("users").doc(docid).update({
-        firstName: firstName,
-        lastName: lastName,
-        pronoun: pronoun,
-        birthdate: birthdate,
-        gender: gender
-    }).then(() => {
-        alert("User has been updated successfully!");
-        updateGroupsTable();
-    });
+function loadEditCamperButton(docId, camperID, birthday, gender, pronouns) {
+    document.getElementById("edit-camper-uid").value = docId;
+    document.getElementById("edit-camper-camperId").value = camperID;
+    document.getElementById('editAthleteModal').style.display = 'block';
+    document.getElementById("edit-camper-profile-pic").src = document.getElementById(`camper-profile-pic-${docId}`).src;
+    document.getElementById("edit-camper-fname").value = document.getElementById("camper-first" + docId).value;
+    document.getElementById("edit-camper-lname").value = document.getElementById("camper-last" + docId).value;
+    document.getElementById("edit-camper-birthday").value = birthday;
+    document.getElementById("edit-camper-gender").value = gender;
+    document.getElementById("edit-camper-pronouns").value = pronouns;
 }
+
+function updateCamperFromModal() {
+    let docId = document.getElementById("edit-camper-uid").value;
+    let camperId = document.getElementById("edit-camper-camperId").value;
+    let file = document.getElementById(`edit-camper-pic`).files[0];
+    let firstName = document.getElementById("edit-camper-fname").value;
+    let lastName = document.getElementById("edit-camper-lname").value;
+    let birthday = document.getElementById("edit-camper-birthday").value;
+    let gender = document.getElementById("edit-camper-gender").value;
+    let pronouns = document.getElementById("edit-camper-pronouns").value;
+    if(!firstName || !lastName || !birthday || !gender || !pronouns) {
+        alert("Could not edit camper successfully, please make sure all of the Athlete Info is filled out.");
+    } else {    
+        try {
+            clearProfilePictures(camperId,
+                storageRef.child(`users/${camperId}/profile-picture/` + file.name).put(file));
+        } catch (err) {
+            console.log(`The user ${firstName} ${lastName} does not have a profile picture`);
+        }
+
+        fs.collection("users").doc(docId).update({
+            firstName: firstName,
+            lastName: lastName,
+            birthdate: birthday,
+            gender: gender,
+            pronoun: pronouns
+        }).then(() => {
+            alert("User has been updated successfully!");
+            for(elem of document.getElementsByClassName("camper-modal-input")) {
+                elem.value = "";
+            }
+            document.getElementById('editAthleteModal').style.display = 'none';
+            updateCamperTable();
+            updateGroupsTable();
+        });
+    }
+}
+
+// function updateCamper(docid, camperId) {
+//     let firstName = document.getElementById("camper-first" + docid).value;
+//     let lastName = document.getElementById("camper-last" + docid).value;
+//     let pronoun = document.getElementById(`camper-pronoun${docid}`).value;
+//     let gender = document.getElementById(`camper-gender${docid}`).value;
+//     let birthdate = document.getElementById(`camper-dob-${docid}`).value || "1999-07-04";
+//     let file = document.getElementById(`camper-upload-${docid}`).files[0];
+//     try {
+//         clearProfilePictures(camperId,
+//             storageRef.child(`users/${camperId}/profile-picture/` + file.name).put(file));
+//     } catch (err) {
+//         console.log(`The user ${firstName} ${lastName} does not have a profile picture`);
+//     }
+//     fs.collection("users").doc(docid).update({
+//         firstName: firstName,
+//         lastName: lastName,
+//         pronoun: pronoun,
+//         birthdate: birthdate,
+//         gender: gender
+//     }).then(() => {
+//         alert("User has been updated successfully!");
+//         updateGroupsTable();
+//     });
+// }
 /////////////////////////////////////////// GROUPS FUNCTIONS ///////////////////////////////////////////
 
 /**
