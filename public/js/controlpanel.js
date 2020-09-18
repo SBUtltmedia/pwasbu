@@ -73,7 +73,7 @@ function populateAct(data) {
     data.forEach((d, i) => {
         finishedArray.push([d['name'],
         `<button class='btn bdrlessBtn' onclick='getActivity("${d['id']}");'>Edit</button>`,
-        `<button class='btn bdrlessBtn btn-danger' onclick='removeActivity("${d['id']}")'>Remove</button>`
+        `<button class='btn bdrlessBtn btn-danger' onclick='if(confirm("Are you sure you want to delete this activity? NOTE: THIS ACTION CANNOT BE REVERSED")) { removeActivity("${d['id']}") }'>Remove</button>`
         ]);
     });
     return finishedArray;
@@ -312,7 +312,7 @@ function addActivity() {
             table.row.add([
                 "Example Activity",
                 `<button class='btn bdrlessBtn' onclick='getActivity("${docRef.id}")'>Edit</button>`,
-                `<button class='btn bdrlessBtn btn-danger' onclick='removeActivity("${docRef.id}")'>Remove</button>`,
+                `<button class='btn bdrlessBtn btn-danger' onclick='if(confirm("Are you sure you want to delete this activity? NOTE: THIS ACTION CANNOT BE REVERSED")) { removeActivity("${docRef.id}") }'>Remove</button>`,
             ]).draw();
         });
     });
@@ -354,8 +354,13 @@ function initCampersTable() {
                 <button id="camper-pic-button-${doc.id}">
                     <img id="camper-profile-pic-${doc.id}" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left" width="100" height="100">
                 </button>`;
+
+                // insertedRow.insertCell().innerHTML = `<img id="camper-profile-pic-${doc.id}" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left" width="100" height="100">`;
+                
                 insertedRow.insertCell().innerHTML = `<input type="text" id="${"camper-first" + doc.id}" class="form-control" value="${doc.data()['firstName']}">`;
+                // insertedRow.insertCell().innerHTML = `<span id="${"camper-first" + doc.id}" class="form-control" value="${doc.data()['firstName']}">${doc.data()['firstName']}</span>`;
                 insertedRow.insertCell().innerHTML = `<input type="text" id="${"camper-last" + doc.id}" class="form-control" value="${doc.data()['lastName']}">`;
+                // insertedRow.insertCell().innerHTML = `<span id="${"camper-last" + doc.id}" class="form-control" value="${doc.data()['lastName']}">${doc.data()['lastName']}</span>`;
                 insertedRow.insertCell().innerHTML =
                     `<select class="form-control" id="camper-gender${doc.id}"> 
                     <option value="Female">Female</option>
@@ -371,7 +376,7 @@ function initCampersTable() {
                     </select>`;
                 insertedRow.insertCell().innerHTML = doc.data()['id'];
                 insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn' onclick='loadEditCamperButton("${doc.id}", "${doc.data()['id']}", "${birthdate}", "${gender}", "${pronoun}")'>Edit</button>`;
-                insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn btn-danger' onclick='removeCamper("${doc.id}")'>Remove</button>`;
+                insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn btn-danger' onclick='if(confirm("Are you sure you want to delete this camper? NOTE: THIS ACTION CANNOT BE REVERSED")) { removeCamper("${doc.id}") }'>Remove</button>`;
                 insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn'>Assessments</button>`;
                 insertedRow.insertCell().innerHTML = doc.data()['firstName'];
                 insertedRow.insertCell().innerHTML = doc.data()['lastName'];
@@ -426,9 +431,12 @@ function updateCamperTable() {
 }
 
 function removeCamper(docid) {
-    fs.collection('users').doc(docid).delete().then(() => {
-        updateCamperTable();
-        updateGroupsTable();
+    fs.collection('users').doc(docid).get().then((doc) => {
+        clearProfilePictures(doc.data()['id']);
+        fs.collection('users').doc(docid).delete().then((doc) => {
+            updateCamperTable();
+            updateGroupsTable();
+        });
     });
 }
 
@@ -452,15 +460,28 @@ function addCamperFromModal() {
             elem.value = "";
         }
         document.getElementById('addAthleteModal').style.display = 'none';
-        let camperId = addUser(userPayload, updateCamperTable);
-        console.log(camperId);
-        try {
-            // console.log(camperId);
-            // storageRef.child(`users/${camperId}/profile-picture/` + file.name).put(file);
-            // console.log(camperId);
-        } catch (err) {
-            console.log("Could not upload profile picture successfully")
-        }
+        addUser(userPayload, updateCamperTable).then((camperId) => {
+            console.log("Added user with ID of " + camperId);
+            if(file) {
+                storageRef.child(`users/${camperId}/profile-picture/` + file.name).put(file).then(() => {
+                    alert("Added user successfully.");
+                }).catch(err => {
+                    console.log("Could not upload profile picture successfully.");
+                });
+            } else {
+                alert("Added user successfully.");
+            }
+        }).catch(err => {
+            alert("Could not add camper successfully.");
+        });
+        // console.log(camperId);
+        // try {
+        //     // console.log(camperId);
+        //     // storageRef.child(`users/${camperId}/profile-picture/` + file.name).put(file);
+        //     // console.log(camperId);
+        // } catch (err) {
+        //     console.log("Could not upload profile picture successfully")
+        // }
     }
 }
 
