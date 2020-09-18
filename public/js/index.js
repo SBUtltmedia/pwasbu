@@ -282,7 +282,30 @@ function makeid(length) {
  * This function is purely used for signing the user up.
  * @param {} payload 
  */
+// function addUser(payload, _callback = ()=> {}){
+//     fs.collection("users").where('email', '==', payload['email']).get()
+//     .then(res=> {
+//         if(res.docs.length > 0) {
+//             console.log("attempting to add a user that already exists");
+//         } else {
+//             fs.collection("users").get().then((res) => {
+//                 let id = makeid(3);
+//                 if (payload['email'] == "") {
+//                     payload['email'] = id;
+//                 }
+//                 payload['id'] = id + (res.docs.length + 1);
+//                 fs.collection("users").add(payload).then(function(){
+//                     console.log("Added user successfully");
+//                     alert("Added user successfully");
+//                     _callback();
+//                 }).catch(function(error) { console.log(error)});
+//             });
+//         }
+//     });
+// }
+
 function addUser(payload, _callback = ()=> {}){
+    var def = $.Deferred();
     fs.collection("users").where('email', '==', payload['email']).get()
     .then(res=> {
         if(res.docs.length > 0) {
@@ -294,6 +317,7 @@ function addUser(payload, _callback = ()=> {}){
                     payload['email'] = id;
                 }
                 payload['id'] = id + (res.docs.length + 1);
+                def.resolve(payload['id']);
                 fs.collection("users").add(payload).then(function(){
                     console.log("Added user successfully");
                     _callback();
@@ -301,7 +325,17 @@ function addUser(payload, _callback = ()=> {}){
             });
         }
     });
+    return def;
 }
+
+function toy() {
+    var def = $.Deferred();
+    setTimeout(() => {
+        def.resolve("done");
+    }, 3000);
+    return def;
+}
+
 /**
  * This function returns a JSON Object for adding a user to the "users" collection
  * @param {*} email The email of the user. Cannot be a duplicate of an email already in use.
@@ -318,15 +352,16 @@ function addUser(payload, _callback = ()=> {}){
 //     };   
 // }
 
-function generateUser(email, firstName="", lastName="", gender="", birthdate="", priv="."){
+function generateUser(email, firstName="", lastName="", gender="", birthdate="", priv=".", pronoun="They/Them/Theirs"){
     return {
         email: email,
         birthdate : birthdate,
         creationDate : new Date().toDateInputValue(),
         firstName: firstName,
         lastName : lastName, 
-        gender: gender, // Needs to be implemented with field`
-        priv: priv
+        gender: gender,
+        priv: priv,
+        pronoun: pronoun
     };   
 }
 

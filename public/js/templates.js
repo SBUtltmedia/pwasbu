@@ -16,6 +16,21 @@ function controlpanel_template(){
     initGroupsTable();
     initUsersTable();
     initUserModal();
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function (event) {
+        if (event.target.classList.contains("adminConsoleModal")) {
+            event.target.style.display = "none";
+        }
+    }
+
+    $(`#add-camper-pic`).on("change", function () {
+        readURL(this, `add-camper-profile-pic`);
+    });
+
+    $(`#edit-camper-pic`).on("change", function () {
+        readURL(this, `edit-camper-profile-pic`);
+    });
 }
 
 function editprofile_template(){
