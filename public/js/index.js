@@ -66,12 +66,16 @@ window.addEventListener('hashchange', hashChangeEvent => {
     urlSegments = hashChangeEvent.newURL.split("#");
     // console.log(urlSegments);
     user = firebase.auth().currentUser;
-    if(user && urlSegments[1] != "") {
+    if(user && urlSegments[1] != "" && urlSegments[1] != "evaluation") {
         router.loadRoute(urlSegments[1]);
-    } else if(user && urlSegments[1] === "") {
+    } else if(user && (urlSegments[1] === "" || urlSegments[1] === "evaluation")) {
         router.loadRoute("home");
     } else {
         router.loadRoute("");
+    }
+
+    if(document.getElementById("backToActivities")) {
+        $("#backToActivities").addClass("hiddenElement");
     }
 });
 

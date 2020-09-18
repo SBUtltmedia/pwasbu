@@ -8,7 +8,20 @@ class Evaluation {
         this.actID = actID;
         this.instrID = instrID;
         this.evalID = evalID;
+        this.evalDoc = {};
         this.date = "";
+        this.selectedYear = new Date().getFullYear();
+    }
+
+    reset() {
+        this.actID = "DEFAULT"
+        this.camperID = "DEFAULT"
+        this.date = ""
+        this.docID = "DEFAULT"
+        this.evalDoc = {};
+        this.evalID = "DEFAULT"
+        this.evalMode = "get"
+        this.instrID = "DEFAULT"
         this.selectedYear = new Date().getFullYear();
     }
 }
@@ -64,7 +77,7 @@ function createUserDetailsItem(rowElem, row) {
         userDetailsItem.content.querySelectorAll(".user-pronouns")[0].innerHTML = row.pronouns;
         userDetailsItem.content.querySelectorAll(".user-team")[0].innerHTML = row.team;
 
-        userDetailsItem.content.querySelectorAll(".add-evals")[0].onclick = (event) => { eval(row['id'], "get") };
+        userDetailsItem.content.querySelectorAll(".add-evals")[0].onclick = (event) => { eval(row['id'], "get"); };
 
         let imgCol = document.createElement("td");
         let detailsCol = document.createElement("td");
@@ -116,6 +129,11 @@ function updateEval(camperID, _callback = () => { }) {
 }
 
 function eval(id, evalMode = "add") {
+    if(evalMode == "get") {
+        // console.log("OLD currEval: " + JSON.stringify(currEval));
+        currEval.reset();
+        // console.log("NEW currEval: " + JSON.stringify(currEval));
+    }
     currEval.evalMode = evalMode;
     currEval.date = new Date().toDateInputValue();
     updateEval(id, router.loadRoute('evaluation'));
@@ -145,6 +163,7 @@ function actEvalInit() {
                             editButton.onclick = (evt) => {
                                 currEval.evalMode = "get";
                                 editEval("" + doc.data()['activityName'], "" + doc.id, doc.data());
+                                $("#backToActivities").removeClass("hiddenElement");
                             }
                             editButton.innerHTML = doc.data()['activityName'];
                             listElement.appendChild(editButton);
