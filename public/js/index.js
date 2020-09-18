@@ -66,12 +66,16 @@ window.addEventListener('hashchange', hashChangeEvent => {
     urlSegments = hashChangeEvent.newURL.split("#");
     // console.log(urlSegments);
     user = firebase.auth().currentUser;
-    if(user && urlSegments[1] != "") {
+    if(user && urlSegments[1] != "" && urlSegments[1] != "evaluation") {
         router.loadRoute(urlSegments[1]);
-    } else if(user && urlSegments[1] === "") {
+    } else if(user && (urlSegments[1] === "" || urlSegments[1] === "evaluation")) {
         router.loadRoute("home");
     } else {
         router.loadRoute("");
+    }
+
+    if(document.getElementById("backToActivities")) {
+        $("#backToActivities").addClass("hiddenElement");
     }
 });
 
@@ -179,12 +183,14 @@ function saveCurrentUserData(){
             console.error("Error writing document: ", error);
         });
 }
-// Disabling the service worker for now
-// if ('serviceWorker' in navigator) {
-//     navigator.serviceWorker
-//         .register('sw.js')
-//         .then(function () { console.log('Service Worker Registered'); });
-// }
+
+// Enable Service Worker
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker
+        .register('sw.js')
+        .then((reg) => console.log('Service Worker Registered', reg))
+        .catch((err) => console.log('Service Worker not registered', err));
+}
 
 // Code to handle install prompt on desktop
 
