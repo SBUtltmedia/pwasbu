@@ -202,6 +202,11 @@ table.block th {
     margin-bottom: 20px;
 }
 
+.modal-camper-pic {
+    border-style: solid;
+    border-color: black;
+}
+
 /* The Close Button */
 .close {
     color: #aaaaaa;

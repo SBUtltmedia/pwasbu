@@ -133,7 +133,8 @@
                     <h2>New Athlete's Info</h2>
                     <br>
                     <img id="add-camper-profile-pic" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left" width="100" height="100">
-                    <input type="file" id="add-camper-pic" class="camper-modal-input" accept="image/*" capture="camera"/> 
+                    <br>
+                    <input type="file" id="add-camper-pic" class="camper-modal-input modal-camper-pic" accept="image/*" capture="camera"/> 
                     <br>
                     <label for="add-camper-fname"><b>First Name:</b></label>
                     <input type="text" placeholder="First Name" id="add-camper-fname" class="camper-modal-input" required>
@@ -176,7 +177,8 @@
                     <span id="edit-camper-camperId" class="camper-modal-input" style="display: 'none'"></span>
                     <!-- Hidden IDs to know which document to update in Cloud Firestore and which filepath to update in Firebase Storage -->
                     <img id="edit-camper-profile-pic" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left" width="100" height="100">
-                    <input type="file" id="edit-camper-pic" class="camper-modal-input" accept="image/*" capture="camera"/> 
+                    <br>
+                    <input type="file" id="edit-camper-pic" class="camper-modal-input modal-camper-pic" accept="image/*" capture="camera"/> 
                     <br>
                     <label for="edit-camper-fname"><b>First Name:</b></label>
                     <input type="text" placeholder="First Name" id="edit-camper-fname" class="camper-modal-input" required>
@@ -201,7 +203,7 @@
                         <option value="They/Them/Theirs">They/Them/Theirs</option>
                     </select>
                     <br><br>
-                    <button onclick="updateCamperFromModal()">Update Athlete Info</button>
+                    <button onclick="updateCamperFromModal()" class="add-athlete-btn">Update Athlete Info</button>
                 </div>
             </div>
             
