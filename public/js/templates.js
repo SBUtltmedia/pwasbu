@@ -1,8 +1,5 @@
 function accountsettings_template(){
     $("#loader").hide();
-    $("#profile-error").hide();
-    $("#profile-success").hide();
-    // console.log("loading in fields");
     initAccountSettings();
     initNavBar();
 }
@@ -35,10 +32,6 @@ function controlpanel_template(){
 
 function editprofile_template(){
     $(".loader").hide();
-    $("#profile-error").hide();
-    $("#profile-success").hide();
-    //Date is in YYYY-MM-DD Format
-    // console.log("loading in fields");
     initEditProfile();
     function changePhoto() {
         let fileReader = new FileReader();

@@ -2,23 +2,16 @@
     <div>
         <div id="user">Account Settings</div>
         <div class="center-pg">
-            <div class="change-info">To change your password click the button below to send an email with instrucctions
-                on how to change password</div>
+            <div class="change-info">To change your password, click the button below and you will receive a password reset email</div>
             <button type="button" class="btn btn-secondary btn-lg btn-space" onclick="changePassword()">Password
                 Change</button>
             <div class="change-info">
-                To change your email type in new email in box below, enter password to verify
-                identity, then click Submit Email Change</div>
+                To change your email, type the new email address in the textbox below, enter your current password to verify
+                identity, then click <b>Submit Email Change</b></div>
             <div class="ac-set">Email: </div>
-            <input type="email" onkeyup="validString('user-email')" onkeydown="validString('user-email')" class="input"
-                id="user-email"><br />
+            <input type="email" class="input" id="user-email"><br />
             <div class="ac-set">Password (must be entered to change account email address): </div>
-            <input type="password" onkeyup="validString('user-password')" onkeydown="validString('user-password')"
-                class="input" id="user-password"><br />
-            <div id="profile-error">One or more of the above fields are in the wrong format or empty!</div> <br />
-            <div id="profile-success">Email was updated successfullly!</div> <br />
-            <!-- <button type="button" class="btn btn-secondary btn-lg btn-space" onclick="initAccountSettings()">Reset Account
-            Settings</button> -->
+            <input type="password" class="input" id="user-password"><br />
             <div id="loader"></div>
             <button type="button" class="btn btn-secondary btn-lg btn-space" onclick="updateEmail()">Submit Email
                 Change</button>
