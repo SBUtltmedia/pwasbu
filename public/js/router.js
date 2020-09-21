@@ -15,7 +15,7 @@ class Router {
     // Push a history entry with the new url.
     // We pass an empty object and an empty string as the historyState and title arguments, but their values do not really matter here.
     const url = `/#${urlSegments.join('/')}`;
-
+    console.log("Window href called");
     let current_template = window.location.href.split("#").length > 1 ? window.location.href.split("#")[1] : "";
     let new_template = url.split("#").length > 1 ? url.split("#")[1] : "";
     console.log(current_template + " ==> " + new_template);
