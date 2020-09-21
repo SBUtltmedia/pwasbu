@@ -123,30 +123,36 @@
             </button> -->
 
             <!-- Trigger/Open The Modal -->
-            <button id="addAthlete" class="btn" onclick="document.getElementById('addAthleteModal').style.display = 'block';">Add an Athlete</button>
+            <button id="addAthlete" class="btn"
+                onclick="document.getElementById('addAthleteModal').style.display = 'block';">Add an Athlete</button>
 
             <!-- The Add Athlete Modal -->
             <div id="addAthleteModal" class="modal adminConsoleModal">
                 <!-- Modal content -->
                 <div class="modal-content">
-                    <span class="close" onclick="document.getElementById('addAthleteModal').style.display = 'none';">&times;</span>
+                    <span class="close"
+                        onclick="document.getElementById('addAthleteModal').style.display = 'none';">&times;</span>
                     <h2>New Athlete's Info</h2>
                     <br>
-                    <img id="add-camper-profile-pic" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left" width="100" height="100">
+                    <img id="add-camper-profile-pic" src="../img/user/default/user-480.png"
+                        class="img-thumbnail rounded float-left" width="100" height="100">
                     <br>
-                    <input type="file" id="add-camper-pic" class="camper-modal-input modal-camper-pic" accept="image/*" capture="camera"/> 
+                    <input type="file" id="add-camper-pic" class="camper-modal-input modal-camper-pic" accept="image/*"
+                        capture="camera" />
                     <br>
                     <label for="add-camper-fname"><b>First Name:</b></label>
-                    <input type="text" placeholder="First Name" id="add-camper-fname" class="camper-modal-input" required>
+                    <input type="text" placeholder="First Name" id="add-camper-fname" class="camper-modal-input"
+                        required>
                     <br>
                     <label for="add-camper-lname"><b>Last Name:</b></label>
-                    <input type="text" placeholder="Last Name" id="add-camper-lname" class="camper-modal-input" required>
+                    <input type="text" placeholder="Last Name" id="add-camper-lname" class="camper-modal-input"
+                        required>
                     <br>
                     <label for="add-camper-birthday"><b>Birthday:</b></label>
                     <input type="date" id="add-camper-birthday" min="1950-01-01" class="camper-modal-input" required>
                     <br>
                     <label for="add-camper-gender"><b>Gender:</b></label>
-                    <select class="form-control" id="add-camper-gender" class="camper-modal-input"> 
+                    <select class="form-control" id="add-camper-gender" class="camper-modal-input">
                         <option value="Female">Female</option>
                         <option value="Male">Male</option>
                         <option value="Non-Binary">Non-Binary</option>
@@ -169,28 +175,33 @@
             <div id="editAthleteModal" class="modal adminConsoleModal">
                 <!-- Modal content -->
                 <div class="modal-content">
-                    <span class="close" onclick="document.getElementById('editAthleteModal').style.display = 'none';">&times;</span>
+                    <span class="close"
+                        onclick="document.getElementById('editAthleteModal').style.display = 'none';">&times;</span>
                     <h2>Athlete's Info</h2>
                     <br>
                     <!-- Hidden IDs to know which document to update in Cloud Firestore and which filepath to update in Firebase Storage -->
                     <span id="edit-camper-uid" class="camper-modal-input" style="display: 'none'"></span>
                     <span id="edit-camper-camperId" class="camper-modal-input" style="display: 'none'"></span>
                     <!-- Hidden IDs to know which document to update in Cloud Firestore and which filepath to update in Firebase Storage -->
-                    <img id="edit-camper-profile-pic" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left" width="100" height="100">
+                    <img id="edit-camper-profile-pic" src="../img/user/default/user-480.png"
+                        class="img-thumbnail rounded float-left" width="100" height="100">
                     <br>
-                    <input type="file" id="edit-camper-pic" class="camper-modal-input modal-camper-pic" accept="image/*" capture="camera"/> 
+                    <input type="file" id="edit-camper-pic" class="camper-modal-input modal-camper-pic" accept="image/*"
+                        capture="camera" />
                     <br>
                     <label for="edit-camper-fname"><b>First Name:</b></label>
-                    <input type="text" placeholder="First Name" id="edit-camper-fname" class="camper-modal-input" required>
+                    <input type="text" placeholder="First Name" id="edit-camper-fname" class="camper-modal-input"
+                        required>
                     <br>
                     <label for="edit-camper-lname"><b>Last Name:</b></label>
-                    <input type="text" placeholder="Last Name" id="edit-camper-lname" class="camper-modal-input" required>
+                    <input type="text" placeholder="Last Name" id="edit-camper-lname" class="camper-modal-input"
+                        required>
                     <br>
                     <label for="edit-camper-birthday"><b>Birthday:</b></label>
                     <input type="date" id="edit-camper-birthday" min="1950-01-01" class="camper-modal-input" required>
                     <br>
                     <label for="edit-camper-gender"><b>Gender:</b></label>
-                    <select class="form-control" id="edit-camper-gender" class="camper-modal-input"> 
+                    <select class="form-control" id="edit-camper-gender" class="camper-modal-input">
                         <option value="Female">Female</option>
                         <option value="Male">Male</option>
                         <option value="Non-Binary">Non-Binary</option>
@@ -206,7 +217,7 @@
                     <button onclick="updateCamperFromModal()" class="add-athlete-btn">Update Athlete Info</button>
                 </div>
             </div>
-            
+
             <table id="campers" class="block cp-table row-border"> </table>
         </div>
 
@@ -220,6 +231,9 @@
                 <tbody> </tbody>
             </table>
         </div>
+        <!-- Trigger/Open The Modal -->
+        <button class="btn" onclick="document.getElementById('addUserModal').style.display = 'block';">Add
+            User</button>
 
         <div id="users-control" class="tabcontent adminheader">
             <button type="button" class="btn" data-toggle="modal" data-target="#modal-user"
@@ -228,6 +242,52 @@
             </button>
             <div class="cp-subTitle">All Users</div>
             <table id="users" class="block cp-table row-border"> </table>
+
+
+            <!-- Pratik I made a sloppy version of a new User Modal, go in and check to make sure all the ID's, classes, etc are right and connected to the right things, a lot of them are probably not, sorry -->
+            <div id="addUserModal" class="modal adminConsoleModal">
+                <!-- Modal content -->
+                <div class="modal-content">
+                    <span class="close"
+                        onclick="document.getElementById('addUserModal').style.display = 'none';">&times;</span>
+                    <h2>Add a New User</h2>
+                    <br>
+                    <label for="edit-camper-fname"><b>First Name:</b></label>
+                    <input type="text" placeholder="First Name" id="edit-camper-fname" class="camper-modal-input"
+                        required>
+                    <br>
+                    <label for="edit-camper-lname"><b>Last Name:</b></label>
+                    <input type="text" placeholder="Last Name" id="edit-camper-lname" class="camper-modal-input"
+                        required>
+                    <br>
+                    <label for="edit-camper-gender"><b>Gender:</b></label>
+                    <select class="form-control" id="edit-camper-gender" class="camper-modal-input">
+                        <option value="Female">Female</option>
+                        <option value="Male">Male</option>
+                        <option value="Non-Binary">Non-Binary</option>
+                    </select>
+                    <br>
+                    <label for="modal-user-priv">User Access Level</label><br />
+                    <select class="form-control" id="modal-user-priv">
+                        <option value=".">Basic</option>
+                        <option value="parent">Parent</option>
+                        <option value="coach">Coach</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                    <br />
+                    <label for="modal-user-email">User's Email</label><br />
+                    <input autocomplete="false" type="email" class="form-control" id="modal-user-email"
+                        placeholder="Enter the unique user email">
+                    <br />
+                    <label for="modal-user-pass">User's Default Password</label><br />
+                    <input type="password" class="form-control" id="modal-user-pass"
+                        placeholder="(Default:password123)">
+                    <br />
+                    <div id='modal-user-error' class='addTopPad'></div>
+
+                    <button onclick="" class="add-athlete-btn">ADD NEW USER</button>
+                </div>
+            </div>
 
             <!-- Modal -->
             <div class="modal micromodal-slide" id="modal-user" aria-labelledby="modalCreateUser" aria-hidden="true">
