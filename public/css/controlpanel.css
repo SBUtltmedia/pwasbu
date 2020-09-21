@@ -202,9 +202,12 @@ table.block th {
     margin-bottom: 20px;
 }
 
-.modal-camper-pic {
-    border-style: solid;
-    border-color: black;
+.modal-profile-pic {
+    margin-bottom: 15px;
+}
+
+.modal-fname {
+    margin-top: 15px;
 }
 
 /* The Close Button */
