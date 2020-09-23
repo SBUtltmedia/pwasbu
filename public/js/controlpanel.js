@@ -41,6 +41,7 @@ function createSelectElement(options, values, selected, id, classes) {
 function select2Init(id) {
     $(`#${id}`).select2({
         tags: true,
+        width: 'resolve',
         createTag: function (params) {
             var term = $.trim(params.term);
             var existsVar = false;

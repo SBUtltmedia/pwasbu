@@ -43,7 +43,7 @@ body {
       #campers {
         border: none;
         text-align: center;
-        display: grid;
+        display: table; 
     }
     .col-elem {
       display: flex;
@@ -62,7 +62,7 @@ body {
   #campers {
     border: none;
     text-align: none;
-    display: unset;
+    display: table; 
 }
 .col-elem {
   display: table-cell;
