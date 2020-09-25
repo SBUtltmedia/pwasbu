@@ -184,11 +184,27 @@ function saveCurrentUserData(){
         });
 }
 
+var onlineStatus = 'Online';
+function updateOnlineStatus() {
+    console.log("updateOnlineStatus called.");
+    onlineStatus = 'Online';
+    if (!navigator.onLine){
+        onlineStatus = 'Not Online';
+    }
+    $('.offline-ready').html(onlineStatus);
+}
+$( () => updateOnlineStatus());
+
+
+navigator.connection.onchange = e => {updateOnlineStatus()};
+
 // Enable Service Worker
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker
         .register('sw.js')
-        .then((reg) => console.log('Service Worker Registered', reg))
+        .then((reg) => { 
+            var newWorker = reg.installing;
+            console.log('Service Worker Registered', reg)})
         .catch((err) => console.log('Service Worker not registered', err));
 }
 

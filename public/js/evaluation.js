@@ -394,6 +394,7 @@ function removeTrial(itemID, day, trial) {
 }
 
 function submitEval(evalID = "DEFAULT") {
+    console.log("CHECKPOINT 1: submitEval Called");
     let evalDoc = {};
     fs.collection("Activities").doc(currEval.actID).get().then(doc => {
         evalDoc['activityName'] = doc.data()['name'];
@@ -404,6 +405,7 @@ function submitEval(evalID = "DEFAULT") {
         evalDoc['year'] = currEval.selectedYear;
         evalDoc['instructor'] = currEval.instrID;
         try {
+            console.log("CHECKPOINT 2: try clause to submit");
             let checkLen = doc.data()['checklist'].length;
             let days = document.getElementsByClassName("checklist-item");
             for (let checklistItem of days) {
@@ -432,7 +434,6 @@ function submitEval(evalID = "DEFAULT") {
                     throw "Every assessment must be filled out with a valid date";
                 }
             }
-
             let skillsLen = doc.data()['skills'].length;
             let skillCount = 1;
             while (skillCount < skillsLen + 1) {
@@ -448,19 +449,39 @@ function submitEval(evalID = "DEFAULT") {
                 }
                 skillCount++;
             }
-
+            console.log("CHECKPOINT 3: if evaluation mode is add or not");
             if (currEval.evalMode == "add") {
+                console.log("EVAL SUBMIT ATTEMPT 1");
                 fs.collection("Evaluations").add(evalDoc).then(() => {
                     alert("Evaluation updated successfully!");
                     router.loadRoute("home");
-                });
+                }).catch((e) => console.log(e)); //catch add() error;
             } else {
+                console.log("CHECKPOINT A");
                 fs.collection("Evaluations").doc(currEval.evalID).set(evalDoc).then(() => {
-                    alert("Evaluation updated successfully!");
+                    console.log("EVAL SUBMIT ATTEMPT 2");
+                    if(onlineStatus = 'Online') { 
+                        alert("Evaluation updated successfully!"); 
+                    }
+                    else { 
+                        alert("Evaluation saved locally. Changes will be updated once internet connection resumes."); 
+                    }
                     router.loadRoute("home");
-                });
+                }).catch((e) => console.log(e)); //catch set() error
             }
+            console.log("CHECKPOINT B");
+            console.log("System is " + onlineStatus);
+            ////////
+            if(onlineStatus = 'Online') { 
+                alert("Evaluation updated successfully!"); 
+            }
+            else { 
+                alert("Evaluation saved locally. Changes will be updated once internet connection resumes."); 
+            }
+            router.loadRoute("home");
+            //////////
         } catch (err) {
+            console.log("CHECKPOINT C");
             alert("Could not successfully update this assessment: " + err);
         }
     });
