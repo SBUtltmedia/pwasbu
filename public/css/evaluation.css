@@ -182,3 +182,7 @@ td.padded-td {
 .trials-row {
     margin-top: 0.75rem;
 }
+
+button.hiddenElement {
+    display: none;
+}

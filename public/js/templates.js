@@ -1,8 +1,5 @@
 function accountsettings_template(){
     $("#loader").hide();
-    $("#profile-error").hide();
-    $("#profile-success").hide();
-    // console.log("loading in fields");
     initAccountSettings();
     initNavBar();
 }
@@ -16,14 +13,25 @@ function controlpanel_template(){
     initGroupsTable();
     initUsersTable();
     initUserModal();
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function (event) {
+        if (event.target.classList.contains("adminConsoleModal")) {
+            event.target.style.display = "none";
+        }
+    }
+
+    $(`#add-camper-pic`).on("change", function () {
+        readURL(this, `add-camper-profile-pic`);
+    });
+
+    $(`#edit-camper-pic`).on("change", function () {
+        readURL(this, `edit-camper-profile-pic`);
+    });
 }
 
 function editprofile_template(){
     $(".loader").hide();
-    $("#profile-error").hide();
-    $("#profile-success").hide();
-    //Date is in YYYY-MM-DD Format
-    // console.log("loading in fields");
     initEditProfile();
     function changePhoto() {
         let fileReader = new FileReader();
@@ -40,23 +48,22 @@ function editprofile_template(){
     initNavBar();
 }
 
-
 function evaluation_template(){
-    if (currEval.evalMode == "add") {
-        document.getElementById("eval-add").style = "display: none;";
-        document.getElementById('activities').style = "display: block;";
-        actEvalInit();
-    } else if (currEval.evalMode == "get") {
-        // document.getElementById('evaluations').style = "display: block;";
-        // initEvalTable();
-        document.getElementById('activities').style = "display: block;";
-        actEvalInit();
-    } else {
+    document.getElementById('activities').style = "display: block;";
+
+    if(currEval.evalMode === "add") {
+        let currEvalCamperID = currEval.camperID;
+        let currEvalDate = new Date().toDateInputValue();
+        let currEvalInstrID = currEval.instrID;
+        let currEvalSelectedYear = currEval.selectedYear;
+        currEval.reset();
+        currEval.camperID = currEvalCamperID;
+        currEval.date = currEvalDate;
+        currEval.instrID = currEvalInstrID;
+        currEval.selectedYear = currEvalSelectedYear;
     }
-    function evalAdd() {
-        document.getElementById("eval-add").style = "display: none;";
-        eval(currEval.camperID, 'add');
-    }
+
+    actEvalInit();
 }
 
 function forgotpassword_template(){

@@ -1,14 +1,9 @@
-#profile-error{
-    margin-top: 25px;
-    font-size: 18px;
-    text-align: center;
-    color: #dc3545;
-}
-
 #user
 {
     font-size: 1.8rem;
     text-align: center;
+    padding-top: 3rem;
+    font-weight: bold;
 }
 
 div.editProfile
@@ -32,34 +27,81 @@ div.editProfile
     padding: 10px;
 }
 
-.profile-pic
+#profile-pic
 {
-    font-size: 1.5rem;
+    border-style: solid;
+    border-color: white ;
+    
 }
 
 #cameraInput
 {
     font-size: 1.5rem;
-    width:-webkit-fill-available;;
-    margin-bottom: 30px;
+    width:200px;
+    border-style: solid;
+    border-color: white ;
 }
 #birthdate
 {
     font-size: 1.5rem;
-    width: unset;
-}
-
-#profile-success{
-    margin-top: -25px;
-    font-size: 75%;
-    text-align: center;
-    color: green;
+    width: -webkit-fill-available;
+    border: none;
+    padding: 10px;
 }
 
 .ed-pr-nm{
     font-size: 1.5rem;
+    text-align: left;
 }
 
 .ac-set{
     font-size: 1.5rem;
+    text-align: left;
+}
+
+.profile-inputs{
+  display: -webkit-flex;
+  display: flex;
+}
+
+.columns {
+    -webkit-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    padding: 10px;
+  }
+
+  @media (max-width: 600px) {
+    .profile-inputs {
+      -webkit-flex-direction: column;
+      flex-direction: column;
+    }
+    .input{
+        margin-bottom: 0;
+    }
+  }
+
+  .profile{
+      display: flex;
+  }
+
+  .change-info{
+      margin: 20px;
+  }
+
+.text-like-button {
+    font: bold 2rem Arial;
+    text-decoration: none;
+    background-color: #EEEEEE;
+    color: #333333;
+    padding: 2px 6px 2px 6px;
+    /* margin-top: 10px; */
+    border-top: 1px solid #CCCCCC;
+    border-right: 1px solid #333333;
+    border-bottom: 1px solid #333333;
+    border-left: 1px solid #CCCCCC;
+}
+
+.add-profile-pic {
+    margin-bottom: 10px;
 }

@@ -31,37 +31,32 @@ function updateProfile(){
     firstName = document.getElementById("user-first-name").value;
     lastName = document.getElementById("user-last-name").value;
     gender = document.getElementById("user-gender").value;
-    if(firstName.length <= 0 || firstName == null) {
-        $("#profile-success").hide();
-        $("#profile-error").show();
-    } else if(lastName.length <= 0 || lastName == null) {
-        $("#profile-success").hide();
-        $("#profile-error").show();
-    } else if(gender.length <= 0 || gender == null) {
-        $("#profile-success").hide();
-        $("#profile-error").show();
+    birthdate = document.getElementById("birthdate").value;
+    if(!firstName || !lastName || !gender || !birthdate) {
+        alert("Could not update profile. Please make sure all of the information is filled out properly.");
     } else {
-        $("#profile-error").hide();
-        birthdate = document.getElementById("birthdate").value;
         userPayload = JSON.parse(localStorage.getItem("userData"));
-        try{
+        try {
             userPayload['firstName'] = firstName;
             userPayload['lastName'] = lastName;
             userPayload['gender'] = gender;
             userPayload['birthdate'] = birthdate;
             setUser(userPayload['email'], userPayload);
-            console.log("The data has been updated to :" + JSON.stringify(userPayload));   
             localStorage.setItem("userData", JSON.stringify(userPayload));
+            console.log("The data has been updated to :" + JSON.stringify(userPayload));
+            alert("Your profile has been updated successfully!");
         } catch(error) {
             let user = firebase.auth().currentUser;
             userPayload = JSON.parse(localStorage.getItem("userData"));
             setUser(user.email, generateUser(user.email, userPayload['firstName'], userPayload['lastName'], userPayload['gender'], userPayload['birthdate'], userPayload['priv']));
+            console.log("Could not update profile: " + error);
+            alert("Could not update profile. There was an error in the backend, please try again.");
         }
         try {
             updateProfilePicture();
         } catch(error) {
-            console.log("Profile picture not updated: ", error);
-            $("#profile-success").show();
+            console.log("Could not update profile picture: ", error);
+            router.loadRoute('editprofile');
         }
     }
 }
@@ -69,33 +64,33 @@ function updateProfile(){
 function updateProfilePicture() {
     let user = firebase.auth().currentUser;
     let file = document.getElementById("cameraInput").files[0];
-    console.log(file);
-    clearProfilePictures(user.email,
-        storageRef.child(`users/${user.email}/profile-picture/` + file.name).put(file)
-            .then(() => {
-                console.log("Successfully updated profile picture");
-                $("#profile-success").show();
-            }).catch((err) => {
-                console.log(err);
-            }));
+    if(file) {
+        clearProfilePictures(user.email,
+            storageRef.child(`users/${user.email}/profile-picture/` + file.name).put(file)
+                .then(() => {
+                    console.log("Successfully updated profile picture");
+                    router.loadRoute('editprofile');
+                }).catch((err) => {
+                    console.log(err);
+                    router.loadRoute('editprofile');
+                }));
+    }
 }
 
 let loadProfilePicture = () => {
     let user = firebase.auth().currentUser;
     let listRef = storageRef.child(encodeURI(`users/${user.email}/profile-picture`));
-    console.log("Trying to get a file from " + user.email );
+    console.log("Trying to get a file from " + user.email);
     listRef.listAll().then(function(res) {
         let profilePic = res.items[0];
         storageRef.child(encodeURI(`users/${user.email}/profile-picture/${profilePic.name}`)).getDownloadURL().then(function(url) {
-            // console.log("Loading " + url + " as profile image");
             document.getElementById("profile-pic").src = url;
         }).catch(function(error) {
-            console.log(error);
+            console.log("Could not update profile pic: " + error);
             document.getElementById("profile-pic").src = '../img/user/default/user-480.png';
         });
       }).catch(function(error) {
-        console.log(error);
-        console.log("List all failed to work");
+        console.log("Could not update profile pic: " + error);
         document.getElementById("profile-pic").src = '../img/user/default/user-480.png';
       });
       try{
@@ -107,12 +102,9 @@ let loadProfilePicture = () => {
 
 let initEditProfile = () => {
     $(".loader").hide();
-    $("#profile-error").hide();
-    $("#profile-success").hide();
     birthdateField = document.getElementById("birthdate");
     birthdateField.max = new Date().toDateInputValue();
     userData = JSON.parse(localStorage.getItem("userData"));
-    // console.log(userData['gender']);
     birthdateField.value = userData['birthdate'];
     document.getElementById("user-first-name").value = userData['firstName'];
     document.getElementById("user-last-name").value = userData['lastName'];
@@ -122,25 +114,17 @@ let initEditProfile = () => {
 
 let initAccountSettings = () => {
     $(".loader").hide();
-    $("#profile-error").hide();
-    $("#profile-success").hide();
     userData = JSON.parse(localStorage.getItem("userData"));
     document.getElementById("user-email").value = userData['email'];
 };
 
 function updateEmail() {
-    $('#profile-success').hide();
     new_email = document.getElementById("user-email").value;
     password = document.getElementById("user-password").value;
-    if(new_email.length <= 0 || new_email == null) {
-        $("#profile-success").hide();
-        $("#profile-error").show();
-    }
-    else if(password.length <= 0 || password == null) {
-        $("#profile-success").hide();
-        $("#profile-error").show();
+
+    if(!new_email || !password) {
+        alert("Could not update email: Please make sure both email and password are inputted.");
     } else {
-        $("#profile-error").hide();
         payload = JSON.parse(localStorage.getItem("userData"));
         payload['email'] = new_email;
         var user = firebase.auth().currentUser;
@@ -150,21 +134,20 @@ function updateEmail() {
             user.reauthenticateWithCredential(credential).then(function() {
                 // Changing account email address
                 user.updateEmail(new_email).then(function() {
-                    console.log("Updated user login email successfully");
+                    console.log("Updated user login email successfully!");
                     // Updating email in users collection
                     updateUsersCollectionEmail(original_email, new_email, payload);
                     // Changing directory path of profile pic
                     updateProfilePicDirectoryPath(original_email, new_email);
+                    loadRoute('accountsettings');
                 }).catch(function(error) {
-                    $("#profile-success").hide();
-                    window.alert("Could not update account email: The new email address is already being used by another account");
+                    alert("Could not update account email: The new email address is already being used by another account");
                 });
             }).catch(function(error) {
-                $("#profile-success").hide();
-                window.alert("Could not update account email: Incorrect credentials provided");
+                alert("Could not update account email: Incorrect credentials provided");
             });
         } else {
-            window.alert("New email is the same as the old email");
+            alert("New email is the same as the old email.");
         }
     }
 }
@@ -209,15 +192,12 @@ function updateProfilePicDirectoryPath(original_email, new_email) {
                             });
                         }).then(() => {
                             console.log("Finished deleting images under old directory path");
-                            $("#profile-success").show();
                         }).catch(() => {
                             console.log("Finished deleting images under old directory path");
-                            $("#profile-success").show();
                         });
                     })
                     .catch((err) => {
                         console.log("Could not set profile pic of new email: ", err);
-                        $("#profile-success").show();
                     });
             };
             xhr.open('GET', "https://cors-anywhere.herokuapp.com/" + url);
@@ -227,12 +207,10 @@ function updateProfilePicDirectoryPath(original_email, new_email) {
         });
     }).catch(function(error) {
         console.log("No profile pic found from old directory path: ", error);
-        $("#profile-success").show();
     });
 }
 
 let changePassword = () => {
-    $('#profile-success').hide();
     userData = JSON.parse(localStorage.getItem("userData"));
     if(window.confirm("Are you sure you want to change your password?" +
         " If you select OK an email will be sent to " + userData['email'] + 
@@ -247,14 +225,3 @@ let changePassword = () => {
         console.log("Password change cancelled");
     }
 }
-
-let validString = id => {
-    $("#profile-success").hide();
-    field = document.getElementById(id);
-    textInput = field.value;
-    if(textInput.length <= 0 || textInput == null) {
-        $("#profile-error").show();
-    } else {
-        $("#profile-error").hide();
-    }
-};
