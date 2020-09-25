@@ -11,6 +11,20 @@
     font-size: 1.5rem;
 }
 
+/* This the offline styling */
+.online{
+  text-align: center;
+  background-color: green;
+  color: white;
+}
+
+.offline{
+  text-align: center;
+  background-color: red;
+  color: white;
+}
+
+
 .center-pg{
   text-align: center;
 }

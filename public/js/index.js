@@ -1,7 +1,7 @@
-Date.prototype.toDateInputValue = (function() {
+Date.prototype.toDateInputValue = (function () {
     var local = new Date(this);
     local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
-    return local.toJSON().slice(0,10);
+    return local.toJSON().slice(0, 10);
 });
 // Initialize use of micro modal
 MicroModal.init();
@@ -66,15 +66,15 @@ window.addEventListener('hashchange', hashChangeEvent => {
     urlSegments = hashChangeEvent.newURL.split("#");
     // console.log(urlSegments);
     user = firebase.auth().currentUser;
-    if(user && urlSegments[1] != "" && urlSegments[1] != "evaluation") {
+    if (user && urlSegments[1] != "" && urlSegments[1] != "evaluation") {
         router.loadRoute(urlSegments[1]);
-    } else if(user && (urlSegments[1] === "" || urlSegments[1] === "evaluation")) {
+    } else if (user && (urlSegments[1] === "" || urlSegments[1] === "evaluation")) {
         router.loadRoute("home");
     } else {
         router.loadRoute("");
     }
 
-    if(document.getElementById("backToActivities")) {
+    if (document.getElementById("backToActivities")) {
         $("#backToActivities").addClass("hiddenElement");
     }
 });
@@ -83,7 +83,7 @@ const signUpFB = firebase.initializeApp(firebaseConfig, "signUpFB");
 
 const fs = firebase.firestore()
 fs.enablePersistence()
-    .catch(function(err) {
+    .catch(function (err) {
         if (err.code == 'failed-precondition') {
             alert("More than 1 tab is open for this app. Only one of the apps can be accessed offline at a time!");
         } else if (err.code == 'unimplemented') {
@@ -103,18 +103,18 @@ function init() {
 
 }
 
-function loopOverDocs(docs){
-docs.forEach(loopOverKeys)
+function loopOverDocs(docs) {
+    docs.forEach(loopOverKeys)
 }
 
-function loopOverKeys(doc){
+function loopOverKeys(doc) {
 
-  Object.keys(doc).forEach(key=>{
+    Object.keys(doc).forEach(key => {
 
-  var newDiv = document.createElement('div')
-  newDiv.setAttribute('id',key);
-  document.body.appendChild(newDiv);
-})
+        var newDiv = document.createElement('div')
+        newDiv.setAttribute('id', key);
+        document.body.appendChild(newDiv);
+    })
 
 }
 
@@ -165,21 +165,21 @@ function saveData(payload, key = "users") {
 /**
  * DEPRECATED FUNCTION
  */
-function saveCurrentUserData(){
+function saveCurrentUserData() {
     let user = firebase.auth().currentUser;
     let payload = {};
-    let name  = user.displayName.split(" ");
-    if(name.length > 1){
+    let name = user.displayName.split(" ");
+    if (name.length > 1) {
         payload = generateUser(user.email, name[0], name[1]);
-    } else{
+    } else {
         payload = generateUser(user.email, name[0]);
     }
     fs.collection("users").where("email", '==', email).set(payload)
-        .then(function() {
+        .then(function () {
             console.log("User does not exist in the database ... adding user now");
             localStorage.setItem("userData", JSON.stringify(payload));
         })
-        .catch(function(error) {
+        .catch(function (error) {
             console.error("Error writing document: ", error);
         });
 }
@@ -188,23 +188,33 @@ var onlineStatus = 'Online';
 function updateOnlineStatus() {
     console.log("updateOnlineStatus called.");
     onlineStatus = 'Online';
-    if (!navigator.onLine){
+    if (!navigator.onLine) {
         onlineStatus = 'Not Online';
     }
     $('.offline-ready').html(onlineStatus);
+    if (onlineStatus == 'Online') {
+        $('.offline-ready').addClass("online");
+        $('.offline-ready').removeClass("offline");
+    }
+    else {
+        $('.offline-ready').addClass("offline");
+        $('.offline-ready').removeClass("online");
+
+    }
 }
-$( () => updateOnlineStatus());
+$(() => updateOnlineStatus());
 
 
-navigator.connection.onchange = e => {updateOnlineStatus()};
+navigator.connection.onchange = e => { updateOnlineStatus() };
 
 // Enable Service Worker
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker
         .register('sw.js')
-        .then((reg) => { 
+        .then((reg) => {
             var newWorker = reg.installing;
-            console.log('Service Worker Registered', reg)})
+            console.log('Service Worker Registered', reg)
+        })
         .catch((err) => console.log('Service Worker not registered', err));
 }
 
@@ -241,8 +251,8 @@ window.addEventListener('beforeinstallprompt', (e) => {
 /*
  * Firestore User Queries
  */
-function getUserData(email, _callback = ()=>{}){
-    fs.collection("users").where("email", '==', email).get().then(function(res) {
+function getUserData(email, _callback = () => { }) {
+    fs.collection("users").where("email", '==', email).get().then(function (res) {
         if (res.docs.length > 0) {
             res.docs[0].ref.get().then(doc => {
                 console.log("Successfully retrieved user data for " + doc.data()['email']);
@@ -252,7 +262,7 @@ function getUserData(email, _callback = ()=>{}){
         } else {
             console.log("The user of " + email + " does not exist");
         }
-    }).catch(function(error) {
+    }).catch(function (error) {
         console.log("Error getting document:", error);
     });
 }
@@ -260,40 +270,40 @@ function forgotPassword() {
     let email = document.getElementById("forgot-email").value;
     $(".loader").show();
     $("#forgot-button").hide();
-    firebase.auth().sendPasswordResetEmail(email).then(function() {
+    firebase.auth().sendPasswordResetEmail(email).then(function () {
         alert("If the email is valid, a reset has been sent.");
         $(".loader").hide();
         $("#forgot-button").show();
         alert("If the email is valid, a reset has been sent.");
         router.loadRoute('');
-      }).catch(function(error) {
+    }).catch(function (error) {
         $(".loader").hide();
         $("#forgot-button").show();
         alert("If the email is valid, a reset has been sent.");
         router.loadRoute('');
-      });
+    });
 }
 
 // Also used for setting the user
-function setUser(email, payload){
+function setUser(email, payload) {
     fs.collection("users").where('email', '==', email).get().then(res => {
         let batch = fs.batch();
         res.forEach(doc => {
-            batch.set(doc.ref, payload); 
-        }); 
+            batch.set(doc.ref, payload);
+        });
         batch.commit().catch(err => console.log(err))
     });
 }
 
 function makeid(length) {
-    var result           = '';
-    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var result = '';
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     var charactersLength = characters.length;
-    for ( var i = 0; i < length; i++ ) {
-       result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    for (var i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
     return result;
- }
+}
 /**
  * This function is purely used for signing the user up.
  * @param {} payload 
@@ -320,27 +330,27 @@ function makeid(length) {
 //     });
 // }
 
-function addUser(payload, _callback = ()=> {}){
+function addUser(payload, _callback = () => { }) {
     var def = $.Deferred();
     fs.collection("users").where('email', '==', payload['email']).get()
-    .then(res=> {
-        if(res.docs.length > 0) {
-            console.log("attempting to add a user that already exists");
-        } else {
-            fs.collection("users").get().then((res) => {
-                let id = makeid(3);
-                if (payload['email'] == "") {
-                    payload['email'] = id;
-                }
-                payload['id'] = id + (res.docs.length + 1);
-                def.resolve(payload['id']);
-                fs.collection("users").add(payload).then(function(){
-                    console.log("Added user successfully");
-                    _callback();
-                }).catch(function(error) { console.log(error)});
-            });
-        }
-    });
+        .then(res => {
+            if (res.docs.length > 0) {
+                console.log("attempting to add a user that already exists");
+            } else {
+                fs.collection("users").get().then((res) => {
+                    let id = makeid(3);
+                    if (payload['email'] == "") {
+                        payload['email'] = id;
+                    }
+                    payload['id'] = id + (res.docs.length + 1);
+                    def.resolve(payload['id']);
+                    fs.collection("users").add(payload).then(function () {
+                        console.log("Added user successfully");
+                        _callback();
+                    }).catch(function (error) { console.log(error) });
+                });
+            }
+        });
     return def;
 }
 
@@ -368,23 +378,23 @@ function toy() {
 //     };   
 // }
 
-function generateUser(email, firstName="", lastName="", gender="", birthdate="", priv=".", pronoun="They/Them/Theirs"){
+function generateUser(email, firstName = "", lastName = "", gender = "", birthdate = "", priv = ".", pronoun = "They/Them/Theirs") {
     return {
         email: email,
-        birthdate : birthdate,
-        creationDate : new Date().toDateInputValue(),
+        birthdate: birthdate,
+        creationDate: new Date().toDateInputValue(),
         firstName: firstName,
-        lastName : lastName, 
+        lastName: lastName,
         gender: gender,
         priv: priv,
         pronoun: pronoun
-    };   
+    };
 }
 
-function signIn(email, password){
+function signIn(email, password) {
     console.log("Attempting to sign in");
     firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-        .then(function() {
+        .then(function () {
             firebase.auth().signInWithEmailAndPassword(email, password)
                 .then(() => {
                     console.log("Attempting to load menu");
@@ -397,7 +407,7 @@ function signIn(email, password){
                     $("#login_error").show();
                 });
         })
-        .catch(function(error) {
+        .catch(function (error) {
             $(".btn").show();
             $(".loader").hide();
             document.getElementById("login_error").innerHTML = error.message;
@@ -408,7 +418,7 @@ function signIn(email, password){
 function login() {
     let email = document.getElementById("login-email").value;
     let password = document.getElementById("login-pass").value;
-    if(!emailIsValid(email)){
+    if (!emailIsValid(email)) {
         document.getElementById("login_error").innerHTML = "Email field is invalid!"
         $("#login_error").show();
     } else {
@@ -425,13 +435,13 @@ function signup() {
     let lastName = document.getElementById("signup-user-last").value;
     let birthdate = document.getElementById("signup-birthdate").value;
     let name = firstName + " " + lastName;
-    if(!emailIsValid(email)){
+    if (!emailIsValid(email)) {
         document.getElementById("pass_error").innerHTML = "Email field is invalid!"
         $("#pass_error").show();
-    } else if(name.length <= 0) {
+    } else if (name.length <= 0) {
         document.getElementById("pass_error").innerHTML = "Name field is empty!"
         $("#pass_error").show();
-    } else if(!passIsValid(password) || !(passMatch())) {
+    } else if (!passIsValid(password) || !(passMatch())) {
         document.getElementById("pass_error").innerHTML = "Password field is invalid or passwords don't match!"
         $("#pass_error").show();
     } else {
@@ -444,10 +454,10 @@ function signup() {
                 addUser(generateUser(email, firstName, lastName, "", birthdate, "."));
                 firebase.auth().currentUser.updateProfile({
                     displayName: name,
-                }).then(function() {
+                }).then(function () {
                     console.log("Updated user display name successfully!");
                     signIn(email, password);
-                }).catch(function(error) {
+                }).catch(function (error) {
                     console.log(error.message);
                     signIn(email, password);
                 });
@@ -462,50 +472,50 @@ function signup() {
 }
 function signout() {
     console.log("Attempting to signout");
-    firebase.auth().signOut().then(function() {
+    firebase.auth().signOut().then(function () {
         //loadLogin();
         localStorage.clear();
         console.log("User has signed out successfully");
-    }).catch(function(error) {
+    }).catch(function (error) {
         localStorage.clear();
         //loadLogin();
         console.log(error.message + " with error code : " + error.code);
     });
 }
-function googleSignIn(){
+function googleSignIn() {
     $(".btn").hide();
     $(".loader").show();
-    firebase.auth().signInWithPopup(provider).then(function(result) {
+    firebase.auth().signInWithPopup(provider).then(function (result) {
         // This gives you a Google Access Token. You can use it to access the Google API.
         let token = result.credential.accessToken;
         // The signed-in user info.
         let user = result.user;
         // Not using all of the fields above yet
-        fs.collection("users").where('email', '==',).get().then(function(querySnapshot) {
+        fs.collection("users").where('email', '==',).get().then(function (querySnapshot) {
             if (querySnapshot.length > 0) {
                 console.log("User exist in the database!");
                 getUserData(user.email);
             } else {
                 console.log("User does not exist in the database. Adding the user now");
-                let name  = user.displayName.split(" ");
-                if(name.length > 1){
+                let name = user.displayName.split(" ");
+                if (name.length > 1) {
                     addUser(generateUser(user.email, name[0], name[1]));
-                } else{
+                } else {
                     addUser(generateUser(user.email, name[0]));
                 }
             }
-        }).catch(function(error) {
+        }).catch(function (error) {
             console.log("Error getting document:", error);
             console.log("User does not exist in the database. Adding the user now");
-            let name  = user.displayName.split(" ");
-            if(name.length > 1){
+            let name = user.displayName.split(" ");
+            if (name.length > 1) {
                 addUser(generateUser(user.email, name[0], name[1]));
-            } else{
+            } else {
                 addUser(generateUser(user.email, name[0]));
             }
         });
-        
-    }).catch(function(error) {
+
+    }).catch(function (error) {
         $(".btn").show();
         $(".loader").hide();
         // Handle Errors here.
@@ -526,7 +536,7 @@ const storageRef = firebase.storage().ref();
 
 function toggleHide(id) {
     let classes = document.getElementById(id).classList;
-    if(classes.contains("hiddenElement")) {
+    if (classes.contains("hiddenElement")) {
         classes.remove("hiddenElement");
     } else {
         classes.add("hiddenElement");
