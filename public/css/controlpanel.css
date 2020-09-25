@@ -122,6 +122,9 @@ table.block th {
     width: 100%; /* Full width */
 }
 
+.coach-group-athletes{
+    width: 100%;
+}
             /* Style the tab */
             .tab {
                 overflow: hidden;
