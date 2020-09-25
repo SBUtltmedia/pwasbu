@@ -8,6 +8,8 @@ function controlpanel_template(){
     // resetSelectrs();
     initYearPicker(); // LOCATED in evaluation.js
     initActivitiesTable();
+    initActModal(false);
+    initActModal(true);
     initNavBar();
     initCampersTable();
     initGroupsTable();
@@ -28,6 +30,12 @@ function controlpanel_template(){
     $(`#edit-camper-pic`).on("change", function () {
         readURL(this, `edit-camper-profile-pic`);
     });
+
+    $(`#modal-user-pic`).on("change", function () {
+        readURL(this, `modal-user-profile-pic`);
+    });
+
+    document.getElementById("defaultOpen").click();
 }
 
 function editprofile_template(){

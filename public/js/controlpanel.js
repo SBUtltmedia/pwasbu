@@ -5,6 +5,20 @@ $(function () {
     $('[data-toggle="tooltip"]').tooltip()
 });
 
+function openSection(evt, secHead) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(secHead).style.display = "block";
+    evt.currentTarget.className += " active";
+}
+
 const selectrIDs = {};
 
 //////////////////////////////// Helper Functions /////////////////////////////////////////////////
@@ -41,6 +55,7 @@ function createSelectElement(options, values, selected, id, classes) {
 function select2Init(id) {
     $(`#${id}`).select2({
         tags: true,
+        width: 'resolve',
         createTag: function (params) {
             var term = $.trim(params.term);
             var existsVar = false;
@@ -107,16 +122,54 @@ function editFunc() {
     window.location = '#anchor-name';
 }
 
+function initActModal(addAct) {
+    let prefix = "edit-act";
+    if(addAct) {
+        prefix = "add-act"
+    }
+    if($(`#${prefix}-checklist`).DataTable()) {
+        $(`#${prefix}-checklist`).DataTable().clear();
+        $(`#${prefix}-checklist`).DataTable().destroy();
+        $(`#${prefix}-checklist tr`).remove();
+    }
+    $(`#${prefix}-checklist`).DataTable({
+        columns: [
+            { "title": "Checklist Name", 'searchable': false },
+            { "title": "Unit of Measure", 'searchable': false },
+            { "title": "", 'searchable': false },
+            { "title": "", 'visible': false },
+            { "title": "", 'visible': false },
+            { "title": "", 'visible': false, 'searchable': false }
+        ]
+    });
+    if($(`#${prefix}-skills`).DataTable()){
+        $(`#${prefix}-skills`).DataTable().clear();
+        $(`#${prefix}-skills`).DataTable().destroy();
+        $(`#${prefix}-skills tr`).remove();
+    }
+    $(`#${prefix}-skills`).DataTable({
+        columns: [
+            { "title": "Skill Name", 'searchable': false },
+            { "title": "Subskills", 'searchable': false },
+            { "title": "", 'searchable': false },
+            { "title": "", 'visible': false },
+            { "title": "", 'visible': false },
+            { "title": "", 'visible': false, 'searchable': false }
+        ]
+    });
+}
+
 function populateAct(data) {
     let finishedArray = [];
     data.forEach((d, i) => {
         finishedArray.push([d['name'],
-        `<button class='btn bdrlessBtn' onclick='getActivity("${d['id']}")'>Edit</button>`,
+        `<button class='btn bdrlessBtn' onclick='getEditActivityModal("${d['id']}")'>Edit</button>`,
         `<button class='btn bdrlessBtn btn-danger' onclick='removeActivity("${d['id']}", "${d['name']}")'>Remove</button>`
     ]);
     });
     return finishedArray;
 }
+
 /***
  * Populate the activities tables
  */
@@ -132,6 +185,7 @@ function initActivitiesTable() {
         let data = populateAct(names);
         $(document).ready(function () {
             $('#activities').DataTable({
+                autoFill: false,
                 data: data,
                 columns: [
                     { "title": "Name" },
@@ -142,67 +196,130 @@ function initActivitiesTable() {
         });
     });
 }
-/**
- * Populates the edit activity field
- * @param {*} id 
- */
+
 function removeActivity(id, name) {
-    if(confirm(`Are you sure you would like to remove the activity : ${name}`)) {
+    if(confirm(`Are you sure you would like to remove the activity: ${name}`)) {
         fs.collection('Activities').doc(id).delete().then(()=>{
             $('#activities').DataTable().clear();
             $('#activities').DataTable().destroy();
             $('#activities tr').remove();
-            document.getElementById('act-edit').style = "display: none;";
+            document.getElementById('editActivityModal').style = "display: none;";
             initActivitiesTable();
         });
     }
 }
+
 function updateActivity(id) {
-    let skillsTable = $("#skills").DataTable().rows().data();
-    let checkTable = $('#checklist').DataTable().rows().data();
+    let skillsTable = $("#edit-act-skills").DataTable().rows().data();
+    let checkTable = $('#edit-act-checklist').DataTable().rows().data();
     let skills = [];
     let checklist = [];
-    let activityName = document.getElementById("act-name").value;
+    let activityName = document.getElementById("edit-act-name").value;
+    let valid = activityName ? true : false;
     /////////////////////// update to checklist ///////////////////////////////
     for (let i = 0; i < checkTable.length; i++) {
         let id = checkTable[i][5];
         let checkName = document.getElementById("check-" + id).value;
         let checkUnit = document.getElementById("check-unit-" + id).value;
+        if(!checkName || !checkUnit) {
+            valid = false;
+            break;
+        }
         checklist.push({ name: checkName, type: checkUnit });
     }
     /////////////////////// update to skills ///////////////////////////////
     for (let i = 0; i < skillsTable.length; i++) {
         let id = skillsTable[i][5];
         let skillName = document.getElementById("skill-" + id).value;
-        // let subSkillStr = document.getElementById("subskill-" + id).value;
-        // let subSkills = subSkillStr.split(",");
-        // subSkills = removeEmptyIndices(subSkills);
         let subSkills = $("#subskill-" + id).val();
+        if(!skillName || !subSkills) {
+            valid = false;
+            break;
+        }
         skills.push({
             skillName: skillName,
             subSkills: subSkills
         });
     }
     let data = { checklist: checklist, name: activityName, skills: skills };
-    // console.log(JSON.stringify(data));
-    fs.collection('Activities').doc(id).update(data).then(()=>{
-        $('#activities').DataTable().clear();
-        $('#activities').DataTable().destroy();
-        initActivitiesTable();
-        alert(`${activityName} has been updated successfully!`);
-    }).catch(err => {
-        alert(err);
-    });
+
+    if(valid) {
+        fs.collection('Activities').doc(id).update(data).then(()=>{
+            document.getElementById('editActivityModal').style.display = 'none';
+            $('#activities').DataTable().clear();
+            $('#activities').DataTable().destroy();
+            initActivitiesTable();
+            initActModal(false);
+            alert(`${activityName} has been updated successfully!`);
+        }).catch(err => {
+            alert(`Could not successfully update ${activityName}: ${err}`);
+        });
+    } else {
+        alert("Could not successfully update activity: Make sure the Activity Name, all Checklist Items, and all Skills are completely filled out.");
+    }
 }
-function getActivity(id) {
-    if ($('#skills').DataTable()) {
-        $('#skills').DataTable().clear();
-        $('#skills').DataTable().destroy();
-        $('#skills tr').remove();
+
+function addActivityFromModal() {
+    let skillsTable = $("#add-act-skills").DataTable().rows().data();
+    let checkTable = $('#add-act-checklist').DataTable().rows().data();
+    let skills = [];
+    let checklist = [];
+    let activityName = document.getElementById("add-act-name").value;
+    let valid = activityName ? true : false;
+    /////////////////////// Adding Checklist ///////////////////////////////
+    for (let i = 0; i < checkTable.length; i++) {
+        let id = checkTable[i][5];
+        let checkName = document.getElementById("check-" + id).value;
+        let checkUnit = document.getElementById("check-unit-" + id).value;
+        if(!checkName || !checkUnit) {
+            valid = false;
+            break;
+        }
+        checklist.push({ name: checkName, type: checkUnit });
+    }
+    /////////////////////// Adding Skills ///////////////////////////////
+    for (let i = 0; i < skillsTable.length; i++) {
+        let id = skillsTable[i][5];
+        let skillName = document.getElementById("skill-" + id).value;
+        let subSkills = $("#subskill-" + id).val();
+        if(!skillName || !subSkills) {
+            valid = false;
+            break;
+        }
+        skills.push({
+            skillName: skillName,
+            subSkills: subSkills
+        });
+    }
+    let data = { checklist: checklist, name: activityName, skills: skills };
+
+    if(valid) {
+        fs.collection("Activities").add(data).then((docRef) => {
+            $(document).ready(function () {
+                document.getElementById('addActivityModal').style.display = 'none';
+                $('#activities').DataTable().clear();
+                $('#activities').DataTable().destroy();
+                initActivitiesTable();
+                initActModal(true);
+                alert(`${activityName} added successfully!`);
+            });
+        }).catch(err => {
+            alert(`Could not successfully add ${activityName}: ${err}`);
+        });
+    } else {
+        alert("Could not successfully add new activity: Make sure the Activity Name, all Checklist Items, and all Skills are completely filled out.");
+    }
+}
+
+function getEditActivityModal(id) {
+    if ($('#edit-act-skills').DataTable()) {
+        $('#edit-act-skills').DataTable().clear();
+        $('#edit-act-skills').DataTable().destroy();
+        $('#edit-act-skills tr').remove();
     }
     fs.collection('Activities').doc(id).get().then(doc => {
-        document.getElementById('act-name').value = doc.data()['name'];
-        document.getElementById('act-edit').style = "display: block";
+        document.getElementById('edit-act-name').value = doc.data()['name'];
+        document.getElementById('editActivityModal').style = "display: block";
         ///////////////////////////////////////     init checkList Table /////////////////////////////////////////
         let checklist = []
         doc.data()['checklist'].forEach((checkItem) => {
@@ -210,7 +327,7 @@ function getActivity(id) {
             let temp = [
                 `<input type="text" id="${"check-" + id}" class="input" value="${checkItem['name']}">`,
                 `<input type="text" id="${"check-unit-" + id}" class="input" value="${checkItem['type']}">`,
-                `<button class='btn bdrlessBtn' onclick='removeCheck("${id}")'>Remove</button>`,
+                `<button class='btn bdrlessBtn' onclick='removeCheck("${id}", false)'>Remove</button>`,
                 checkItem['name'], checkItem['type'], id
             ];
             checklist.push(temp);
@@ -224,10 +341,10 @@ function getActivity(id) {
                 subSkillStr += ` ${subSkill}`;
             });
             let id = skill['name'] + Math.random().toString(36).substring(2, 8);
-            let insertedRow = document.getElementById('skills').insertRow();
+            let insertedRow = document.getElementById('edit-act-skills').insertRow();
             insertedRow.insertCell().innerHTML = `<input type="text" id="${"skill-" + id}" class="input" value="${skill['skillName']}">`;
-            insertedRow.insertCell().innerHTML = `<select class="" id="${"subskill-" + id}" multiple="multiple">${subSkillOptions}</select>`;
-            insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn' onclick='removeSkill("${id}")'>Remove</button>`;
+            insertedRow.insertCell().innerHTML = `<select class="input skill-input" id="${"subskill-" + id}" multiple="multiple">${subSkillOptions}</select>`;
+            insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn' onclick='removeSkill("${id}", false)'>Remove</button>`;
             insertedRow.insertCell().innerHTML = skill['skillName'];
             insertedRow.insertCell().innerHTML = subSkillStr;
             insertedRow.insertCell().innerHTML = id;
@@ -235,12 +352,8 @@ function getActivity(id) {
         });
         $(document).ready(function () {
             ////////////////// add data to checklist table //////////////////////////
-            if(!$('#checklist').DataTable()){
-                $('#checklist').DataTable({  
-                    // createdRow: function ( row, data, index ) {
-                    //     console.log("I am working");
-                    //     console.log(JSON.stringify(data));
-                    // },
+            if(!$('#edit-act-checklist').DataTable()){
+                $('#edit-act-checklist').DataTable({
                     columns: [
                         { "title": "Checklist Name", 'searchable': false },
                         { "title": "Unit of Measure", 'searchable': false },
@@ -251,10 +364,10 @@ function getActivity(id) {
                     ]
                 });
             }
-            $('#checklist').DataTable().clear();
-            $('#checklist').DataTable().rows.add(checklist).draw();
+            $('#edit-act-checklist').DataTable().clear();
+            $('#edit-act-checklist').DataTable().rows.add(checklist).draw();
             ////////////////// add data to Skills Table ////////////////////////////
-            $('#skills').DataTable({
+            $('#edit-act-skills').DataTable({
                 columns: [
                     { "title": "Skill Name", 'searchable': false },
                     { "title": "Subskills", 'searchable': false },
@@ -266,28 +379,36 @@ function getActivity(id) {
             });
             document.getElementById("update-activity").onclick = function () { updateActivity(id) };
         });
-    }).catch(err => { alert(err); });
+    }).catch(err => { alert(`Could not load Edit Acticity Modal: ${err}`); });
 }
-function addSkill() {
+
+function addSkill(addAct) {
+    let skillsTableId = "#edit-act-skills";
+    if(addAct) {
+        skillsTableId = "#add-act-skills";
+    }
+
     let id = Math.random().toString(36).substring(2, 8) + Math.random().toString(36).substring(2, 8);
     // Really ugly method but works...
-    $('#skills').on( 'draw.dt', function () {
+    $(skillsTableId).on( 'draw.dt', function () {
         select2Init("subskill-" + id);
     } );
+
     let tempSkill = [
-        `<input type="text" id="${"skill-" + id}" class="input" value="Example Skill">`,
-        `<select class="" id="${"subskill-" + id}" multiple="multiple">
-            <option value="example subskill" selected>example subskill</option>
+        `<input type="text" id="${"skill-" + id}" class="input" placeholder="Skill Name">`,
+        `<select id="${"subskill-" + id}" class="input" multiple="multiple">
         </select>`,
-        `<button class='btn bdrlessBtn' onclick='removeSkill("${id}")'>Remove</button>`,
+        `<button class='btn bdrlessBtn' onclick='removeSkill("${id}", ${addAct})'>Remove</button>`,
         "Example Skill",
         "example subskill",
         id
     ]
-    $('#skills').DataTable().row.add(tempSkill).draw();
+
+    $(skillsTableId).DataTable().row.add(tempSkill).draw();
 }
-function removeSkill(id) {
-    let skillTable = $('#skills').DataTable().rows().data();
+
+function removeSkill(id, addAct) {
+    let skillTable = addAct ? $('#add-act-skills').DataTable().rows().data() : $('#edit-act-skills').DataTable().rows().data();
     for (let i = 0; i < skillTable.length; i++) {
         let skillID = skillTable[i][5];
         if (skillID == id) {
@@ -296,18 +417,26 @@ function removeSkill(id) {
         }
     }
 }
-function addCheckList() {
+
+function addCheckListItem(addAct) {
+    let checklistTableId = "#edit-act-checklist";
+    if(addAct) {
+        checklistTableId = "#add-act-checklist";
+    }
+
     let id = Math.random().toString(36).substring(2, 8) + Math.random().toString(36).substring(2, 8);
     let checklist = [
-        `<input type="text" id="${"check-" + id}" class="input" value="Example Checklist name">`,
-        `<input type="text" id="${"check-unit-" + id}" class="input" value="inches">`,
-        `<button class='btn bdrlessBtn' onclick='removeCheck("${id}")'>Remove</button>`,
+        `<input type="text" id="${"check-" + id}" class="input" placeholder="Checklist Item Name">`,
+        `<input type="text" id="${"check-unit-" + id}" class="input" placeholder="Unit of Measurement">`,
+        `<button class='btn bdrlessBtn' onclick='removeCheck("${id}", ${addAct})'>Remove</button>`,
         "Example Checklist name", "inches", id
     ]
-    $('#checklist').DataTable().row.add(checklist).draw();
+    
+    $(checklistTableId).DataTable().row.add(checklist).draw();
 }
-function removeCheck(id) {
-    let checkTable = $('#checklist').DataTable().rows().data();
+
+function removeCheck(id, addAct) {
+    let checkTable = addAct ? $('#add-act-checklist').DataTable().rows().data() : $('#edit-act-checklist').DataTable().rows().data();
     for (let i = 0; i < checkTable.length; i++) {
         let checkID = checkTable[i][5];
         if (checkID == id) {
@@ -316,28 +445,7 @@ function removeCheck(id) {
         }
     }
 }
-function addActivity() {
-    let data = {
-        checklist: [{ name: "example check list item", type: "unit of measurement" }],
-        name: "Example Activity",
-        skills: [
-            {
-                skillName: "Example Skill",
-                subSkills: ["subSkill Example", "Another subskill"]
-            }
-        ]
-    };
-    fs.collection("Activities").add(data).then((docRef) => {
-        $(document).ready(function () {
-            let table = $('#activities').DataTable();
-            table.row.add([
-                "Example Activity",
-                `<button class='btn bdrlessBtn' onclick='getActivity("${docRef.id}")'>Edit</button>`,
-                `<button class='btn bdrlessBtn btn-danger' onclick='removeActivity("${docRef.id}", "${data['name']}")'>Remove</button>`
-            ]).draw();
-        });
-    });
-}
+
 ////////////////////////////////////// CAMPER FUNCTIONS /////////////////////////////////////////////
 /***
  * Populate the campers tables
@@ -461,11 +569,6 @@ function removeCamper(docid) {
     });
 }
 
-// function addCamper() {
-//     let userPayload = generateUser("", "John", "Doe", "Female", "", "camper");
-//     addUser(userPayload, updateCamperTable);
-// }
-
 function addCamperFromModal() {
     let file = document.getElementById(`add-camper-pic`).files[0];
     let firstName = document.getElementById("add-camper-fname").value;
@@ -477,32 +580,25 @@ function addCamperFromModal() {
         alert("Could not add camper successfully, please make sure all New Athlete Info is filled out.");
     } else {
         let userPayload = generateUser("", firstName, lastName, gender, birthday, "camper", pronouns);
-        for(elem of document.getElementsByClassName("camper-modal-input")) {
-            elem.value = "";
-        }
-        document.getElementById('addAthleteModal').style.display = 'none';
         addUser(userPayload, updateCamperTable).then((camperId) => {
-            console.log("Added user with ID of " + camperId);
+            console.log("Added camper with ID of " + camperId);
             if(file) {
                 storageRef.child(`users/${camperId}/profile-picture/` + file.name).put(file).then(() => {
-                    alert("Added user successfully.");
+                    alert("Added camper successfully.");
                 }).catch(err => {
                     console.log("Could not upload profile picture successfully.");
                 });
             } else {
-                alert("Added user successfully.");
+                alert("Added camper successfully.");
             }
+            for(elem of document.getElementsByClassName("camper-modal-input")) {
+                elem.value = "";
+            }
+            document.getElementById("add-camper-profile-pic").src = "../img/user/default/user-480.png";
+            document.getElementById('addAthleteModal').style.display = 'none';
         }).catch(err => {
             alert("Could not add camper successfully.");
         });
-        // console.log(camperId);
-        // try {
-        //     // console.log(camperId);
-        //     // storageRef.child(`users/${camperId}/profile-picture/` + file.name).put(file);
-        //     // console.log(camperId);
-        // } catch (err) {
-        //     console.log("Could not upload profile picture successfully")
-        // }
     }
 }
 
@@ -548,37 +644,13 @@ function updateCamperFromModal() {
             for(elem of document.getElementsByClassName("camper-modal-input")) {
                 elem.value = "";
             }
+            document.getElementById("edit-camper-profile-pic").src = "../img/user/default/user-480.png";
             document.getElementById('editAthleteModal').style.display = 'none';
             updateCamperTable();
             updateGroupsTable();
         });
     }
 }
-
-// function updateCamper(docid, camperId) {
-//     let firstName = document.getElementById("camper-first" + docid).value;
-//     let lastName = document.getElementById("camper-last" + docid).value;
-//     let pronoun = document.getElementById(`camper-pronoun${docid}`).value;
-//     let gender = document.getElementById(`camper-gender${docid}`).value;
-//     let birthdate = document.getElementById(`camper-dob-${docid}`).value || "1999-07-04";
-//     let file = document.getElementById(`camper-upload-${docid}`).files[0];
-//     try {
-//         clearProfilePictures(camperId,
-//             storageRef.child(`users/${camperId}/profile-picture/` + file.name).put(file));
-//     } catch (err) {
-//         console.log(`The user ${firstName} ${lastName} does not have a profile picture`);
-//     }
-//     fs.collection("users").doc(docid).update({
-//         firstName: firstName,
-//         lastName: lastName,
-//         pronoun: pronoun,
-//         birthdate: birthdate,
-//         gender: gender
-//     }).then(() => {
-//         alert("User has been updated successfully!");
-//         updateGroupsTable();
-//     });
-// }
 /////////////////////////////////////////// GROUPS FUNCTIONS ///////////////////////////////////////////
 
 /**
@@ -664,7 +736,7 @@ function initGroupsTable() {
                             let insertedRow = document.getElementById('groups').insertRow();
                             // Insert a cell in the row at cell index 0
                             insertedRow.insertCell().innerHTML = coachName;
-                            insertedRow.insertCell().innerHTML = `<select class="" id="${"group-" + doc.id}" multiple="multiple">${camperOptionHTML}</select>`;
+                            insertedRow.insertCell().innerHTML = `<select class="coach-group-athletes" id="${"group-" + doc.id}" multiple="multiple">${camperOptionHTML}</select>`;
                             insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn' onclick='updateGroupSelectr("${doc.id}")'>Update</button>`;
                             insertedRow.insertCell().innerHTML = camperNames;
                             $("#group-" + doc.id).select2();
@@ -905,27 +977,50 @@ function newAccountPasswordReset(firstName, email) {
         document.getElementById("modal-user-error").innerHTML = errorMessage;
     });
 }
+
 function addModalUser() {
     document.getElementById("modal-user-error").style = "display: none";
+    let file = document.getElementById(`modal-user-pic`).files[0];
     let firstName = document.getElementById("modal-user-first").value;
     let lastName = document.getElementById("modal-user-last").value;
     let gender = document.getElementById("modal-user-gender").value;
-    let email = document.getElementById("modal-user-email").value;
-    let password = document.getElementById("modal-user-pass").value;
     let priv = document.getElementById("modal-user-priv").value;
-    if (password.length == 0) {
-        password = "password123";
+    let email = document.getElementById("modal-user-email").value.toLowerCase();
+    let password = document.getElementById("modal-user-pass").value;
+    if(!firstName || !lastName || !gender || !email || !priv) {
+        alert("Could not add new user: Make sure all of the new user's information is filled out.");
+    } else {
+        if (password.length == 0) {
+            password = "password123";
+        }
+        signUpFB.auth().createUserWithEmailAndPassword(email, password).then(() => {
+            console.log("The user has successfully been signed up!");
+            let userPayload = generateUser(email, firstName, lastName, gender, "", priv);
+            addUser(userPayload, newAccountPasswordReset(firstName, email)).then((camperId) => {
+                if(file) {
+                    storageRef.child(`users/${email}/profile-picture/` + file.name).put(file).then(() => {
+                        console.log("Added user successfully.");
+                    }).catch(err => {
+                        console.log("Could not upload profile picture successfully.");
+                    });
+                } else {
+                    console.log("Added user successfully.");
+                }
+                for(elem of document.getElementsByClassName("user-modal-input")) {
+                    elem.value = "";
+                }
+                document.getElementById("modal-user-profile-pic").src = "../img/user/default/user-480.png";
+                document.getElementById('addUserModal').style.display = 'none';
+            }).catch((err) => {
+                alert("Could not add new user to database: " + err);
+            });
+        }).catch(function (error) {
+            var errorMessage = error.message;
+            console.log(errorMessage);
+            document.getElementById("modal-user-error").style = "display: block";
+            document.getElementById("modal-user-error").innerHTML = errorMessage;
+        });
     }
-    signUpFB.auth().createUserWithEmailAndPassword(email, password).then(() => {
-        console.log("The user has successfully been signed up!");
-        let userPayload = generateUser(email, firstName, lastName, gender, "", priv);
-        addUser(userPayload, newAccountPasswordReset(firstName, email));
-    }).catch(function (error) {
-        var errorMessage = error.message;
-        console.log(errorMessage);
-        document.getElementById("modal-user-error").style = "display: block";
-        document.getElementById("modal-user-error").innerHTML = errorMessage;
-    });
 }
 /**
  * Function to be used only under admin controls

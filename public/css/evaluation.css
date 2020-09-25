@@ -46,7 +46,7 @@ li{
 }
 
 #activities, #evaluations{
-    display: block;
+    display: table; 
     text-align: center;
 }
 
