@@ -77,7 +77,9 @@ function createUserDetailsItem(rowElem, row) {
         userDetailsItem.content.querySelectorAll(".user-pronouns")[0].innerHTML = row.pronouns;
         userDetailsItem.content.querySelectorAll(".user-team")[0].innerHTML = row.team;
 
-        userDetailsItem.content.querySelectorAll(".add-evals")[0].onclick = (event) => { eval(row['id'], "get"); };
+        userDetailsItem.content.querySelectorAll(".add-evals")[0].onclick = (event) => {
+            eval(row['id'], "get");
+        };
 
         let imgCol = document.createElement("td");
         let detailsCol = document.createElement("td");
