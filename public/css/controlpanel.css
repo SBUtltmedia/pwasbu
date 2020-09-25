@@ -116,11 +116,7 @@ table.block th {
     width: 100% !important;
 }
 
-#update-activity {
-    position: fixed; /* Set the navbar to fixed position */
-    bottom: 0; /* Position the navbar at the top of the page */
-    width: 100%; /* Full width */
-}
+
 
 .coach-group-athletes{
     width: 100%;
@@ -201,7 +197,7 @@ table.block th {
     text-align: center;
 }
 
-.camper-modal-input, .form-control{
+.camper-modal-input, .user-modal-input, .form-control{
     margin-bottom: 20px;
 }
 
@@ -239,3 +235,11 @@ table.block th {
     letter-spacing: 1px;
     cursor: pointer;
 }
+
+.activityModal {
+    width: 80%;
+}
+
+.skill-input {
+    width: 100%;
+} 

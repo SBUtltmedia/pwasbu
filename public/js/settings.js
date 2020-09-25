@@ -119,7 +119,7 @@ let initAccountSettings = () => {
 };
 
 function updateEmail() {
-    new_email = document.getElementById("user-email").value;
+    new_email = document.getElementById("user-email").value.toLowerCase();
     password = document.getElementById("user-password").value;
 
     if(!new_email || !password) {
