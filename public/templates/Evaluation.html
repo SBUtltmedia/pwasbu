@@ -16,5 +16,6 @@
             id="submitEval">Submit
             Changes</button>
         <button class="evaluation-but btn btn-danger bck-hme" onclick='router.loadRoute("home")'>Back to Home</button>
+        <button id="backToActivities" class="evaluation-but btn btn-danger bck-hme hiddenElement" onclick='eval(currEval.camperID, "get"); $("#backToActivities").addClass("hiddenElement");'>Back to Activities</button>
     </div>
 </template>

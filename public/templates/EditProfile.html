@@ -1,35 +1,43 @@
 <template>
     <div>
-        <div id="user">Edit Profile</div>
-        <div class="ed-pr-nm">First Name: </div>
-        <input type="text" onkeyup="validString('user-first-name')" onkeydown="validString('user-first-name')" class="input"
-            id="user-first-name"><br />
-         <div class="ed-pr-nm">Last Name: </div>
-         <input type="text" onkeyup="validString('user-last-name')" onkeydown="validString('user-last-name')" class="input"
-            id="user-last-name"><br />        
-        <div class="ed-pr-nm">Gender: </div>
-        <select class="form-control input" id="user-gender">
-            <option>Male</option>
-            <option>Female</option>
-            <option>Non-Binary</option>
-        </select><br />
-        <div class="ed-pr-nm">Date of Birth : </div>
-        <input type="date" onchange="$('#profile-success').hide()" id="birthdate" name="birthdate"
-            min="1900-01-01">
-        <div id="profile-error">One or more of the above fields are in the wrong format or empty!</div> <br />
-        <div id="profile-success">Profile was updated successfullly!</div> <br />
-        <img id="profile-pic" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left"
-            width="200" height="200">
-        <div class="ed-pr-nm">Change Profile Picture: </div><input type="file" onchange="$('#profile-success').hide()"
-            accept="image/*" capture="camera" id="cameraInput">
-        <div id="pic-error" class="error-msg"></div>
-        <!-- <button type="button" class="btn btn-secondary btn-lg btn-space" onclick="initEditProfile()">Reset Profile
-            Fields</button> -->
-        <div class="loader"></div>
-        <!-- class="editProfileBtn"  this was originally infront of the button classs on line 20-->
-        <button type="button" class="btn btn-secondary btn-lg btn-space"
-            onclick="router.loadRoute('accountSettings')">Change Email or Password</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-space" onclick="updateProfile()">Submit
-            Changes</button>
+        <div id="user">User Profile</div>
+        <div class="center-pg">
+            <img id="profile-pic" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left"
+                width="200" height="200">
+            <div class="add-profile-pic">Change Profile Picture: </div>
+            <label for="cameraInput" class="text-like-button">Select File</label>
+            <input type="file" accept="image/*" capture="camera" id="cameraInput" class="hiddenElement">
+            <div id="pic-error" class="error-msg"></div>
+            <div class="profile-inputs">
+                <div class="columns">
+                    <div class="ed-pr-nm">First Name: </div>
+                    <input type="text" class="input" id="user-first-name"><br />
+                </div>
+                <div class="columns">
+                    <div class="ed-pr-nm">Last Name: </div>
+                    <input type="text" class="input" id="user-last-name"><br />
+                </div>
+            </div>
+            <div class="profile">
+                <div class="columns">
+                    <div class="ed-pr-nm">Gender: </div>
+                    <select class="form-control input" id="user-gender">
+                        <option>Male</option>
+                        <option>Female</option>
+                        <option>Non-Binary</option>
+                    </select>
+                </div>
+                <div class="columns">
+                    <div class="ed-pr-nm">Date of Birth: </div>
+                    <input type="date" id="birthdate" name="birthdate" min="1900-01-01">
+                </div>
+            </div>
+
+
+            <div class="loader"></div>
+            <button type="button" class="btn btn-secondary btn-lg btn-space" onclick="updateProfile()">Submit Changes</button>
+            <br>
+            <button type="button" class="btn btn-secondary btn-lg btn-space" onclick="router.loadRoute('accountSettings')">Change Email or Password</button>
+        </div>
     </div>
 </template>

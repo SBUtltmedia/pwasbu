@@ -34,7 +34,7 @@ table.block th {
     text-align: center;
     line-height: 5rem;
     text-transform: uppercase;
-    color: #fff;
+    color: white;
     font-weight: bold;
     font-size: 2.0rem;
     cursor: pointer;
@@ -70,7 +70,39 @@ table.block th {
         width: 23vw;
         margin: 0.5rem;
     }
+    .alert {
+        display: none;
+      }
+      
+      .closebtn {
+        display: none;
+      }
+      
 }
+
+@media only screen and (max-width: 600px) {
+    .alert {
+        padding: 20px;
+        background-color: #f44336;
+        color: white;
+        font-size:2.5rem;
+      }
+      
+      .closebtn {
+        margin-left: 15px;
+        color: white;
+        font-weight: bold;
+        float: right;
+        font-size: 22px;
+        line-height: 20px;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+      
+      .closebtn:hover {
+        color: black;
+      }
+  }
 
 .blackBar {
     border-top: 50px solid #000;
@@ -88,4 +120,119 @@ table.block th {
     position: fixed; /* Set the navbar to fixed position */
     bottom: 0; /* Position the navbar at the top of the page */
     width: 100%; /* Full width */
+}
+
+            /* Style the tab */
+            .tab {
+                overflow: hidden;
+                border: 1px solid #ccc;
+                background-color: var(--primary-color);
+            }
+
+            /* Style the buttons inside the tab */
+            .tab button {
+                background-color: inherit;
+                float: left;
+                border: none;
+                outline: none;
+                cursor: pointer;
+                padding: 14px 16px;
+                transition: 0.3s;
+                font-size: 17px;
+            }
+
+            /* Change background color of buttons on hover */
+            .tab button:hover {
+                background-color:var(--secondary-color);
+            }
+
+            /* Create an active/current tablink class */
+            .tab button.active {
+                background-color: var(--secondary-color);
+            }
+
+            /* Style the tab content */
+            .tabcontent {
+                display: none;
+                padding: 6px 12px;
+                border: 1px solid #ccc;
+                border-top: none;
+            }
+
+
+/* #campers-control{
+    overflow: hidden;
+} */
+
+ /* The Modal (background) */
+ .modal {
+    display: none;
+    /* Hidden by default */
+    position: fixed;
+    /* Stay in place */
+    z-index: 1;
+    /* Sit on top */
+    padding-top: 50px;
+    /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%;
+    /* Full width */
+    height: 100%;
+    /* Full height */
+    overflow: auto;
+    /* Enable scroll if needed */
+    background-color: rgb(0, 0, 0);
+    /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.4);
+    /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: fit-content;
+    text-align: center;
+}
+
+.camper-modal-input, .form-control{
+    margin-bottom: 20px;
+}
+
+.modal-profile-pic {
+    margin-bottom: 15px;
+}
+
+.modal-fname {
+    margin-top: 15px;
+}
+
+/* The Close Button */
+.close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.add-athlete-btn{
+    border-radius: 10px;
+    padding: 4px;
+    background: var(--primary-color);
+    text-align: center;
+    text-transform: uppercase;
+    color: #fff;
+    font-size: 1.8rem;
+    letter-spacing: 1px;
+    cursor: pointer;
 }
