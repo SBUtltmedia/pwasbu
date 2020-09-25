@@ -4,7 +4,7 @@
             aria-expanded="false" aria-controls="collapseExample"> -->
         <div class="alert">
             <!-- <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> -->
-            <strong>Recommendation:</strong> Use desktop when accessing the Admin Console
+            Recommendation: Use desktop when accessing the Admin Console
         </div>
 
         <div id="cp-title">Welcome to the Admin Console</div>
@@ -128,14 +128,16 @@
                         onclick="document.getElementById('addAthleteModal').style.display = 'none';">&times;</span>
                     <h2>New Athlete's Info</h2>
                     <br>
-                    <img id="add-camper-profile-pic" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left modal-profile-pic" width="100" height="100">
+                    <img id="add-camper-profile-pic" src="../img/user/default/user-480.png"
+                        class="img-thumbnail rounded float-left modal-profile-pic" width="100" height="100">
                     <br>
                     <label for="add-camper-pic" class="text-like-button">Select File</label>
-                    <input type="file" id="add-camper-pic" class="camper-modal-input hiddenElement" accept="image/*" capture="camera"/>
+                    <input type="file" id="add-camper-pic" class="camper-modal-input hiddenElement" accept="image/*"
+                        capture="camera" />
                     <br>
                     <label for="add-camper-fname"><b>First Name:</b></label>
-                    <input type="text" placeholder="First Name" id="add-camper-fname" class="camper-modal-input modal-fname"
-                        required>
+                    <input type="text" placeholder="First Name" id="add-camper-fname"
+                        class="camper-modal-input modal-fname" required>
                     <br>
                     <label for="add-camper-lname"><b>Last Name:</b></label>
                     <input type="text" placeholder="Last Name" id="add-camper-lname" class="camper-modal-input"
@@ -176,14 +178,16 @@
                     <span id="edit-camper-uid" class="camper-modal-input" style="display: 'none'"></span>
                     <span id="edit-camper-camperId" class="camper-modal-input" style="display: 'none'"></span>
                     <!-- Hidden IDs to know which document to update in Cloud Firestore and which filepath to update in Firebase Storage -->
-                    <img id="edit-camper-profile-pic" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left modal-profile-pic" width="100" height="100">
+                    <img id="edit-camper-profile-pic" src="../img/user/default/user-480.png"
+                        class="img-thumbnail rounded float-left modal-profile-pic" width="100" height="100">
                     <br>
                     <label for="edit-camper-pic" class="text-like-button">Select File</label>
-                    <input type="file" id="edit-camper-pic" class="camper-modal-input hiddenElement" accept="image/*" capture="camera" />
+                    <input type="file" id="edit-camper-pic" class="camper-modal-input hiddenElement" accept="image/*"
+                        capture="camera" />
                     <br>
                     <label for="edit-camper-fname"><b>First Name:</b></label>
-                    <input type="text" placeholder="First Name" id="edit-camper-fname" class="camper-modal-input modal-fname"
-                        required>
+                    <input type="text" placeholder="First Name" id="edit-camper-fname"
+                        class="camper-modal-input modal-fname" required>
                     <br>
                     <label for="edit-camper-lname"><b>Last Name:</b></label>
                     <input type="text" placeholder="Last Name" id="edit-camper-lname" class="camper-modal-input"

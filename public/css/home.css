@@ -1,3 +1,12 @@
+/*this is on the home page*/
+#menu-user {
+    font-size: 1.8rem;
+    text-align: center;
+    /* padding-top: 20px;
+    padding-bottom: 20px; */
+    padding-top: 3rem;
+    font-weight: bold;
+}
 .col-elem {
     /* display: flex; */
     justify-content: center;

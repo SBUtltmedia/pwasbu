@@ -55,6 +55,7 @@ function createSelectElement(options, values, selected, id, classes) {
 function select2Init(id) {
     $(`#${id}`).select2({
         tags: true,
+        width: 'resolve',
         createTag: function (params) {
             var term = $.trim(params.term);
             var existsVar = false;
@@ -735,7 +736,7 @@ function initGroupsTable() {
                             let insertedRow = document.getElementById('groups').insertRow();
                             // Insert a cell in the row at cell index 0
                             insertedRow.insertCell().innerHTML = coachName;
-                            insertedRow.insertCell().innerHTML = `<select class="" id="${"group-" + doc.id}" multiple="multiple">${camperOptionHTML}</select>`;
+                            insertedRow.insertCell().innerHTML = `<select class="coach-group-athletes" id="${"group-" + doc.id}" multiple="multiple">${camperOptionHTML}</select>`;
                             insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn' onclick='updateGroupSelectr("${doc.id}")'>Update</button>`;
                             insertedRow.insertCell().innerHTML = camperNames;
                             $("#group-" + doc.id).select2();
