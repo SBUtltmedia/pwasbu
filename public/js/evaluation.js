@@ -38,30 +38,29 @@ function initCampersEvalTable() {
     fs.collection("users").where("email", "==", email).get().then(res => {
         res.docs[0].ref.get().then(doc => {
             fs.collection("Groups").where("coach", "==", doc.data()['id']).get().then(res => {
-                currEval.selectedYear = document.getElementById("yearPicker").value;
+                // currEval.selectedYear = document.getElementById("yearPicker").value;
                 // console.log("Selected Year: ", currEval.selectedYear);
                 res.docs.forEach(doc => {
-                    if(doc.data()['year'] == currEval.selectedYear) {
-                        doc.data()['campers'].sort().forEach(camper => {
-                            let rowElem = document.createElement("tr");
-                            athletesTable.appendChild(rowElem);
+                    doc.data()['campers'].sort().forEach(camper => {
+                        let rowElem = document.createElement("tr");
+                        athletesTable.appendChild(rowElem);
 
-                            fs.collection('users').where("id", "==", camper).orderBy("firstName", "desc").get().then(res => {
-                                res.forEach(doc => {
-                                    let row = {
-                                        name: doc.data()['firstName'] + " " + doc.data()['lastName'],
-                                        age: parseInt(((new Date()) - (new Date(doc.data()["birthdate"]))) / (1000 * 60 * 60 * 24 * 365)) || 0,
-                                        gender: doc.data()["gender"],
-                                        pronouns: doc.data()["pronoun"],
-                                        team: "Purple Team", // This field needs to be added to the database
-                                        id: doc.data()["id"],
-                                        email: doc.data()["id"]
-                                    };
-                                    createUserDetailsItem(rowElem, row);
-                                });
+                        fs.collection('users').where("id", "==", camper).orderBy("firstName", "desc").get().then(res => {
+                            res.forEach(doc => {
+                                let row = {
+                                    name: doc.data()['firstName'] + " " + doc.data()['lastName'],
+                                    age: parseInt(((new Date()) - (new Date(doc.data()["birthdate"]))) / (1000 * 60 * 60 * 24 * 365)) || 0,
+                                    gender: doc.data()["gender"],
+                                    pronouns: doc.data()["pronoun"],
+                                    // team: "Purple Team", // This field needs to be added to the database
+                                    id: doc.data()["id"],
+                                    email: doc.data()["id"]
+                                };
+                                createUserDetailsItem(rowElem, row);
                             });
                         });
-                    }
+                    });
+                
                 });
             }).catch(err => { console.log(err); });
         });
@@ -72,10 +71,15 @@ function createUserDetailsItem(rowElem, row) {
     const matchedRoute = router._matchUrlToRoute(['userDetails']);
     matchedRoute.getTemplate(matchedRoute.params).then((userDetailsItem) => {
         userDetailsItem.content.querySelectorAll(".user-name")[0].innerHTML = row.name;
-        userDetailsItem.content.querySelectorAll(".user-age")[0].innerHTML = row.age;
+        if (row.age === 0){
+            userDetailsItem.content.querySelectorAll(".user-age")[0].innerHTML = "N/A";
+        }
+        else {
+            userDetailsItem.content.querySelectorAll(".user-age")[0].innerHTML = row.age;
+        }
         userDetailsItem.content.querySelectorAll(".user-gender")[0].innerHTML = row.gender;
         userDetailsItem.content.querySelectorAll(".user-pronouns")[0].innerHTML = row.pronouns;
-        userDetailsItem.content.querySelectorAll(".user-team")[0].innerHTML = row.team;
+        // userDetailsItem.content.querySelectorAll(".user-team")[0].innerHTML = row.team;
 
         userDetailsItem.content.querySelectorAll(".add-evals")[0].onclick = (event) => {
             eval(row['id'], "get");
