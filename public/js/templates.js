@@ -109,6 +109,31 @@ function home_template(){
     populateYearPicker(); // LOCATED in evaluation.js
     initNavBar(); // LOCATED in navbar.js
     initCampersEvalTable(); // LOCATED in evaluation.js
+    
+    try{
+        let userData = JSON.parse(localStorage.getItem("userData"));
+        if(userData['priv'].toLowerCase().trim() != "admin") {
+            $("#yearPickerContainer").hide();
+        }
+    } catch(error) {
+        let user = firebase.auth().currentUser;
+        fs.collection("users").where('email', '==', user.email).get().then(function(res) {
+            if(res.docs.length > 0) {
+                res.docs[0].ref.get().then(doc => {
+                    if(doc.data()['priv'] != "admin") {
+                        if(document.getElementById("yearPickerContainer")) {
+                            $("#yearPickerContainer").hide();
+                        }
+                    }
+                });
+            } else {
+                $("#yearPickerContainer").hide();
+            }
+        }).catch((error) => {
+            console.log(error);
+            $("#yearPickerContainer").hide();
+        });
+    }
 }
 
 function login_template(){

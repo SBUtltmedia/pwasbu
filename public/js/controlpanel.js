@@ -55,7 +55,7 @@ function createSelectElement(options, values, selected, id, classes) {
 function select2Init(id) {
     $(`#${id}`).select2({
         tags: true,
-        width: 'resolve',
+        width: '500px',
         createTag: function (params) {
             var term = $.trim(params.term);
             var existsVar = false;
@@ -191,7 +191,10 @@ function initActivitiesTable() {
                     { "title": "Name" },
                     { "title": "", "searchable": false },
                     { "title": "", 'searchable': false }
-                ]
+                ],
+                initComplete: function() {
+                    $(this.api().table().container()).find('input').parent().wrap('<form>').parent().attr('autocomplete', 'off');
+                }
             });
         });
     });
@@ -342,7 +345,7 @@ function getEditActivityModal(id) {
             });
             let id = skill['name'] + Math.random().toString(36).substring(2, 8);
             let insertedRow = document.getElementById('edit-act-skills').insertRow();
-            insertedRow.insertCell().innerHTML = `<input type="text" id="${"skill-" + id}" class="input" value="${skill['skillName']}">`;
+            insertedRow.insertCell().innerHTML = `<input type="text" id="${"skill-" + id}" class="input skill-input" value="${skill['skillName']}">`;
             insertedRow.insertCell().innerHTML = `<select class="input skill-input" id="${"subskill-" + id}" multiple="multiple">${subSkillOptions}</select>`;
             insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn' onclick='removeSkill("${id}", false)'>Remove</button>`;
             insertedRow.insertCell().innerHTML = skill['skillName'];
@@ -479,17 +482,24 @@ function initCampersTable() {
                 let insertedRow = document.getElementById('campers').insertRow();
                 // Insert a cell in the row at cell index 0
                 insertedRow.insertCell().innerHTML =
-                    `<input type="file" id="camper-upload-${doc.id}" style="display:none" accept="image/*" capture="camera"/> 
-                <button id="camper-pic-button-${doc.id}">
-                    <img id="camper-profile-pic-${doc.id}" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left" width="100" height="100">
-                </button>`;
 
-                // insertedRow.insertCell().innerHTML = `<img id="camper-profile-pic-${doc.id}" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left" width="100" height="100">`;
-                
-                insertedRow.insertCell().innerHTML = `<input type="text" id="${"camper-first" + doc.id}" class="form-control" value="${doc.data()['firstName']}">`;
-                // insertedRow.insertCell().innerHTML = `<span id="${"camper-first" + doc.id}" class="form-control" value="${doc.data()['firstName']}">${doc.data()['firstName']}</span>`;
-                insertedRow.insertCell().innerHTML = `<input type="text" id="${"camper-last" + doc.id}" class="form-control" value="${doc.data()['lastName']}">`;
-                // insertedRow.insertCell().innerHTML = `<span id="${"camper-last" + doc.id}" class="form-control" value="${doc.data()['lastName']}">${doc.data()['lastName']}</span>`;
+                // Disbaled the following inputs:
+                // `<input type="file" id="camper-upload-${doc.id}" style="display:none" accept="image/*" capture="camera"/> 
+                // <button id="camper-pic-button-${doc.id}">
+                //     <img id="camper-profile-pic-${doc.id}" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left" width="100" height="100">
+                // </button>`;
+
+                // insertedRow.insertCell().innerHTML = `<input type="text" id="${"camper-first" + doc.id}" class="form-control" value="${doc.data()['firstName']}">`;
+                // insertedRow.insertCell().innerHTML = `<input type="text" id="${"camper-last" + doc.id}" class="form-control" value="${doc.data()['lastName']}">`;
+
+                // Replaced the inputs with:
+                `<input type="file" id="camper-upload-${doc.id}" style="display:none" accept="image/*" capture="camera"/> 
+                <img id="camper-profile-pic-${doc.id}" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left" width="100" height="100">`;
+
+                insertedRow.insertCell().innerHTML = `<span id="${"camper-first" + doc.id}" class="form-control">${doc.data()['firstName']}</span>`;
+                insertedRow.insertCell().innerHTML = `<span id="${"camper-last" + doc.id}" class="form-control">${doc.data()['lastName']}</span>`;
+
+
                 insertedRow.insertCell().innerHTML =
                     `<select class="form-control" id="camper-gender${doc.id}"> 
                     <option value="Female">Female</option>
@@ -516,7 +526,7 @@ function initCampersTable() {
                 document.getElementById(`camper-pronoun${doc.id}`).value = pronoun;
                 document.getElementById(`camper-gender${doc.id}`).value = gender;
                 //Load image
-                document.getElementById(`camper-pic-button-${doc.id}`).onclick = () => { $(`#camper-upload-${doc.id}`).trigger('click'); };
+                // document.getElementById(`camper-pic-button-${doc.id}`).onclick = () => { $(`#camper-upload-${doc.id}`).trigger('click'); };
                 loadCamperImage(`camper-profile-pic-${doc.id}`, doc.data()['id']);
                 $(`#camper-upload-${doc.id}`).on("change", function () {
                     readURL(this, `camper-profile-pic-${doc.id}`);
@@ -607,8 +617,8 @@ function loadEditCamperButton(docId, camperID, birthday, gender, pronouns) {
     document.getElementById("edit-camper-camperId").value = camperID;
     document.getElementById('editAthleteModal').style.display = 'block';
     document.getElementById("edit-camper-profile-pic").src = document.getElementById(`camper-profile-pic-${docId}`).src;
-    document.getElementById("edit-camper-fname").value = document.getElementById("camper-first" + docId).value;
-    document.getElementById("edit-camper-lname").value = document.getElementById("camper-last" + docId).value;
+    document.getElementById("edit-camper-fname").value = document.getElementById("camper-first" + docId).innerHTML;
+    document.getElementById("edit-camper-lname").value = document.getElementById("camper-last" + docId).innerHTML;
     document.getElementById("edit-camper-birthday").value = birthday;
     document.getElementById("edit-camper-gender").value = gender;
     document.getElementById("edit-camper-pronouns").value = pronouns;
@@ -739,7 +749,7 @@ function initGroupsTable() {
                             insertedRow.insertCell().innerHTML = `<select class="coach-group-athletes" id="${"group-" + doc.id}" multiple="multiple">${camperOptionHTML}</select>`;
                             insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn' onclick='updateGroupSelectr("${doc.id}")'>Update</button>`;
                             insertedRow.insertCell().innerHTML = camperNames;
-                            $("#group-" + doc.id).select2();
+                            $("#group-" + doc.id).select2({width: "100%"});
                             // if(!(doc.id in selectrIDs)) {
                             //     let sObj = new Selectr("#group-" + doc.id, {
                             //         data: camperSelection,
