@@ -8,7 +8,7 @@
             <div class="container">
                 <img id="login_logo" src="img/logobackground.png">
                 <div id="app">
-                    <form onSubmit="login(); return false;">
+                    <!-- <form onSubmit="login(); return false;"> -->
                         <div class="login">Log In</div>
                         <!-- <div class="signup">Sign Up</div> -->
 
@@ -23,11 +23,15 @@
                             </a> -->
                             <div class="loader"></div>
                             <div id="login_error" class="error-msg"></div>
-                            <div id="forgot_pass"><span><button class="link text-danger"
-                                        onclick="router.loadRoute('forgotpassword')">Forgot
-                                        Password</button></span> </div>
+                            <div id="forgot_pass">
+                                <span>
+                                    <button class="link text-danger" onclick="router.loadRoute('forgotpassword')">
+                                        Forgot Password
+                                    </button>
+                                </span>
+                            </div>
                         </div>
-                    </form>
+                    <!-- </form> -->
                     <div class="signup-form">
                         <input type="text" onkeyup="emailSignOnChange()" onkeydown="emailSignOnChange()"
                             placeholder="Your Email Address" class="input" id="signup-email"><br />
