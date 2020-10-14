@@ -1,5 +1,6 @@
 table.block td {
     display: revert;
+    font-size: 2rem;
 }
 table.block {
     font-family:monospace;
@@ -200,6 +201,7 @@ table.block th {
 
 .camper-modal-input, .user-modal-input, .form-control{
     margin-bottom: 20px;
+    font-size: 2rem;
 }
 
 .modal-profile-pic {
