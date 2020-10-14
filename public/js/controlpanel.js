@@ -897,20 +897,19 @@ function initUsersTable() {
                         // Insert a cell in the row at cell index 0
                         insertedRow.insertCell().innerHTML =
                             `<input type="file" id="user-upload-${doc.id}" style="display:none" accept="image/*" capture="camera"/> 
-                        <button id="user-pic-button-${doc.id}">
-                            <img id="user-profile-pic-${doc.id}" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left" width="100" height="100">
-                        </button>`;
-                        insertedRow.insertCell().innerHTML = doc.data()['firstName'] + " " + doc.data()['lastName'] + " (ID:" + doc.data()['id'] + ")";
+                            <img id="user-profile-pic-${doc.id}" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left" width="100" height="100">`;
+                        insertedRow.insertCell().innerHTML = `<span id="${"user-first" + doc.id}">${doc.data()['firstName']}</span>`;
+                        insertedRow.insertCell().innerHTML = `<span id="${"user-last" + doc.id}">${doc.data()['lastName']}</span>`;
                         insertedRow.insertCell().innerHTML = doc.data()['gender'];
                         insertedRow.insertCell().innerHTML = doc.data()['email'];
                         insertedRow.insertCell().innerHTML = doc.data()['creationDate'];
-                        insertedRow.insertCell().innerHTML = select.outerHTML;
-                        insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn' onclick='updateUser("${doc.id}")'>Update</button>`;
                         insertedRow.insertCell().innerHTML = doc.data()['priv'];
+                        // insertedRow.insertCell().innerHTML = select.outerHTML;
+                        insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn' onclick='loadEditUserButton("${doc.id}", "${doc.data()['email']}", "${doc.data()['gender']}", "${doc.data()['priv']}")'>Edit</button>`;
 
                         //Loading images
                         try {
-                            document.getElementById(`user-pic-button-${doc.id}`).onclick = () => { $(`#user-upload-${doc.id}`).trigger('click'); };
+                            // document.getElementById(`user-pic-button-${doc.id}`).onclick = () => { $(`#user-upload-${doc.id}`).trigger('click'); };
                             loadCamperImage(`user-profile-pic-${doc.id}`, doc.data()['email']);
                             $(`#user-upload-${doc.id}`).on("change", function () {
                                 readURL(this, `user-profile-pic-${doc.id}`);
@@ -927,24 +926,30 @@ function initUsersTable() {
                         "title": "Picture",
                         "searchable": false
                     },
-                    { "title": "Name" },
-                    { "title": "Gender" },
-                    { "title": "Email" },
-                    { "title": "Created" },
+                    { "title": "First Name" },
+                    { "title": "Last Name" },
                     {
-                        "title": "Role",
-                        "searchable": false
+                        "title": "Gender",
+                        "visible": false
+                    },
+                    { "title": "Email" },
+                    {
+                        "title": "Created",
+                        "visible": false
+                    },
+                    {
+                        "title": "Role"
                     },
                     {
                         "title": "",
                         "searchable": false
-                    },
+                    }
                     // {"title" : "",
                     //  "searchable": false},
-                    {
-                        "title": "",
-                        "visible": false
-                    }
+                    // {
+                    //     "title": "",
+                    //     "visible": false
+                    // }
                 ]
             });
         });
@@ -956,25 +961,38 @@ function updateUsersTable() {
     $("#users tr").remove();
     initUsersTable();
 }
-function updateUser(docid) {
-    let priv = document.getElementById("users-priv-" + docid).value;
-    let file = document.getElementById(`user-upload-${docid}`).files[0];
-    fs.collection("users").doc(docid).get().then(doc => {
-        try {
-            clearProfilePictures(doc.data()['email'],
-                storageRef.child(`users/${doc.data()['email']}/profile-picture/` + file.name).put(file));
-        } catch (err) {
-            console.log(`The user ${doc.data()['firstName']} ${doc.data()['lastName']} does not have a profile picture`);
-        }
-    });
 
-    fs.collection("users").doc(docid).update({
-        priv: priv
-    }).then(() => {
-        alert("User has been updated!");
-        updateGroupsTable();
-    });
+// function updateUser(docid) {
+//     let priv = document.getElementById("users-priv-" + docid).value;
+//     let file = document.getElementById(`user-upload-${docid}`).files[0];
+//     fs.collection("users").doc(docid).get().then(doc => {
+//         try {
+//             clearProfilePictures(doc.data()['email'],
+//                 storageRef.child(`users/${doc.data()['email']}/profile-picture/` + file.name).put(file));
+//         } catch (err) {
+//             console.log(`The user ${doc.data()['firstName']} ${doc.data()['lastName']} does not have a profile picture`);
+//         }
+//     });
+
+//     fs.collection("users").doc(docid).update({
+//         priv: priv
+//     }).then(() => {
+//         alert("User has been updated!");
+//         updateGroupsTable();
+//     });
+// }
+
+function loadEditUserButton(docId, email, gender, priv) {
+    document.getElementById("edit-user-uid").value = docId;
+    document.getElementById('editUserModal').style.display = 'block';
+    document.getElementById("edit-user-profile-pic").src = document.getElementById(`user-profile-pic-${docId}`).src;
+    document.getElementById("edit-user-first").value = document.getElementById("user-first" + docId).innerHTML;
+    document.getElementById("edit-user-last").value = document.getElementById("user-last" + docId).innerHTML;
+    document.getElementById("edit-user-gender").value = gender;
+    document.getElementById("edit-user-priv").value = priv;
+    document.getElementById("edit-user-email").value = email;
 }
+
 function newAccountPasswordReset(firstName, email) {
     firebase.auth().sendPasswordResetEmail(email).then(function () {
         $("#modal-user").modal("hide");
@@ -1021,6 +1039,8 @@ function addModalUser() {
                 }
                 document.getElementById("modal-user-profile-pic").src = "../img/user/default/user-480.png";
                 document.getElementById('addUserModal').style.display = 'none';
+                updateUsersTable();
+                updateGroupsTable();
             }).catch((err) => {
                 alert("Could not add new user to database: " + err);
             });
@@ -1032,6 +1052,47 @@ function addModalUser() {
         });
     }
 }
+
+function editModalUser() {
+    document.getElementById("edit-user-error").style = "display: none";
+    let docId = document.getElementById("edit-user-uid").value;
+    let file = document.getElementById(`edit-user-pic`).files[0];
+    let firstName = document.getElementById("edit-user-first").value;
+    let lastName = document.getElementById("edit-user-last").value;
+    let gender = document.getElementById("edit-user-gender").value;
+    let priv = document.getElementById("edit-user-priv").value;
+    let email = document.getElementById("edit-user-email").value.toLowerCase();
+    if(!firstName || !lastName || !gender || !priv) {
+        alert("Could not update user: Make sure all of the user's information is filled out.");
+    } else {
+        try {
+            clearProfilePictures(email,
+                storageRef.child(`users/${email}/profile-picture/` + file.name).put(file));
+        } catch (err) {
+            console.log(`The user ${firstName} ${lastName} does not have a profile picture`);
+        }
+
+        fs.collection("users").doc(docId).update({
+            firstName: firstName,
+            lastName: lastName,
+            gender: gender,
+            priv: priv
+        }).then(() => {
+            alert("User has been updated successfully!");
+            for(elem of document.getElementsByClassName("user-modal-input")) {
+                elem.value = "";
+            }
+            document.getElementById("edit-user-profile-pic").src = "../img/user/default/user-480.png";
+            document.getElementById('editUserModal').style.display = 'none';
+            updateUsersTable();
+            updateGroupsTable();
+        }).catch((err) => {
+            console.log("Could not update user: " + err);
+            alert("Could not update user");
+        });
+    }
+}
+
 /**
  * Function to be used only under admin controls
  * @param {} email 
@@ -1048,6 +1109,7 @@ function removeUserData(email) {
 }
 function initUserModal() {
     document.getElementById("modal-user-save").onclick = addModalUser;
+    document.getElementById("edit-user-save").onclick = editModalUser;
     document.getElementById("modal-user-error").style = "display: none";
 }
 
