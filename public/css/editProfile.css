@@ -2,7 +2,7 @@
 {
     font-size: 1.8rem;
     text-align: center;
-    padding-top: 3rem;
+    padding-top: 1rem;
     font-weight: bold;
 }
 
@@ -22,8 +22,8 @@ div.editProfile
     margin-top: 30px;
 }
 
-#user-first-name, #user-last-name, #user-gender{
-    font-size: 1.6rem;
+#user-first-name, #user-last-name, #user-gender, #user-email{
+    font-size: 1.5rem;
     padding: 10px;
 }
 
