@@ -60,16 +60,16 @@ function select2Init(id) {
             var term = $.trim(params.term);
             var existsVar = false;
             //check if there is any option already
-            if($('#keywords option').length > 0){
-                $('#keywords option').each(function(){
+            if ($('#keywords option').length > 0) {
+                $('#keywords option').each(function () {
                     if ($(this).text().toUpperCase() == term.toUpperCase()) {
                         existsVar = true
                         return false;
-                    }else{
+                    } else {
                         existsVar = false
                     }
                 });
-                if(existsVar){
+                if (existsVar) {
                     return null;
                 }
                 return {
@@ -79,7 +79,7 @@ function select2Init(id) {
                 }
             }
             //since select has 0 options, add new without comparing
-            else{
+            else {
                 return {
                     id: params.term,
                     text: params.term,
@@ -124,10 +124,10 @@ function editFunc() {
 
 function initActModal(addAct) {
     let prefix = "edit-act";
-    if(addAct) {
+    if (addAct) {
         prefix = "add-act"
     }
-    if($(`#${prefix}-checklist`).DataTable()) {
+    if ($(`#${prefix}-checklist`).DataTable()) {
         $(`#${prefix}-checklist`).DataTable().clear();
         $(`#${prefix}-checklist`).DataTable().destroy();
         $(`#${prefix}-checklist tr`).remove();
@@ -142,7 +142,7 @@ function initActModal(addAct) {
             { "title": "", 'visible': false, 'searchable': false }
         ]
     });
-    if($(`#${prefix}-skills`).DataTable()){
+    if ($(`#${prefix}-skills`).DataTable()) {
         $(`#${prefix}-skills`).DataTable().clear();
         $(`#${prefix}-skills`).DataTable().destroy();
         $(`#${prefix}-skills tr`).remove();
@@ -165,7 +165,7 @@ function populateAct(data) {
         finishedArray.push([d['name'],
         `<button class='btn bdrlessBtn' onclick='getEditActivityModal("${d['id']}")'>Edit</button>`,
         `<button class='btn bdrlessBtn btn-danger' onclick='removeActivity("${d['id']}", "${d['name']}")'>Remove</button>`
-    ]);
+        ]);
     });
     return finishedArray;
 }
@@ -192,7 +192,7 @@ function initActivitiesTable() {
                     { "title": "", "searchable": false },
                     { "title": "", 'searchable': false }
                 ],
-                initComplete: function() {
+                initComplete: function () {
                     $(this.api().table().container()).find('input').parent().wrap('<form>').parent().attr('autocomplete', 'off');
                 }
             });
@@ -201,8 +201,8 @@ function initActivitiesTable() {
 }
 
 function removeActivity(id, name) {
-    if(confirm(`Are you sure you would like to remove the activity: ${name}`)) {
-        fs.collection('Activities').doc(id).delete().then(()=>{
+    if (confirm(`Are you sure you would like to remove the activity: ${name}`)) {
+        fs.collection('Activities').doc(id).delete().then(() => {
             $('#activities').DataTable().clear();
             $('#activities').DataTable().destroy();
             $('#activities tr').remove();
@@ -224,7 +224,7 @@ function updateActivity(id) {
         let id = checkTable[i][5];
         let checkName = document.getElementById("check-" + id).value;
         let checkUnit = document.getElementById("check-unit-" + id).value;
-        if(!checkName || !checkUnit) {
+        if (!checkName || !checkUnit) {
             valid = false;
             break;
         }
@@ -235,7 +235,7 @@ function updateActivity(id) {
         let id = skillsTable[i][5];
         let skillName = document.getElementById("skill-" + id).value;
         let subSkills = $("#subskill-" + id).val();
-        if(!skillName || !subSkills) {
+        if (!skillName || !subSkills) {
             valid = false;
             break;
         }
@@ -246,8 +246,8 @@ function updateActivity(id) {
     }
     let data = { checklist: checklist, name: activityName, skills: skills };
 
-    if(valid) {
-        fs.collection('Activities').doc(id).update(data).then(()=>{
+    if (valid) {
+        fs.collection('Activities').doc(id).update(data).then(() => {
             document.getElementById('editActivityModal').style.display = 'none';
             $('#activities').DataTable().clear();
             $('#activities').DataTable().destroy();
@@ -274,7 +274,7 @@ function addActivityFromModal() {
         let id = checkTable[i][5];
         let checkName = document.getElementById("check-" + id).value;
         let checkUnit = document.getElementById("check-unit-" + id).value;
-        if(!checkName || !checkUnit) {
+        if (!checkName || !checkUnit) {
             valid = false;
             break;
         }
@@ -285,7 +285,7 @@ function addActivityFromModal() {
         let id = skillsTable[i][5];
         let skillName = document.getElementById("skill-" + id).value;
         let subSkills = $("#subskill-" + id).val();
-        if(!skillName || !subSkills) {
+        if (!skillName || !subSkills) {
             valid = false;
             break;
         }
@@ -296,7 +296,7 @@ function addActivityFromModal() {
     }
     let data = { checklist: checklist, name: activityName, skills: skills };
 
-    if(valid) {
+    if (valid) {
         fs.collection("Activities").add(data).then((docRef) => {
             $(document).ready(function () {
                 document.getElementById('addActivityModal').style.display = 'none';
@@ -355,7 +355,7 @@ function getEditActivityModal(id) {
         });
         $(document).ready(function () {
             ////////////////// add data to checklist table //////////////////////////
-            if(!$('#edit-act-checklist').DataTable()){
+            if (!$('#edit-act-checklist').DataTable()) {
                 $('#edit-act-checklist').DataTable({
                     columns: [
                         { "title": "Checklist Name", 'searchable': false },
@@ -387,15 +387,15 @@ function getEditActivityModal(id) {
 
 function addSkill(addAct) {
     let skillsTableId = "#edit-act-skills";
-    if(addAct) {
+    if (addAct) {
         skillsTableId = "#add-act-skills";
     }
 
     let id = Math.random().toString(36).substring(2, 8) + Math.random().toString(36).substring(2, 8);
     // Really ugly method but works...
-    $(skillsTableId).on( 'draw.dt', function () {
+    $(skillsTableId).on('draw.dt', function () {
         select2Init("subskill-" + id);
-    } );
+    });
 
     let tempSkill = [
         `<input type="text" id="${"skill-" + id}" class="input" placeholder="Skill Name">`,
@@ -423,7 +423,7 @@ function removeSkill(id, addAct) {
 
 function addCheckListItem(addAct) {
     let checklistTableId = "#edit-act-checklist";
-    if(addAct) {
+    if (addAct) {
         checklistTableId = "#add-act-checklist";
     }
 
@@ -434,7 +434,7 @@ function addCheckListItem(addAct) {
         `<button class='btn bdrlessBtn' onclick='removeCheck("${id}", ${addAct})'>Remove</button>`,
         "Example Checklist name", "inches", id
     ]
-    
+
     $(checklistTableId).DataTable().row.add(checklist).draw();
 }
 
@@ -483,17 +483,17 @@ function initCampersTable() {
                 // Insert a cell in the row at cell index 0
                 insertedRow.insertCell().innerHTML =
 
-                // Disbaled the following inputs:
-                // `<input type="file" id="camper-upload-${doc.id}" style="display:none" accept="image/*" capture="camera"/> 
-                // <button id="camper-pic-button-${doc.id}">
-                //     <img id="camper-profile-pic-${doc.id}" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left" width="100" height="100">
-                // </button>`;
+                    // Disbaled the following inputs:
+                    // `<input type="file" id="camper-upload-${doc.id}" style="display:none" accept="image/*" capture="camera"/> 
+                    // <button id="camper-pic-button-${doc.id}">
+                    //     <img id="camper-profile-pic-${doc.id}" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left" width="100" height="100">
+                    // </button>`;
 
-                // insertedRow.insertCell().innerHTML = `<input type="text" id="${"camper-first" + doc.id}" class="form-control" value="${doc.data()['firstName']}">`;
-                // insertedRow.insertCell().innerHTML = `<input type="text" id="${"camper-last" + doc.id}" class="form-control" value="${doc.data()['lastName']}">`;
+                    // insertedRow.insertCell().innerHTML = `<input type="text" id="${"camper-first" + doc.id}" class="form-control" value="${doc.data()['firstName']}">`;
+                    // insertedRow.insertCell().innerHTML = `<input type="text" id="${"camper-last" + doc.id}" class="form-control" value="${doc.data()['lastName']}">`;
 
-                // Replaced the inputs with:
-                `<input type="file" id="camper-upload-${doc.id}" style="display:none" accept="image/*" capture="camera"/> 
+                    // Replaced the inputs with:
+                    `<input type="file" id="camper-upload-${doc.id}" style="display:none" accept="image/*" capture="camera"/> 
                 <img id="camper-profile-pic-${doc.id}" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left" width="100" height="100">`;
 
                 insertedRow.insertCell().innerHTML = `<span id="${"camper-first" + doc.id}" class="form-control">${doc.data()['firstName']}</span>`;
@@ -586,13 +586,13 @@ function addCamperFromModal() {
     let birthday = document.getElementById("add-camper-birthday").value;
     let gender = document.getElementById("add-camper-gender").value;
     let pronouns = document.getElementById("add-camper-pronouns").value;
-    if(!firstName || !lastName || !birthday || !gender || !pronouns) {
+    if (!firstName || !lastName || !birthday || !gender || !pronouns) {
         alert("Could not add camper successfully, please make sure all New Athlete Info is filled out.");
     } else {
         let userPayload = generateUser("", firstName, lastName, gender, birthday, "camper", pronouns);
         addUser(userPayload, updateCamperTable).then((camperId) => {
             console.log("Added camper with ID of " + camperId);
-            if(file) {
+            if (file) {
                 storageRef.child(`users/${camperId}/profile-picture/` + file.name).put(file).then(() => {
                     alert("Added camper successfully.");
                 }).catch(err => {
@@ -601,7 +601,7 @@ function addCamperFromModal() {
             } else {
                 alert("Added camper successfully.");
             }
-            for(elem of document.getElementsByClassName("camper-modal-input")) {
+            for (elem of document.getElementsByClassName("camper-modal-input")) {
                 elem.value = "";
             }
             document.getElementById("add-camper-profile-pic").src = "../img/user/default/user-480.png";
@@ -633,9 +633,9 @@ function updateCamperFromModal() {
     let birthday = document.getElementById("edit-camper-birthday").value;
     let gender = document.getElementById("edit-camper-gender").value;
     let pronouns = document.getElementById("edit-camper-pronouns").value;
-    if(!firstName || !lastName || !birthday || !gender || !pronouns) {
+    if (!firstName || !lastName || !birthday || !gender || !pronouns) {
         alert("Could not edit camper successfully, please make sure all of the Athlete Info is filled out.");
-    } else {    
+    } else {
         try {
             clearProfilePictures(camperId,
                 storageRef.child(`users/${camperId}/profile-picture/` + file.name).put(file));
@@ -651,7 +651,7 @@ function updateCamperFromModal() {
             pronoun: pronouns
         }).then(() => {
             alert("User has been updated successfully!");
-            for(elem of document.getElementsByClassName("camper-modal-input")) {
+            for (elem of document.getElementsByClassName("camper-modal-input")) {
                 elem.value = "";
             }
             document.getElementById("edit-camper-profile-pic").src = "../img/user/default/user-480.png";
@@ -749,7 +749,7 @@ function initGroupsTable() {
                             insertedRow.insertCell().innerHTML = `<select class="coach-group-athletes" id="${"group-" + doc.id}" multiple="multiple">${camperOptionHTML}</select>`;
                             insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn' onclick='updateGroupSelectr("${doc.id}")'>Update</button>`;
                             insertedRow.insertCell().innerHTML = camperNames;
-                            $("#group-" + doc.id).select2({width: "100%"});
+                            $("#group-" + doc.id).select2({ width: "100%" });
                             // if(!(doc.id in selectrIDs)) {
                             //     let sObj = new Selectr("#group-" + doc.id, {
                             //         data: camperSelection,
@@ -898,8 +898,8 @@ function initUsersTable() {
                         insertedRow.insertCell().innerHTML =
                             `<input type="file" id="user-upload-${doc.id}" style="display:none" accept="image/*" capture="camera"/> 
                             <img id="user-profile-pic-${doc.id}" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left" width="100" height="100">`;
-                        insertedRow.insertCell().innerHTML = `<span id="${"user-first" + doc.id}">${doc.data()['firstName']}</span>`;
-                        insertedRow.insertCell().innerHTML = `<span id="${"user-last" + doc.id}">${doc.data()['lastName']}</span>`;
+                        insertedRow.insertCell().innerHTML = `<span class="nameis" id="${"user-first" + doc.id}">${doc.data()['firstName']}</span>`;
+                        insertedRow.insertCell().innerHTML = `<span class="nameis" id="${"user-last" + doc.id}">${doc.data()['lastName']}</span>`;
                         insertedRow.insertCell().innerHTML = doc.data()['gender'];
                         insertedRow.insertCell().innerHTML = doc.data()['email'];
                         insertedRow.insertCell().innerHTML = doc.data()['creationDate'];
@@ -1015,7 +1015,7 @@ function addModalUser() {
     let priv = document.getElementById("modal-user-priv").value;
     let email = document.getElementById("modal-user-email").value.toLowerCase();
     let password = document.getElementById("modal-user-pass").value;
-    if(!firstName || !lastName || !gender || !email || !priv) {
+    if (!firstName || !lastName || !gender || !email || !priv) {
         alert("Could not add new user: Make sure all of the new user's information is filled out.");
     } else {
         if (password.length == 0) {
@@ -1025,7 +1025,7 @@ function addModalUser() {
             console.log("The user has successfully been signed up!");
             let userPayload = generateUser(email, firstName, lastName, gender, "", priv);
             addUser(userPayload, newAccountPasswordReset(firstName, email)).then((camperId) => {
-                if(file) {
+                if (file) {
                     storageRef.child(`users/${email}/profile-picture/` + file.name).put(file).then(() => {
                         console.log("Added user successfully.");
                     }).catch(err => {
@@ -1034,7 +1034,7 @@ function addModalUser() {
                 } else {
                     console.log("Added user successfully.");
                 }
-                for(elem of document.getElementsByClassName("user-modal-input")) {
+                for (elem of document.getElementsByClassName("user-modal-input")) {
                     elem.value = "";
                 }
                 document.getElementById("modal-user-profile-pic").src = "../img/user/default/user-480.png";
@@ -1062,7 +1062,7 @@ function editModalUser() {
     let gender = document.getElementById("edit-user-gender").value;
     let priv = document.getElementById("edit-user-priv").value;
     let email = document.getElementById("edit-user-email").value.toLowerCase();
-    if(!firstName || !lastName || !gender || !priv) {
+    if (!firstName || !lastName || !gender || !priv) {
         alert("Could not update user: Make sure all of the user's information is filled out.");
     } else {
         try {
@@ -1079,7 +1079,7 @@ function editModalUser() {
             priv: priv
         }).then(() => {
             alert("User has been updated successfully!");
-            for(elem of document.getElementsByClassName("user-modal-input")) {
+            for (elem of document.getElementsByClassName("user-modal-input")) {
                 elem.value = "";
             }
             document.getElementById("edit-user-profile-pic").src = "../img/user/default/user-480.png";
