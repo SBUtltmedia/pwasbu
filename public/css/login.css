@@ -189,6 +189,7 @@ label.form-group {
     color: black !important;
     font-size: 1.5rem;
     margin: 30px;
+    border: none;
 }
 
 .largeText{
@@ -199,3 +200,10 @@ label.form-group {
 #forgot-button{
     margin: 15px;
 }
+
+@media screen and (max-width: 320px){ 
+    .email-input{
+        width: 100px;
+    }  
+}
+
