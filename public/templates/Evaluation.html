@@ -1,7 +1,13 @@
 <template>
     <div>
         <!-- <div style="font-size: 2rem;">Assessments</div> -->
-        <div id="quest">WHICH ACTIVITY?</div>
+        <div id="athlete-header-name"></div>
+        <div id="quest">WHICH ACTIVITY?
+            <div class="tooltip">
+                <img class="infobutton" src="img/infobutton.png" alt="infobutton">
+                <span class="tooltiptext">Select an Activity</span>
+            </div>
+        </div>
 
         <table id="activities" style="display: none;"></table>
         <!-- <ul id="activities" style="display: none;"></ul> -->
@@ -16,6 +22,8 @@
             id="submitEval">Submit
             Changes</button>
         <button class="evaluation-but btn btn-danger bck-hme" onclick='router.loadRoute("home")'>Back to Home</button>
-        <button id="backToActivities" class="evaluation-but btn btn-danger bck-hme hiddenElement" onclick='eval(currEval.camperID, "get"); $("#backToActivities").addClass("hiddenElement");'>Back to Activities</button>
+        <button id="backToActivities" class="evaluation-but btn btn-danger bck-hme hiddenElement"
+            onclick='eval(currEval.camperID, "get"); $("#backToActivities").addClass("hiddenElement");'>Back to
+            Activities</button>
     </div>
 </template>
