@@ -35,6 +35,10 @@ function controlpanel_template() {
         readURL(this, `modal-user-profile-pic`);
     });
 
+    $(`#edit-user-pic`).on("change", function () {
+        readURL(this, `edit-user-profile-pic`);
+    });
+
     document.getElementById("defaultOpen").click();
 }
 

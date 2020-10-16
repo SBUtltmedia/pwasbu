@@ -282,6 +282,52 @@
                 </div>
             </div>
 
+            <!-- Modal for Edit User -->
+            <div id="editUserModal" class="modal adminConsoleModal">
+                <!-- Modal content -->
+                <div class="modal-content">
+                    <span class="close" onclick="document.getElementById('editUserModal').style.display = 'none';">&times;</span>
+                    <h2>User Info</h2>
+                    <span id="edit-user-uid" class="edit-modal-input" style="display: 'none'"></span>
+                    <br>
+                    <img id="edit-user-profile-pic" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left modal-user-profile-pic" width="100" height="100">
+                    <br>
+                    <label for="edit-user-pic" class="text-like-button">Select File</label>
+                    <br>
+                    <input type="file" id="edit-user-pic" class="user-modal-input hiddenElement" accept="image/*" capture="camera"/>
+                    <br>
+                    <label for="edit-user-first"><b>First Name:</b></label>
+                    <input type="text" placeholder="First Name" id="edit-user-first" class="user-modal-input"
+                        required>
+                    <br>
+                    <label for="edit-user-last"><b>Last Name:</b></label>
+                    <input type="text" placeholder="Last Name" id="edit-user-last" class="user-modal-input"
+                        required>
+                    <br>
+                    <label for="edit-user-gender"><b>Gender:</b></label>
+                    <select class="form-control" id="edit-user-gender" class="user-modal-input">
+                        <option value="Female">Female</option>
+                        <option value="Male">Male</option>
+                        <option value="Non-Binary">Non-Binary</option>
+                    </select>
+                    <br>
+                    <label for="edit-user-priv">User Access Level</label><br />
+                    <select class="form-control" id="edit-user-priv" class="user-modal-input">
+                        <option value=".">Basic</option>
+                        <option value="parent">Parent</option>
+                        <option value="coach">Coach</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                    <br />
+                    <label for="edit-user-email">User's Email</label><br />
+                    <input autocomplete="false" type="email" class="form-control user-modal-input" id="edit-user-email"
+                        placeholder="Email" disabled>
+                    <br />
+                    <div id='edit-user-error' class='addTopPad'></div>
+                    <button id="edit-user-save" class="add-athlete-btn" onclick="editModalUser()">SUBMIT CHANGES</button>
+                </div>
+            </div>
+
             <table id="users" class="block cp-table row-border"> </table>
         </div>
     </div>

@@ -137,9 +137,13 @@ function updateEmail() {
                     console.log("Updated user login email successfully!");
                     // Updating email in users collection
                     updateUsersCollectionEmail(original_email, new_email, payload);
+                    alert("Successfully changed user's email address")
                     // Changing directory path of profile pic
-                    updateProfilePicDirectoryPath(original_email, new_email);
-                    loadRoute('accountsettings');
+                    try {
+                        updateProfilePicDirectoryPath(original_email, new_email);
+                    } catch(err) {
+                        console.log("Error occurred while trying to update storage directory of user's profile picture: " + err);
+                    }
                 }).catch(function(error) {
                     alert("Could not update account email: The new email address is already being used by another account");
                 });

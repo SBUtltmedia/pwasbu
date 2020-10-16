@@ -1,7 +1,11 @@
-#athlete-header-name{
+#athlete-header-name {
     text-align: center;
     font-size: 1.5rem;
     padding-top: 15px;
+}
+
+.menu {
+    text-align: center;
 }
 
 .firstDropDownColor {
