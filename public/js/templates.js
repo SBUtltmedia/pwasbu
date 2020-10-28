@@ -1,10 +1,10 @@
-function accountsettings_template(){
+function accountsettings_template() {
     $("#loader").hide();
     initAccountSettings();
     initNavBar();
 }
 
-function controlpanel_template(){
+function controlpanel_template() {
     // resetSelectrs();
     initYearPicker(); // LOCATED in evaluation.js
     initActivitiesTable();
@@ -42,7 +42,7 @@ function controlpanel_template(){
     document.getElementById("defaultOpen").click();
 }
 
-function editprofile_template(){
+function editprofile_template() {
     $(".loader").hide();
     initEditProfile();
     function changePhoto() {
@@ -60,10 +60,10 @@ function editprofile_template(){
     initNavBar();
 }
 
-function evaluation_template(){
+function evaluation_template() {
     document.getElementById('activities').style = "display: block;";
 
-    if(currEval.evalMode === "add") {
+    if (currEval.evalMode === "add") {
         let currEvalCamperID = currEval.camperID;
         let currEvalDate = new Date().toDateInputValue();
         let currEvalInstrID = currEval.instrID;
@@ -74,16 +74,22 @@ function evaluation_template(){
         currEval.instrID = currEvalInstrID;
         currEval.selectedYear = currEvalSelectedYear;
     }
-
+    fs.collection("users").where("id", "==", currEval.camperID).get()
+        .then((snapshot) => {
+            if (!snapshot.empty)
+                document.getElementById("athlete-header-name").innerHTML = snapshot.docs[0].data()["firstName"] + " " + snapshot.docs[0].data()["lastName"]
+            else console.log("Camper with ID " + camperID + " does not exist")
+        })
+        .catch((err) => { console.log("pratik tried" + err) }) //pratik is so fussy so so fussy
     actEvalInit();
 }
 
-function forgotpassword_template(){
+function forgotpassword_template() {
     $(".loader").hide();
     $("#forgot-error").hide();
 }
 
-function home_template(){
+function home_template() {
     function userWelcome() {
         let user = firebase.auth().currentUser;
         try {
@@ -113,19 +119,19 @@ function home_template(){
     populateYearPicker(); // LOCATED in evaluation.js
     initNavBar(); // LOCATED in navbar.js
     initCampersEvalTable(); // LOCATED in evaluation.js
-    
-    try{
+
+    try {
         let userData = JSON.parse(localStorage.getItem("userData"));
-        if(userData['priv'].toLowerCase().trim() != "admin") {
+        if (userData['priv'].toLowerCase().trim() != "admin") {
             $("#yearPickerContainer").hide();
         }
-    } catch(error) {
+    } catch (error) {
         let user = firebase.auth().currentUser;
-        fs.collection("users").where('email', '==', user.email).get().then(function(res) {
-            if(res.docs.length > 0) {
+        fs.collection("users").where('email', '==', user.email).get().then(function (res) {
+            if (res.docs.length > 0) {
                 res.docs[0].ref.get().then(doc => {
-                    if(doc.data()['priv'] != "admin") {
-                        if(document.getElementById("yearPickerContainer")) {
+                    if (doc.data()['priv'] != "admin") {
+                        if (document.getElementById("yearPickerContainer")) {
                             $("#yearPickerContainer").hide();
                         }
                     }
@@ -140,7 +146,7 @@ function home_template(){
     }
 }
 
-function login_template(){
+function login_template() {
     $(".navbar").hide();
     $("#signup-birthdate").val(new Date().toDateInputValue());
     $(".signup-form").hide();
@@ -169,25 +175,25 @@ function login_template(){
     });
 }
 
-function missinginfo_template(){
+function missinginfo_template() {
     $(".loader").hide();
     $("#forgot-error").hide();
 }
 
-function navbar_template(){
+function navbar_template() {
 
 }
 
-function userdetails_template(){
-    
+function userdetails_template() {
+
 }
 
 // Navbar Function
 function myFunction() {
     var x = document.getElementById("myTopnav");
     if (x.className === "topnav") {
-      x.className += " responsive";
+        x.className += " responsive";
     } else {
-      x.className = "topnav";
+        x.className = "topnav";
     }
-  }
+}
