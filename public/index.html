@@ -20,26 +20,26 @@
   <link rel="apple-touch-icon" href="/img/icons/icon-384x384.jpg">
   <meta name="apple-mobile-web-app-status-bar" content="#aa7700">
   <!-- <link rel="stylesheet" href="css/bootstrap.min.css" id="bootstrap-css"> -->
-  <script src="js/jquery-3.4.1.min.js"></script>
+  <script src="js/thirdParty/jquery-3.4.1.min.js"></script>
   <!-- <script src="js/popper.min.js"></script> -->
-  <script src="js/bootstrap.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.min.css">
-  <script src="js/jquery.dataTables.min.js"></script>
+  <script src="js/thirdParty/bootstrap.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="css/thirdParty/jquery.dataTables.min.css">
+  <script src="js/thirdParty/jquery.dataTables.min.js"></script>
   <script src="js/templates.js"></script>
   <script src="js/template.js"></script>
   <!-- MicroModal for control panel -->
-  <link href="css/micromodal.css" rel="stylesheet" type="text/css">
-  <script src="js/micromodal.min.js" type="text/javascript"></script>
+  <link href="css/thirdParty/micromodal.css" rel="stylesheet" type="text/css">
+  <script src="js/thirdParty/micromodal.min.js" type="text/javascript"></script>
   <script src="js/routes.js"></script>
   <script src="js/router.js"></script>
   <script src="js/index.js"></script>
   <script src="js/login.js" defer> </script>
   <script src="js/settings.js" defer></script>
-  <script src="js/bluetooth.js" defer></script>
+  <script src="js/thirdParty/bluetooth.js" defer></script>
   <script src="js/navbar.js" defer></script>
   <script src="js/controlpanel.js" defer></script>
   <script src="js/evaluation.js" defer></script>
-  <script src="js/processing.min.js"></script>
+  <script src="js/thirdParty/processing.min.js"></script>
   <!-- Selector for control panel -->
   <!-- <link href="https://unpkg.com/mobius1-selectr@latest/dist/selectr.min.css" rel="stylesheet" type="text/css">
   <script src="https://unpkg.com/mobius1-selectr@latest/dist/selectr.min.js" type="text/javascript"></script> -->
@@ -66,7 +66,7 @@
   <link rel="manifest" href="manifest.webmanifest">
 </head>
 
-<body>
+<body onoffline="updateOnlineStatus()" ononline="updateOnlineStatus()">
   <header>
     <div data-router-header></div>
   </header>

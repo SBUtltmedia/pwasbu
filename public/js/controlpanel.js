@@ -458,6 +458,7 @@ function initCampersTable() {
         fs.collection("users").where("priv", "==", "camper").get().then(res => {
             let data = [];
             res.forEach(doc => {
+                let camperId = doc.data()['id']
                 let pronoun = "They/Them/Theirs";
                 // Retrieve Camper Pronouns
                 try {
@@ -516,7 +517,7 @@ function initCampersTable() {
                 insertedRow.insertCell().innerHTML = doc.data()['id'];
                 insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn' onclick='loadEditCamperButton("${doc.id}", "${doc.data()['id']}", "${birthdate}", "${gender}", "${pronoun}")'>Edit</button>`;
                 insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn btn-danger' onclick='if(confirm("Are you sure you want to delete this camper? NOTE: THIS ACTION CANNOT BE REVERSED")) { removeCamper("${doc.id}") }'>Remove</button>`;
-                insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn'>Assessments</button>`;
+                insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn' onclick='loadAssessments("${camperId}")'>Assessments</button>`;
                 insertedRow.insertCell().innerHTML = doc.data()['firstName'];
                 insertedRow.insertCell().innerHTML = doc.data()['lastName'];
                 insertedRow.insertCell().innerHTML = birthdate;
@@ -661,6 +662,11 @@ function updateCamperFromModal() {
         });
     }
 }
+
+function loadAssessments(camperId) {
+    eval(camperId, "admin");
+}
+
 /////////////////////////////////////////// GROUPS FUNCTIONS ///////////////////////////////////////////
 
 /**

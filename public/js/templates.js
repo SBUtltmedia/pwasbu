@@ -80,8 +80,12 @@ function evaluation_template() {
                 document.getElementById("athlete-header-name").innerHTML = snapshot.docs[0].data()["firstName"] + " " + snapshot.docs[0].data()["lastName"]
             else console.log("Camper with ID " + camperID + " does not exist")
         })
-        .catch((err) => { console.log("pratik tried" + err) }) //pratik is so fussy so so fussy
-    actEvalInit();
+        .catch((err) => { console.log("Could not get camper with id " + currEval.camperID + ": " + err) });
+    // if(currEval.evalMode == "admin") {
+    //     adminActEvalInit();
+    // } else {
+        actEvalInit();
+    // }
 }
 
 function forgotpassword_template() {

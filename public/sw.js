@@ -10,7 +10,6 @@ const assets = [
     '/js/routes.js',
     '/js/templates.js',
     '/js/menu.js',
-    '/js/bootstrap.min.js',
     '/js/jquery-3.4.1.min.js',
     '/style.css',
     '/css/app.css',
@@ -85,9 +84,8 @@ self.addEventListener('activate', evt => {
 
 // Fetch
 self.addEventListener('fetch', evt => {
-    //console.log('Fetch Event', evt);
-    if(evt.request.url.indexOf('firestore.googleapis.com') === -1)
-    {
+    // console.log('Fetch Event', evt);
+    if(evt.request.url.indexOf('firestore.googleapis.com') === -1) {
         evt.respondWith(
             caches.match(evt.request).then(cacheRes => {
                 return cacheRes || fetch(evt.request).then(fetchRes => {
