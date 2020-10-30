@@ -172,7 +172,10 @@ function updateUsersCollectionEmail(original_email, new_email, payload) {
 }
 
 function updateProfilePicDirectoryPath(original_email, new_email) {
-    let listRef = storageRef.child(encodeURI(`users/${original_email}/profile-picture`));
+    let img_str = `users/${original_email}/profile-picture`
+    let listRef = storageRef.child(encodeURI(img_str));
+    firebase.storage().ref(img_str).updateMetatdata({ 'cacheControl': 'private, max-age=15552000' }).subscribe(e=>{ });
+    // let listRef = storageRef.child(encodeURI(img_str));
     console.log("Trying to get a file from " + original_email);
     listRef.listAll().then(function(res) {
         let profilePic = res.items[0];

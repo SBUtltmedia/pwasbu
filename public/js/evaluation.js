@@ -136,7 +136,7 @@ function updateEval(camperID, _callback = () => { }) {
 }
 
 function eval(id, evalMode = "add") {
-    if(evalMode == "get") {
+    if(evalMode == "get" || evalMode == "admin") {
         // console.log("OLD currEval: " + JSON.stringify(currEval));
         currEval.reset();
         // console.log("NEW currEval: " + JSON.stringify(currEval));
@@ -162,13 +162,13 @@ function actEvalInit() {
                 listElements = {};
                 res.forEach(doc => {
                     // if(doc.data()['date'].split("-")[0] == currEval.selectedYear) {
-                    if(doc.data()['year'] == currEval.selectedYear && doc.data()['instructor'] == currEval.instrID) {
+                    if(doc.data()['year'] == currEval.selectedYear && (currEval.evalMode == "admin" || doc.data()['instructor'] == currEval.instrID)) {
                         try {
                             let listElement = document.createElement("li");
                             let editButton = document.createElement("button");
                             editButton.classList.add("btn", "bdrlessBtn", "act-btns");
                             editButton.onclick = (evt) => {
-                                currEval.evalMode = "get";
+                                currEval.evalMode = currEval.evalMode == "admin" ? "admin" : "get";
                                 editEval("" + doc.data()['activityName'], "" + doc.id, doc.data());
                                 $("#backToActivities").removeClass("hiddenElement");
                             }
@@ -191,7 +191,7 @@ function actEvalInit() {
                     let editButton = document.createElement("button");
                     editButton.classList.add("btn", "bdrlessBtn", "act-btns");
                     editButton.onclick = (evt) => {
-                        currEval.evalMode = "add";
+                        currEval.evalMode = currEval.evalMode == "admin" ? "admin" : "add";
                         loadNewEval(activities[name]);
                         $("#backToActivities").removeClass("hiddenElement");
                     }
@@ -219,7 +219,7 @@ function loadNewEval(docID = currEval.actID, _callback = () => { }) {
     }
 
     currEval.actID = docID;
-    if (currEval.evalMode == "add") {
+    if (currEval.evalMode == "add" || currEval.evalMode == "admin") {
         document.getElementById("activities").style = "display: none;";
     }
     document.getElementById("submitEval").style = "display: block;";
@@ -230,7 +230,7 @@ function loadNewEval(docID = currEval.actID, _callback = () => { }) {
         $("#evaluation").append(`<div class="sec-tit">Daily Check List</div>
                                 <ul id="checklist">
                                     <li class="centeredRow">
-                                        <button class="add-day-btn" onclick="addDay('${docID}')">
+                                        <button class="add-day-btn disable-for-admin" onclick="addDay('${docID}')" disabled="${currEval.evalMode == 'admin'}">
                                             Add Day
                                         </button>
                                     </li>
@@ -262,7 +262,7 @@ function loadNewEval(docID = currEval.actID, _callback = () => { }) {
                                     <tr>
                                         <td><span>Score:</span></td>
                                         <td class="skll-score padded-td">
-                                            <select class="form-control padded-input" id="skill-${skillCount}-${subSkillCount}-select">
+                                            <select class="form-control padded-input disable-for-admin" id="skill-${skillCount}-${subSkillCount}-select" disabled="${currEval.evalMode == 'admin'}">
                                             <option value="NA">Not Applicable</option>
                                             <option value="PA">Partial Assistance</option>
                                             <option value="TA">Total Assist</option>
@@ -273,7 +273,7 @@ function loadNewEval(docID = currEval.actID, _callback = () => { }) {
                                     </tr>
                                     <tr>
                                         <td class="skll-comm padded-td">
-                                            <textarea class="form-control padded-input" id="skill-${skillCount}-${subSkillCount}-comment" rows="3" placeholder="Comments"></textarea>
+                                            <textarea class="form-control padded-input disable-for-admin" id="skill-${skillCount}-${subSkillCount}-comment" rows="3" placeholder="Comments" disabled="${currEval.evalMode == 'admin'}"></textarea>
                                         </td>
                                     </tr>
                                 </table>
@@ -304,14 +304,14 @@ function addDay(docID, _callback = (dates, day) => {}, dates = [], day = 0) {
                 `<li class="checklist-item" id="checklist-item-${day}">
                     <ul>
                         <button class="btn bdrlessBtn evaluation-but day-btn" onclick="toggleHide('checklist-day-${day}');">
-                            <input id="day-${day}-date" type="date"></input>
+                            <input id="day-${day}-date" type="date" class="disable-for-admin" disabled="${currEval.evalMode == 'admin'}"></input>
                         </button>
                     </ul>
                     <ul>
                         <table id="checklist-day-${day}" class="hiddenElement sk-box">
                             <tr class="chcklst-sec bordered-row">
                                 <td>
-                                    <button class="remove-btn" onclick="removeDay(${day})">Delete Day</button>
+                                    <button class="remove-btn disable-for-admin" onclick="removeDay(${day})" disabled="${currEval.evalMode == 'admin'}">Delete Day</button>
                                 </td>
                             </tr>
                         </table>
@@ -337,7 +337,7 @@ function addDay(docID, _callback = (dates, day) => {}, dates = [], day = 0) {
                             <table id="${'checklist' + itemID + '-' + day}" class="sk-box trials-row">
                                 <tr id="${item['name'].split(" ").join("") + "-" + day}" class="subskill">
                                     <td>
-                                        <button class="add-trial-btn" onclick="addTrial('${day}', '${itemID}', '${item['name']}', '${item['type']}')">
+                                        <button class="add-trial-btn disable-for-admin" onclick="addTrial('${day}', '${itemID}', '${item['name']}', '${item['type']}')" disabled="${currEval.evalMode == 'admin'}">
                                             Add Trial
                                         </button>
                                     </td>
@@ -368,15 +368,15 @@ function addTrial(day, itemID, itemName, units, _callback = (day, itemID, items,
     $(`#${'checklist' + itemID + '-' + day}`).append(
         `<tr id="${'checklist' + itemID + '-' + day + '-' + trial}" class="chcklst-sec ${'checklist' + itemID + '-' + day}-trial">
             <td class="chcklst-tit padded-td"><span>Trial #${trial}: </span></td>
-            <td class="chcklst-inpt padded-td"><input type="number" min="0" id="${'checklist' + itemID + '-' + day + '-' + trial}-input" class="padded-input trial-input-${itemID}-${day}"></td>
+            <td class="chcklst-inpt padded-td"><input type="number" min="0" id="${'checklist' + itemID + '-' + day + '-' + trial}-input" class="padded-input trial-input-${itemID}-${day} disable-for-admin" disabled="${currEval.evalMode == 'admin'}"></td>
             <td class="chcklst-inpt padded-td"><span>${units}</span></td>
             <td class="chcklst-inpt padded-td">
-                <button class="remove-btn" onclick="removeTrial('${itemID}', '${day}', '${trial}');">X</button>
+                <button class="remove-btn disable-for-admin" onclick="removeTrial('${itemID}', '${day}', '${trial}');" disabled="${currEval.evalMode == 'admin'}">X</button>
             </td>
         </tr>
         <tr id="${itemName.split(" ").join("") + "-" + day}" class="subskill">
             <td>
-                <button class="add-trial-btn" onclick="addTrial('${day}', '${itemID}', '${itemName}', '${units}');">
+                <button class="add-trial-btn disable-for-admin" onclick="addTrial('${day}', '${itemID}', '${itemName}', '${units}');" disabled="${currEval.evalMode == 'admin'}">
                     Add Trial
                 </button>
             </td>

@@ -18,12 +18,12 @@
         <div id='evaluation'>
             <!-- This is the evaluation form that will be populated with drop downs -->
         </div>
-        <button class="evaluation-but btn btn-danger bck-hme" onclick='submitEval()' style="display: none;"
-            id="submitEval">Submit
+        <button class="evaluation-but btn btn-danger bck-hme disable-for-admin" onclick='submitEval()' style="display: none;"
+            id="submitEval" disabled="currEval.evalMode == 'admin'">Submit
             Changes</button>
         <button class="evaluation-but btn btn-danger bck-hme" onclick='router.loadRoute("home")'>Back to Home</button>
         <button id="backToActivities" class="evaluation-but btn btn-danger bck-hme hiddenElement"
-            onclick='eval(currEval.camperID, "get"); $("#backToActivities").addClass("hiddenElement");'>Back to
+            onclick='eval(currEval.camperID, currEval.evalMode == "admin" ? "admin" : "get"); $("#backToActivities").addClass("hiddenElement");'>Back to
             Activities</button>
     </div>
 </template>

@@ -184,39 +184,58 @@ function saveCurrentUserData() {
         });
 }
 
-var onlineStatus = 'Online';
 function updateOnlineStatus() {
     console.log("updateOnlineStatus called.");
     onlineStatus = 'Online';
+
     if (!navigator.onLine) {
         onlineStatus = 'Not Online';
     }
+
     $('.offline-ready').html(onlineStatus);
+
     if (onlineStatus == 'Online') {
         $('.offline-ready').addClass("online");
         $('.offline-ready').removeClass("offline");
-    }
-    else {
+    } else {
         $('.offline-ready').addClass("offline");
         $('.offline-ready').removeClass("online");
-
     }
 }
-$(() => updateOnlineStatus());
 
+$(() => {
+    updateOnlineStatus();
+});
 
-navigator.connection.onchange = e => { updateOnlineStatus() };
+$(() => {
+    // Enable Service Worker
+    navigator.serviceWorker.getRegistrations().then(registrations => {
+        console.log(registrations, registrations.length);
 
-// Enable Service Worker
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker
-        .register('sw.js')
-        .then((reg) => {
-            var newWorker = reg.installing;
-            console.log('Service Worker Registered', reg)
-        })
-        .catch((err) => console.log('Service Worker not registered', err));
-}
+        if (!registrations.length) {
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker
+                    .register('sw.js')
+                    .then((reg) => {
+                        var newWorker = reg.installing;
+                        console.log('Service Worker Registered', reg)
+                    })
+                    .catch((err) => console.log('Service Worker not registered', err));
+            }
+        }
+    });
+});
+
+// // Enable Service Worker
+// if ('serviceWorker' in navigator) {
+//     navigator.serviceWorker
+//         .register('sw.js')
+//         .then((reg) => {
+//             var newWorker = reg.installing;
+//             console.log('Service Worker Registered', reg)
+//         })
+//         .catch((err) => console.log('Service Worker not registered', err));
+// }
 
 // Code to handle install prompt on desktop
 
@@ -229,24 +248,27 @@ window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     // Stash the event so it can be triggered later.
     deferredPrompt = e;
-    // Update UI to notify the user they can add to home screen
-    addBtn.style.display = 'block';
 
-    addBtn.addEventListener('click', (e) => {
-        // hide our user interface that shows our A2HS button
-        addBtn.style.display = 'none';
-        // Show the prompt
-        deferredPrompt.prompt();
-        // Wait for the user to respond to the prompt
-        deferredPrompt.userChoice.then((choiceResult) => {
-            if (choiceResult.outcome === 'accepted') {
-                console.log('User accepted the A2HS prompt');
-            } else {
-                console.log('User dismissed the A2HS prompt');
-            }
-            deferredPrompt = null;
+    if(addBtn) {
+        // Update UI to notify the user they can add to home screen
+        addBtn.style.display = 'block';
+
+        addBtn.addEventListener('click', (e) => {
+            // hide our user interface that shows our A2HS button
+            addBtn.style.display = 'none';
+            // Show the prompt
+            deferredPrompt.prompt();
+            // Wait for the user to respond to the prompt
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    console.log('User accepted the A2HS prompt');
+                } else {
+                    console.log('User dismissed the A2HS prompt');
+                }
+                deferredPrompt = null;
+            });
         });
-    });
+    }
 });
 /*
  * Firestore User Queries
@@ -399,6 +421,7 @@ function signIn(email, password) {
                 .then(() => {
                     console.log("Attempting to load menu");
                     getUserData(firebase.auth().currentUser.email);
+                    location.reload();
                 })
                 .catch(function (error) {
                     $(".btn").show();
