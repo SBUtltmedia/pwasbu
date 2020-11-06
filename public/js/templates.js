@@ -150,6 +150,8 @@ function home_template() {
             $("#yearPickerContainer").hide();
         });
     }
+
+    updateOnlineStatus();
 }
 
 function login_template() {
@@ -179,6 +181,8 @@ function login_template() {
     $(".btn").click(function () {
         $(".input").val("");
     });
+
+    updateOnlineStatus();
 }
 
 function missinginfo_template() {
