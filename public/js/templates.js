@@ -86,6 +86,8 @@ function evaluation_template() {
     // } else {
         actEvalInit();
     // }
+
+    updateOnlineStatus();
 }
 
 function forgotpassword_template() {

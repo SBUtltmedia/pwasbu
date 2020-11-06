@@ -41,7 +41,8 @@ const assets = [
     '/templates/Login.html',
     '/templates/MissingInfo.html',
     '/templates/Navbar.html',
-    '/templates/UserDetails.html'
+    '/templates/UserDetails.html',
+    'img/infobutton.png'
 ];
 
 // Limit Dynamic Cache Size
