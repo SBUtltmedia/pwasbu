@@ -192,14 +192,45 @@ function updateOnlineStatus() {
         onlineStatus = 'Not Online';
     }
 
-    $('.offline-ready').html(onlineStatus);
+    let tooltiptext = "";
+    let displayEvaluationWarning = false;
+    if(window.location.hash) {
+        urlSegments = window.location.hash.split("#");
+        console.log(urlSegments);
+        if (urlSegments.length < 1 || urlSegments[1] == "" || urlSegments[1] == "login") {
+            tooltiptext = "Important: when device is offline you are unable to login or reset password";
+        } else if(urlSegments[1] == "evaluation") {
+            displayEvaluationWarning = true;
+            tooltiptext = "When offline your changes should still be saved";
+        } else {
+            tooltiptext = "When offline your changes should still be saved";
+        }
+    } else {
+        tooltiptext = "Important: when device is offline you are unable to login or reset password";
+    }
+
+    $('.offline-ready').html(
+        `<span>${onlineStatus}</span>
+        <span class="tooltip">
+            <img class="infobutton" src="img/infobutton.png" alt="i">
+            <span class="tooltiptext">${tooltiptext}</span>
+        </span>`
+    );
 
     if (onlineStatus == 'Online') {
         $('.offline-ready').addClass("online");
         $('.offline-ready').removeClass("offline");
+        $('.offline-save-warning').addClass("hiddenElement");
     } else {
         $('.offline-ready').addClass("offline");
         $('.offline-ready').removeClass("online");
+        if (displayEvaluationWarning) {
+            $('.offline-ready').append(
+                `<div class="offline-save-warning">
+                    Warning: Your assesments won't be visible to the administrator until you return online
+                </div>`
+            );
+        }
     }
 }
 

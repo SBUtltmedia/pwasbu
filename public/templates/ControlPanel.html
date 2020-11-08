@@ -13,21 +13,23 @@
             <button class="tablinks" onclick="openSection(event, 'activities-control')"
                 id="defaultOpen">Activities</button>
             <button class="tablinks" onclick="openSection(event, 'campers-control')">Athletes</button>
-            <button class="tablinks" onclick="openSection(event, 'groups-control')">Coach Groups</button>
+            <button class="tablinks" onclick="openSection(event, 'groups-control')">Coaches</button>
             <button class="tablinks" onclick="openSection(event, 'users-control')">Users</button>
         </div>
 
         <div id="activities-control" class="tabcontent adminheader">
             <!-- <button class="btn ctr-add" type="button" onclick="addActivity()"> -->
-            <button class="btn ctr-add" type="button" onclick="document.getElementById('addActivityModal').style.display = 'block';">
-                    Add an Activity
+            <button class="btn ctr-add" type="button"
+                onclick="document.getElementById('addActivityModal').style.display = 'block';">
+                Add an Activity
             </button>
 
             <!-- The Add Acitvity Modal -->
             <div id="addActivityModal" class="modal adminConsoleModal">
                 <!-- Modal content -->
                 <div class="modal-content activityModal">
-                    <span class="close" onclick="if(confirm('Are you sure you want to leave the Add Activity Modal? The new activity that you are currently working on will not be saved.'))
+                    <span class="close"
+                        onclick="if(confirm('Are you sure you want to leave the Add Activity Modal? The new activity that you are currently working on will not be saved.'))
                         { document.getElementById('addActivityModal').style.display = 'none'; initActModal(true);}">&times;</span>
                     <br>
                     <div class="cp-subTitle">New Activity</div> <br />
@@ -60,7 +62,7 @@
                             </tr>
                         </thead>
                     </table>
-                    <br/><br/>
+                    <br /><br />
                     <button class="btn" id="add-activity" onclick="addActivityFromModal()">Add Activity</button>
                 </div>
             </div>
@@ -69,7 +71,8 @@
             <div id="editActivityModal" class="modal adminConsoleModal">
                 <!-- Modal content -->
                 <div class="modal-content activityModal">
-                    <span class="close" onclick="if(confirm('Are you sure you want to leave the Edit Activity Modal? The edits to the activity that you are currently working on will not be saved.'))
+                    <span class="close"
+                        onclick="if(confirm('Are you sure you want to leave the Edit Activity Modal? The edits to the activity that you are currently working on will not be saved.'))
                         { document.getElementById('editActivityModal').style.display = 'none'; initActModal(false);}">&times;</span>
                     <br>
                     <div class="cp-subTitle">Edit Activity</div> <br />
@@ -102,8 +105,9 @@
                             </tr>
                         </thead>
                     </table>
-                    <br/><br/>
-                    <button class="btn" id="update-activity" onclick="updateActivityFromModal()">Submit Activity Changes</button>
+                    <br /><br />
+                    <button class="btn" id="update-activity" onclick="updateActivityFromModal()">Submit Activity
+                        Changes</button>
                 </div>
             </div>
 
@@ -230,29 +234,31 @@
 
         <div id="users-control" class="tabcontent adminheader">
             <!-- Trigger/Open The Modal -->
-            <button class="btn" onclick="document.getElementById('addUserModal').style.display = 'block';">Add User</button>
+            <button class="btn" onclick="document.getElementById('addUserModal').style.display = 'block';">Add
+                User</button>
             <div class="cp-subTitle">All Users</div>
 
             <!-- Modal for Add User -->
             <div id="addUserModal" class="modal adminConsoleModal">
                 <!-- Modal content -->
                 <div class="modal-content">
-                    <span class="close" onclick="document.getElementById('addUserModal').style.display = 'none';">&times;</span>
+                    <span class="close"
+                        onclick="document.getElementById('addUserModal').style.display = 'none';">&times;</span>
                     <h2>Add a New User</h2>
                     <br>
-                    <img id="modal-user-profile-pic" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left modal-user-profile-pic" width="100" height="100">
+                    <img id="modal-user-profile-pic" src="../img/user/default/user-480.png"
+                        class="img-thumbnail rounded float-left modal-user-profile-pic" width="100" height="100">
                     <br>
                     <label for="modal-user-pic" class="text-like-button">Select File</label>
                     <br>
-                    <input type="file" id="modal-user-pic" class="user-modal-input hiddenElement" accept="image/*" capture="camera"/>
+                    <input type="file" id="modal-user-pic" class="user-modal-input hiddenElement" accept="image/*"
+                        capture="camera" />
                     <br>
                     <label for="modal-user-first"><b>First Name:</b></label>
-                    <input type="text" placeholder="First Name" id="modal-user-first" class="user-modal-input"
-                        required>
+                    <input type="text" placeholder="First Name" id="modal-user-first" class="user-modal-input" required>
                     <br>
                     <label for="modal-user-last"><b>Last Name:</b></label>
-                    <input type="text" placeholder="Last Name" id="modal-user-last" class="user-modal-input"
-                        required>
+                    <input type="text" placeholder="Last Name" id="modal-user-last" class="user-modal-input" required>
                     <br>
                     <label for="modal-user-gender"><b>Gender:</b></label>
                     <select class="form-control" id="modal-user-gender" class="user-modal-input">
@@ -286,23 +292,24 @@
             <div id="editUserModal" class="modal adminConsoleModal">
                 <!-- Modal content -->
                 <div class="modal-content">
-                    <span class="close" onclick="document.getElementById('editUserModal').style.display = 'none';">&times;</span>
+                    <span class="close"
+                        onclick="document.getElementById('editUserModal').style.display = 'none';">&times;</span>
                     <h2>User Info</h2>
                     <span id="edit-user-uid" class="edit-modal-input" style="display: 'none'"></span>
                     <br>
-                    <img id="edit-user-profile-pic" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left modal-user-profile-pic" width="100" height="100">
+                    <img id="edit-user-profile-pic" src="../img/user/default/user-480.png"
+                        class="img-thumbnail rounded float-left modal-user-profile-pic" width="100" height="100">
                     <br>
                     <label for="edit-user-pic" class="text-like-button">Select File</label>
                     <br>
-                    <input type="file" id="edit-user-pic" class="user-modal-input hiddenElement" accept="image/*" capture="camera"/>
+                    <input type="file" id="edit-user-pic" class="user-modal-input hiddenElement" accept="image/*"
+                        capture="camera" />
                     <br>
                     <label for="edit-user-first"><b>First Name:</b></label>
-                    <input type="text" placeholder="First Name" id="edit-user-first" class="user-modal-input"
-                        required>
+                    <input type="text" placeholder="First Name" id="edit-user-first" class="user-modal-input" required>
                     <br>
                     <label for="edit-user-last"><b>Last Name:</b></label>
-                    <input type="text" placeholder="Last Name" id="edit-user-last" class="user-modal-input"
-                        required>
+                    <input type="text" placeholder="Last Name" id="edit-user-last" class="user-modal-input" required>
                     <br>
                     <label for="edit-user-gender"><b>Gender:</b></label>
                     <select class="form-control" id="edit-user-gender" class="user-modal-input">
@@ -324,7 +331,10 @@
                         placeholder="Email" disabled>
                     <br />
                     <div id='edit-user-error' class='addTopPad'></div>
-                    <button id="edit-user-save" class="add-athlete-btn" onclick="editModalUser()">SUBMIT CHANGES</button>
+                    <button class="add-athlete-btn">Reset User's Password</button>
+                    <br />
+                    <button id="edit-user-save" class="add-athlete-btn" onclick="editModalUser()">SUBMIT
+                        CHANGES</button>
                 </div>
             </div>
 

@@ -2,6 +2,8 @@ function accountsettings_template() {
     $("#loader").hide();
     initAccountSettings();
     initNavBar();
+
+    updateOnlineStatus();
 }
 
 function controlpanel_template() {
@@ -40,6 +42,8 @@ function controlpanel_template() {
     });
 
     document.getElementById("defaultOpen").click();
+
+    updateOnlineStatus();
 }
 
 function editprofile_template() {
@@ -58,6 +62,8 @@ function editprofile_template() {
         readURL(this, "profile-pic");
     });
     initNavBar();
+
+    updateOnlineStatus();
 }
 
 function evaluation_template() {
@@ -86,11 +92,15 @@ function evaluation_template() {
     // } else {
         actEvalInit();
     // }
+
+    updateOnlineStatus();
 }
 
 function forgotpassword_template() {
     $(".loader").hide();
     $("#forgot-error").hide();
+
+    updateOnlineStatus();
 }
 
 function home_template() {
@@ -148,6 +158,8 @@ function home_template() {
             $("#yearPickerContainer").hide();
         });
     }
+
+    updateOnlineStatus();
 }
 
 function login_template() {
@@ -177,11 +189,15 @@ function login_template() {
     $(".btn").click(function () {
         $(".input").val("");
     });
+
+    updateOnlineStatus();
 }
 
 function missinginfo_template() {
     $(".loader").hide();
     $("#forgot-error").hide();
+
+    updateOnlineStatus();
 }
 
 function navbar_template() {
@@ -189,7 +205,7 @@ function navbar_template() {
 }
 
 function userdetails_template() {
-
+    updateOnlineStatus();
 }
 
 // Navbar Function

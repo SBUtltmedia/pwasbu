@@ -211,22 +211,24 @@ button.hiddenElement {
 
 .tooltip .tooltiptext {
   visibility: hidden;
-  width: max-content;
+  width: 220px;
   background-color: #555;
   color: #fff;
   text-align: center;
   border-radius: 6px;
-  padding: 5px 5px;
+  padding: 5px 10px;
   position: absolute;
   z-index: 1;
-  bottom: 125%;
+  /* bottom: 0; -190px is the right height for phone and ipad login screens; -75px works for desktop */
   left: 50%;
+  margin-top: 30px; /*add a margin top instead of marking the bottom to keep consistency*/
   margin-left: -60px;
   opacity: 0;
   transition: opacity 0.3s;
 }
 
-.tooltip .tooltiptext::after {
+/* This stuff below was making it look like the info button text was in a lil text bubble - actually I'm not sure completely*/
+/* .tooltip .tooltiptext::after {
   content: "";
   position: absolute;
   top: 100%;
@@ -235,7 +237,7 @@ button.hiddenElement {
   border-width: 5px;
   border-style: solid;
   border-color: #555 transparent transparent transparent;
-}
+} */
 
 .tooltip:hover .tooltiptext {
   visibility: visible;
