@@ -225,7 +225,11 @@ function updateOnlineStatus() {
         $('.offline-ready').addClass("offline");
         $('.offline-ready').removeClass("online");
         if (displayEvaluationWarning) {
-            $('.offline-save-warning').removeClass("hiddenElement");
+            $('.offline-ready').append(
+                `<div class="offline-save-warning">
+                    Warning: Your assesments won't be visible to the administrator until you return online
+                </div>`
+            );
         }
     }
 }
