@@ -912,6 +912,15 @@ function initUsersTable() {
                         insertedRow.insertCell().innerHTML = doc.data()['priv'];
                         // insertedRow.insertCell().innerHTML = select.outerHTML;
                         insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn' onclick='loadEditUserButton("${doc.id}", "${doc.data()['email']}", "${doc.data()['gender']}", "${doc.data()['priv']}")'>Edit</button>`;
+                        insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn'
+                            onclick='firebase.auth().sendPasswordResetEmail("${doc.data()['email']}")
+                                .then(() => {
+                                    alert("Sent Password Reset Email to " + "${doc.data()['email']}");
+                                }).catch((err) => {
+                                    console.log("Could not send Password Reset Email to " + "${doc.data()['email']}" + ": " + err);
+                                    alert("Could not send Password Reset Email to " + "${doc.data()['email']}");
+                                });'
+                            >CHANGE PASSWORD</button>`;
 
                         //Loading images
                         try {
@@ -945,6 +954,10 @@ function initUsersTable() {
                     },
                     {
                         "title": "Role"
+                    },
+                    {
+                        "title": "",
+                        "searchable": false
                     },
                     {
                         "title": "",
