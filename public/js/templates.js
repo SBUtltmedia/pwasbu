@@ -87,11 +87,8 @@ function evaluation_template() {
             else console.log("Camper with ID " + camperID + " does not exist")
         })
         .catch((err) => { console.log("Could not get camper with id " + currEval.camperID + ": " + err) });
-    // if(currEval.evalMode == "admin") {
-    //     adminActEvalInit();
-    // } else {
-        actEvalInit();
-    // }
+
+    actEvalInit();
 
     updateOnlineStatus();
 }
