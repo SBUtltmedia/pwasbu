@@ -230,7 +230,7 @@ function loadNewEval(docID = currEval.actID, _callback = () => { }) {
         $("#evaluation").append(`<div class="sec-tit">Daily Check List</div>
                                 <ul id="checklist">
                                     <li class="centeredRow">
-                                        <button class="add-day-btn disable-for-admin" onclick="addDay('${docID}')" disabled="${currEval.evalMode == 'admin'}">
+                                        <button class="add-day-btn disable-for-admin" onclick="addDay('${docID}')">
                                             Add Day
                                         </button>
                                     </li>
@@ -262,7 +262,7 @@ function loadNewEval(docID = currEval.actID, _callback = () => { }) {
                                     <tr>
                                         <td><span>Score:</span></td>
                                         <td class="skll-score padded-td">
-                                            <select class="form-control padded-input disable-for-admin" id="skill-${skillCount}-${subSkillCount}-select" disabled="${currEval.evalMode == 'admin'}">
+                                            <select class="form-control padded-input disable-for-admin" id="skill-${skillCount}-${subSkillCount}-select">
                                             <option value="NA">Not Applicable</option>
                                             <option value="PA">Partial Assistance</option>
                                             <option value="TA">Total Assist</option>
@@ -273,7 +273,7 @@ function loadNewEval(docID = currEval.actID, _callback = () => { }) {
                                     </tr>
                                     <tr>
                                         <td class="skll-comm padded-td">
-                                            <textarea class="form-control padded-input disable-for-admin" id="skill-${skillCount}-${subSkillCount}-comment" rows="3" placeholder="Comments" disabled="${currEval.evalMode == 'admin'}"></textarea>
+                                            <textarea class="form-control padded-input disable-for-admin" id="skill-${skillCount}-${subSkillCount}-comment" rows="3" placeholder="Comments"></textarea>
                                         </td>
                                     </tr>
                                 </table>
@@ -286,6 +286,12 @@ function loadNewEval(docID = currEval.actID, _callback = () => { }) {
         } catch (err) {
             console.log("Skills does not exist in this activity: ", err);
         }
+
+        let checkForDisable = document.getElementsByClassName('disable-for-admin');
+        for (let elem of checkForDisable) {
+            elem.disabled = (currEval.evalMode === "admin");
+        }
+
         _callback();
     });
 }
@@ -304,14 +310,14 @@ function addDay(docID, _callback = (dates, day) => {}, dates = [], day = 0) {
                 `<li class="checklist-item" id="checklist-item-${day}">
                     <ul>
                         <button class="btn bdrlessBtn evaluation-but day-btn" onclick="toggleHide('checklist-day-${day}');">
-                            <input id="day-${day}-date" type="date" class="disable-for-admin" disabled="${currEval.evalMode == 'admin'}"></input>
+                            <input id="day-${day}-date" type="date" class="disable-for-admin"></input>
                         </button>
                     </ul>
                     <ul>
                         <table id="checklist-day-${day}" class="hiddenElement sk-box">
                             <tr class="chcklst-sec bordered-row">
                                 <td>
-                                    <button class="remove-btn disable-for-admin" onclick="removeDay(${day})" disabled="${currEval.evalMode == 'admin'}">Delete Day</button>
+                                    <button class="remove-btn disable-for-admin" onclick="removeDay(${day})">Delete Day</button>
                                 </td>
                             </tr>
                         </table>
@@ -337,7 +343,7 @@ function addDay(docID, _callback = (dates, day) => {}, dates = [], day = 0) {
                             <table id="${'checklist' + itemID + '-' + day}" class="sk-box trials-row">
                                 <tr id="${item['name'].split(" ").join("") + "-" + day}" class="subskill">
                                     <td>
-                                        <button class="add-trial-btn disable-for-admin" onclick="addTrial('${day}', '${itemID}', '${item['name']}', '${item['type']}')" disabled="${currEval.evalMode == 'admin'}">
+                                        <button class="add-trial-btn disable-for-admin" onclick="addTrial('${day}', '${itemID}', '${item['name']}', '${item['type']}')">
                                             Add Trial
                                         </button>
                                     </td>
@@ -349,6 +355,11 @@ function addDay(docID, _callback = (dates, day) => {}, dates = [], day = 0) {
             });
         } catch (err) {
             console.log("Checklist doesn't exist in this activity: ", err);
+        }
+
+        let checkForDisable = document.getElementsByClassName('disable-for-admin');
+        for (let elem of checkForDisable) {
+            elem.disabled = (currEval.evalMode === "admin");
         }
     });
 }
@@ -368,15 +379,15 @@ function addTrial(day, itemID, itemName, units, _callback = (day, itemID, items,
     $(`#${'checklist' + itemID + '-' + day}`).append(
         `<tr id="${'checklist' + itemID + '-' + day + '-' + trial}" class="chcklst-sec ${'checklist' + itemID + '-' + day}-trial">
             <td class="chcklst-tit padded-td"><span>Trial #${trial}: </span></td>
-            <td class="chcklst-inpt padded-td"><input type="number" min="0" id="${'checklist' + itemID + '-' + day + '-' + trial}-input" class="padded-input trial-input-${itemID}-${day} disable-for-admin" disabled="${currEval.evalMode == 'admin'}"></td>
+            <td class="chcklst-inpt padded-td"><input type="number" min="0" id="${'checklist' + itemID + '-' + day + '-' + trial}-input" class="padded-input trial-input-${itemID}-${day} disable-for-admin"></td>
             <td class="chcklst-inpt padded-td"><span>${units}</span></td>
             <td class="chcklst-inpt padded-td">
-                <button class="remove-btn disable-for-admin" onclick="removeTrial('${itemID}', '${day}', '${trial}');" disabled="${currEval.evalMode == 'admin'}">X</button>
+                <button class="remove-btn disable-for-admin" onclick="removeTrial('${itemID}', '${day}', '${trial}');">X</button>
             </td>
         </tr>
         <tr id="${itemName.split(" ").join("") + "-" + day}" class="subskill">
             <td>
-                <button class="add-trial-btn disable-for-admin" onclick="addTrial('${day}', '${itemID}', '${itemName}', '${units}');" disabled="${currEval.evalMode == 'admin'}">
+                <button class="add-trial-btn disable-for-admin" onclick="addTrial('${day}', '${itemID}', '${itemName}', '${units}');">
                     Add Trial
                 </button>
             </td>
@@ -384,6 +395,11 @@ function addTrial(day, itemID, itemName, units, _callback = (day, itemID, items,
     ).ready(() => {
         _callback(day, itemID, items, trialNum);
     });
+
+    let checkForDisable = document.getElementsByClassName('disable-for-admin');
+    for (let elem of checkForDisable) {
+        elem.disabled = (currEval.evalMode === "admin");
+    }
 }
 
 function removeTrial(itemID, day, trial) {
