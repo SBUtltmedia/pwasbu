@@ -55,6 +55,12 @@ li{
     margin-bottom: 10px;
 }
 
+.red-btn{
+    background-color: red !important;
+    position: sticky;
+    bottom: 5%;
+}
+
 #activities, #evaluations{
     display: table; 
     text-align: center;

@@ -189,17 +189,17 @@ function updateOnlineStatus() {
     onlineStatus = 'Online';
 
     if (!navigator.onLine) {
-        onlineStatus = 'Not Online';
+        onlineStatus = ' Offline';
     }
 
     let tooltiptext = "";
     let displayEvaluationWarning = false;
-    if(window.location.hash) {
+    if (window.location.hash) {
         urlSegments = window.location.hash.split("#");
         console.log(urlSegments);
         if (urlSegments.length < 1 || urlSegments[1] == "" || urlSegments[1] == "login") {
             tooltiptext = "Important: when device is offline you are unable to login or reset password";
-        } else if(urlSegments[1] == "evaluation") {
+        } else if (urlSegments[1] == "evaluation") {
             displayEvaluationWarning = true;
             tooltiptext = "When offline your changes should still be saved";
         } else {
@@ -280,7 +280,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
     // Stash the event so it can be triggered later.
     deferredPrompt = e;
 
-    if(addBtn) {
+    if (addBtn) {
         // Update UI to notify the user they can add to home screen
         addBtn.style.display = 'block';
 

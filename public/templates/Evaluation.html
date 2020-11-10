@@ -2,11 +2,11 @@
     <div>
         <!-- <div style="font-size: 2rem;">Assessments</div> -->
         <div id="athlete-header-name"></div>
-        <div id="quest">WHICH ACTIVITY?
-            <div class="tooltip">
+        <div id="quest">SELECT AN ACTIVITY?
+            <!-- <div class="tooltip">
                 <img class="infobutton" src="img/infobutton.png" alt="infobutton">
                 <span class="tooltiptext">Select an Activity</span>
-            </div>
+            </div> -->
         </div>
 
         <table id="activities" style="display: none;"></table>
@@ -18,12 +18,13 @@
         <div id='evaluation'>
             <!-- This is the evaluation form that will be populated with drop downs -->
         </div>
-        <button class="evaluation-but btn btn-danger bck-hme disable-for-admin" onclick='submitEval()' style="display: none;"
-            id="submitEval" disabled="currEval.evalMode == 'admin'">Submit
+        <button class="evaluation-but btn btn-danger bck-hme red-btn disable-for-admin" onclick='submitEval()'
+            style="display: none;" id="submitEval" disabled="currEval.evalMode == 'admin'">Submit
             Changes</button>
         <button class="evaluation-but btn btn-danger bck-hme" onclick='router.loadRoute("home")'>Back to Home</button>
         <button id="backToActivities" class="evaluation-but btn btn-danger bck-hme hiddenElement"
-            onclick='eval(currEval.camperID, currEval.evalMode == "admin" ? "admin" : "get"); $("#backToActivities").addClass("hiddenElement");'>Back to
+            onclick='eval(currEval.camperID, currEval.evalMode == "admin" ? "admin" : "get"); $("#backToActivities").addClass("hiddenElement");'>Back
+            to
             Activities</button>
     </div>
 </template>
