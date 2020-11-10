@@ -912,15 +912,6 @@ function initUsersTable() {
                         insertedRow.insertCell().innerHTML = doc.data()['priv'];
                         // insertedRow.insertCell().innerHTML = select.outerHTML;
                         insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn' onclick='loadEditUserButton("${doc.id}", "${doc.data()['email']}", "${doc.data()['gender']}", "${doc.data()['priv']}")'>Edit</button>`;
-                        insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn'
-                            onclick='firebase.auth().sendPasswordResetEmail("${doc.data()['email']}")
-                                .then(() => {
-                                    alert("Sent Password Reset Email to " + "${doc.data()['email']}");
-                                }).catch((err) => {
-                                    console.log("Could not send Password Reset Email to " + "${doc.data()['email']}" + ": " + err);
-                                    alert("Could not send Password Reset Email to " + "${doc.data()['email']}");
-                                });'
-                            >CHANGE PASSWORD</button>`;
 
                         //Loading images
                         try {
@@ -954,10 +945,6 @@ function initUsersTable() {
                     },
                     {
                         "title": "Role"
-                    },
-                    {
-                        "title": "",
-                        "searchable": false
                     },
                     {
                         "title": "",
@@ -1010,6 +997,17 @@ function loadEditUserButton(docId, email, gender, priv) {
     document.getElementById("edit-user-gender").value = gender;
     document.getElementById("edit-user-priv").value = priv;
     document.getElementById("edit-user-email").value = email;
+    document.getElementById("edit-user-reset-password").onclick = (evt) => {
+        if (confirm('Are you sure you want to send a password reset email to ' + email + "?")) {
+            firebase.auth().sendPasswordResetEmail(email)
+                .then(() => {
+                    alert("Successfully sent Password Reset Email to " + email);
+                }).catch((err) => {
+                    console.log("Could not send Password Reset Email to " + email + ": " + err);
+                    alert("Could not send Password Reset Email to " + email);
+                });
+        }
+    };
 }
 
 function newAccountPasswordReset(firstName, email) {

@@ -20,7 +20,17 @@ function controlpanel_template() {
 
     // When the user clicks anywhere outside of the modal, close it
     window.onclick = function (event) {
-        if (event.target.classList.contains("adminConsoleModal")) {
+        if (event.target.id === "addActivityModal") {
+            if(confirm('Are you sure you want to leave the Add Activity Modal? The new activity that you are currently working on will not be saved.')) {
+                document.getElementById('addActivityModal').style.display = 'none';
+                initActModal(true);
+            }
+        } else if (event.target.classList.contains("adminConsoleModal")) {
+            if(confirm('Are you sure you want to leave the Edit Activity Modal? The edits to the activity that you are currently working on will not be saved.')) {
+                document.getElementById('editActivityModal').style.display = 'none';
+                initActModal(false);
+            }
+        } else if (event.target.classList.contains("adminConsoleModal")) {
             event.target.style.display = "none";
         }
     }
