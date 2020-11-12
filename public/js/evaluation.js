@@ -571,6 +571,34 @@ function submitEval(evalID = "DEFAULT") {
     });
 }
 
+function adjustAutosaveIndicator(status="autosave-successful", message="Autosaved Successfully") {
+    elem = document.getElementById("autosave-indicator");
+
+    elem.innerHTML = message;
+    elem.className = "autosave";
+    elem.classList.add(status);
+
+    if (Number(elem.style.opacity) <= 0) {
+        elem.style.opacity = 1;
+    }
+
+    let indicatorTimeoutId;
+    if(indicatorTimeoutId) clearTimeout(indicatorTimeoutId);
+    indicatorTimeoutId = setTimeout(() => {
+        let opacityIntervalId;
+        if(opacityIntervalId) clearTimeout(opacityIntervalId);
+        opacityIntervalId = setInterval(() => {
+            let opacity = Number(elem.style.opacity);
+            if(opacity > 0) {
+                opacity = opacity - 0.1;
+                elem.style.opacity = opacity;
+            } else {
+                clearInterval(opacityIntervalId);
+            }
+        }, 50);
+    }, 3000);
+}
+
 function autoSave(evalID = "DEFAULT") {
     console.log("autoSave Called");
     let evalDoc = {};
@@ -630,29 +658,24 @@ function autoSave(evalID = "DEFAULT") {
             // console.log("CHECKPOINT 3: if evaluation mode is add or not");
             if (currEval.evalMode == "add") {
                 // console.log("EVAL SUBMIT ATTEMPT 1");
-                fs.collection("Evaluations").add(evalDoc).then(() => {
-                    console.log("Evaluation updated successfully via autosave!");
-                    document.getElementById("autosave-unsuccessful").classList.add("hiddenElement");
-                    // document.getElementById("autosave-successful").classList.remove("hiddenElement");
-                    // $("#autosave-unsuccessful").fadeOut();
-                    $("#autosave-successful").fadeIn();
-                    let indicatorTimeoutId;
-                    if(indicatorTimeoutId) clearTimeout(indicatorTimeoutId);
-                    indicatorTimeoutId = setTimeout(() => {
-                        $("#autosave-successful").fadeOut();
-                    }, 3000);
-                    // router.loadRoute("home");
+                fs.collection("Evaluations").add(evalDoc).then((docRef) => {
+                    if(onlineStatus = 'Online') {
+                        console.log("Evaluation updated successfully via autosave!");
+                        
+                        // The assessment now exists in Firestore database so need to update currEval
+                        currEval.evalMode = "get";
+                        currEval.evalID = docRef.id;
+                        currEval.evalDoc = evalDoc;
+
+                        adjustAutosaveIndicator("autosave-successful", "Autosaved Successfully");
+                    } else { 
+                        console.log("Evaluation saved locally. Changes will be updated once internet connection resumes via autosave.");
+                        adjustAutosaveIndicator("autosave-offline", "Assessment saved locally. Changes will be updated once internet connection resumes.");
+                    }
                 }).catch((e) => {
                     console.log("Could not autosave eval: " + e);
-                    document.getElementById("autosave-successful").classList.add("hiddenElement");
-                    // document.getElementById("autosave-unsuccessful").classList.remove("hiddenElement");
-                    // $("#autosave-successful").fadeOut();
-                    $("#autosave-unsuccessful").fadeIn();
-                    let indicatorTimeoutId;
-                    if(indicatorTimeoutId) clearTimeout(indicatorTimeoutId);
-                    indicatorTimeoutId = setTimeout(() => {
-                        $("#autosave-unsuccessful").fadeOut();
-                    }, 3000);
+
+                    adjustAutosaveIndicator("autosave-unsuccessful", "Failed to autosave");
                 }); //catch add() error;
             } else {
                 // console.log("CHECKPOINT A");
@@ -660,55 +683,24 @@ function autoSave(evalID = "DEFAULT") {
                     // console.log("EVAL SUBMIT ATTEMPT 2");
                     if(onlineStatus = 'Online') { 
                         console.log("Evaluation updated successfully via autoSave!");
-                        document.getElementById("autosave-unsuccessful").classList.add("hiddenElement");
-                        // document.getElementById("autosave-successful").classList.remove("hiddenElement");
-                        // $("#autosave-unsuccessful").fadeOut();
-                        $("#autosave-successful").fadeIn();
-                        let indicatorTimeoutId;
-                        if(indicatorTimeoutId) clearTimeout(indicatorTimeoutId);
-                        indicatorTimeoutId = setTimeout(() => {
-                            $("#autosave-successful").fadeOut();
-                        }, 3000);
+
+                        adjustAutosaveIndicator("autosave-successful", "Autosaved Successfully");
                     } else { 
-                        console.log("Evaluation saved locally. Changes will be updated once internet connection resumes via autosave."); 
+                        console.log("Evaluation saved locally. Changes will be updated once internet connection resumes via autosave.");
+                        adjustAutosaveIndicator("autosave-offline", "Assessment saved locally. Changes will be updated once internet connection resumes.");
                     }
                     // router.loadRoute("home");
                 }).catch((e) => {
                     console.log("Could not autosave eval: " + e);
-                    document.getElementById("autosave-successful").classList.add("hiddenElement");
-                    // document.getElementById("autosave-unsuccessful").classList.remove("hiddenElement");
-                    // $("#autosave-successful").fadeOut();
-                    $("#autosave-unsuccessful").fadeIn();
-                    let indicatorTimeoutId;
-                    if(indicatorTimeoutId) clearTimeout(indicatorTimeoutId);
-                    indicatorTimeoutId = setTimeout(() => {
-                        $("#autosave-unsuccessful").fadeOut();
-                    }, 3000);
+
+                    adjustAutosaveIndicator("autosave-unsuccessful", "Failed to autosave");
                 }); //catch set() error
             }
-            // console.log("CHECKPOINT B");
-            // console.log("System is " + onlineStatus);
-            // ////////
-            // if(onlineStatus = 'Online') { 
-            //     alert("Evaluation updated successfully!"); 
-            // }
-            // else { 
-            //     alert("Evaluation saved locally. Changes will be updated once internet connection resumes."); 
-            // }
-            // router.loadRoute("home");
-            //////////
         } catch (err) {
             // console.log("CHECKPOINT C");
             console.log("Could not autosave eval: " + err);
-            document.getElementById("autosave-successful").classList.add("hiddenElement");
-            // document.getElementById("autosave-unsuccessful").classList.remove("hiddenElement");
-            // $("#autosave-successful").fadeOut();
-            $("#autosave-unsuccessful").fadeIn();
-            let indicatorTimeoutId;
-            if(indicatorTimeoutId) clearTimeout(indicatorTimeoutId);
-            indicatorTimeoutId = setTimeout(() => {
-                $("#autosave-unsuccessful").fadeOut();
-            }, 3000);
+
+            adjustAutosaveIndicator("autosave-unsuccessful", "Failed to autosave: " + err);
         }
     });
 }

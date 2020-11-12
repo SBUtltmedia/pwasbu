@@ -251,26 +251,28 @@ button.hiddenElement {
   opacity: 1;
 }
 
-#autosave-successful {
+.autosave {
     position: -webkit-sticky;
     position: sticky;
-    top: 5%;
-    margin-top: 2%;
-    float: left;
-    width: fit-content;
-    height: fit-content;
+    top: 0%;
+    width: 100%;
+    text-align: center;
+    border-top: 1px black solid;
+    color: white;
+    opacity: 0;
+}
+
+.autosave-successful {
     background-color: green;
     color: white;
 }
 
-#autosave-unsuccessful {
-    position: -webkit-sticky;
-    position: sticky;
-    top: 5%;
-    margin-top: 2%;
-    float: left;
-    width: fit-content;
-    height: fit-content;
+.autosave-unsuccessful {
     background-color: red;
     color: white;
+}
+
+.autosave-offline {
+    background-color: darkgoldenrod;
+    color: black;
 }
