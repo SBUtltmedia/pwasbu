@@ -227,7 +227,7 @@ function updateOnlineStatus() {
         if (displayEvaluationWarning) {
             $('.offline-ready').append(
                 `<div class="offline-save-warning">
-                    Warning: Your assessments won't be visible to the administrator until you return online
+                    Warning: Your assesments won't be visible to the administrator until you return online
                 </div>`
             );
         }

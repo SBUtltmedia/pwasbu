@@ -203,3 +203,74 @@ td.padded-td {
 button.hiddenElement {
     display: none;
 }
+
+/* info buttons */
+.infobutton{
+    width:25px;
+    height:25px;
+}
+.tooltip {
+  position: relative;
+  display: inline-block;
+  /* background-color: white; */
+  font-style: italic;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 220px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 10px;
+  position: absolute;
+  z-index: 1;
+  /* bottom: 0; -190px is the right height for phone and ipad login screens; -75px works for desktop */
+  left: 50%;
+  margin-top: 30px; /*add a margin top instead of marking the bottom to keep consistency*/
+  margin-left: -60px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+/* This stuff below was making it look like the info button text was in a lil text bubble - actually I'm not sure completely*/
+/* .tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+} */
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+#autosave-successful {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 5%;
+    margin-top: 2%;
+    float: left;
+    width: fit-content;
+    height: fit-content;
+    background-color: green;
+    color: white;
+}
+
+#autosave-unsuccessful {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 5%;
+    margin-top: 2%;
+    float: left;
+    width: fit-content;
+    height: fit-content;
+    background-color: red;
+    color: white;
+}
