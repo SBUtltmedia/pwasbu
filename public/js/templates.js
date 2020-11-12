@@ -100,6 +100,8 @@ function evaluation_template() {
 
     actEvalInit();
 
+    document.getElementById("submitEval").disabled= currEval.evalMode === "admin";
+
     updateOnlineStatus();
 }
 

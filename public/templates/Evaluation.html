@@ -1,6 +1,9 @@
 <template>
     <div>
         <!-- <div style="font-size: 2rem;">Assessments</div> -->
+        <div id="autosave-successful" class="hiddenElement">Autosaved Successfully</div>
+        <div id="autosave-unsuccessful" class="hiddenElement">Unable to Autosave</div>
+        
         <div id="athlete-header-name"></div>
         <div id="quest">SELECT AN ACTIVITY?
             <!-- <div class="tooltip">
@@ -19,7 +22,7 @@
             <!-- This is the evaluation form that will be populated with drop downs -->
         </div>
         <button class="evaluation-but btn btn-danger bck-hme red-btn disable-for-admin" onclick='submitEval()'
-            style="display: none;" id="submitEval" disabled="currEval.evalMode == 'admin'">Submit
+            style="display: none;" id="submitEval">Submit
             Changes</button>
         <button class="evaluation-but btn btn-danger bck-hme" onclick='router.loadRoute("home")'>Back to Home</button>
         <button id="backToActivities" class="evaluation-but btn btn-danger bck-hme hiddenElement"
