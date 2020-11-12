@@ -57,6 +57,7 @@ li{
 
 .red-btn{
     background-color: red !important;
+    position: -webkit-sticky;
     position: sticky;
     bottom: 5%;
 }
