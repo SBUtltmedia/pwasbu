@@ -263,13 +263,15 @@ button.hiddenElement {
 }
 
 .autosave-successful {
-    background-color: green;
+    background-color: gray;
     color: white;
+    border: none;
 }
 
 .autosave-unsuccessful {
     background-color: red;
     color: white;
+    border: none;
 }
 
 .autosave-offline {
