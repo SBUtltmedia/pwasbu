@@ -24,6 +24,11 @@
                 Add an Activity
             </button>
 
+            <button class="btn ctr-add" type="button"
+                onclick="document.getElementById('editSkillDropdownInfoTextModal').style.display = 'block';">
+                Edit Skill Dropdown Info Text
+            </button>
+
             <!-- The Add Acitvity Modal -->
             <div id="addActivityModal" class="modal adminConsoleModal">
                 <!-- Modal content -->
@@ -64,6 +69,22 @@
                     </table>
                     <br /><br />
                     <button class="btn" id="add-activity" onclick="addActivityFromModal()">Add Activity</button>
+                </div>
+            </div>
+
+            <!-- The Add Acitvity Modal -->
+            <div id="editSkillDropdownInfoTextModal" class="modal adminConsoleModal">
+                <!-- Modal content -->
+                <div class="modal-content activityModal">
+                    <span class="close"
+                        onclick="if(confirm('Are you sure you want to leave the Edit Skill Dropdown Info Text Modal? Any changes that you have made will not be saved.'))
+                        { document.getElementById('editSkillDropdownInfoTextModal').style.display = 'none'; initEditSkillDropdownInfoTextModal();}">&times;</span>
+                    <br>
+                    <div class="cp-subTitle">Skill Dropdown Info Text</div> <br />
+                    <br>
+                    <textarea id="edit-info-text-input"></textarea>
+                    <br><br>
+                    <button class="btn" id="edit-info-text" onclick="editInfoText()">Submit Changes</button>
                 </div>
             </div>
 

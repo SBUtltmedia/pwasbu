@@ -170,6 +170,42 @@ function populateAct(data) {
     return finishedArray;
 }
 
+function initEditSkillDropdownInfoTextModal() {
+    fs.collection("InfoTexts").where("location", "==", "skillDropdownInfoText").get().then( (res) => {
+        res.docs[0].ref.get().then(doc => {
+            text = doc.data()["text"];
+            document.getElementById("edit-info-text-input").value = text;
+        }).catch( (err) => {
+            alert("Could not get the info text for the Skill Dropdown");
+        });
+    }).catch( (err) => {
+        alert("Could not get the info text for the Skill Dropdown");
+    });
+}
+
+function editInfoText() {
+    fs.collection("InfoTexts").where("location", "==", "skillDropdownInfoText").get().then( (res) => {
+        res.docs[0].ref.get().then(doc => {
+            fs.collection("InfoTexts").doc(doc.id).update(
+                {
+                    location: "skillDropdownInfoText",
+                    text: document.getElementById("edit-info-text-input").value
+                }
+            ).then( () => {
+                alert("Successfully updated the info text for the Skill Dropdown!");
+                document.getElementById('editSkillDropdownInfoTextModal').style.display = 'none';
+                initEditSkillDropdownInfoTextModal();
+            }).catch( (err) => {
+                alert("Could not updated the info text for the Skill Dropdown");
+            });
+        }).catch( (err) => {
+            alert("Could not updated the info text for the Skill Dropdown");
+        });
+    }).catch( (err) => {
+        alert("Could not updated the info text for the Skill Dropdown");
+    });
+}
+
 /***
  * Populate the activities tables
  */

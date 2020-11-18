@@ -76,21 +76,27 @@
     margin: 5px;
 }
 
+#offline-warnings {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0%;
+}
+
 .offline-save-warning {
     padding: 15px;
     background-color: #f44336;
     color: white;
     font-size:1.5rem;
-  }
+}
 
-  .logoff-warning{
+.logoff-warning {
     padding: 15px;
     background-color: #f44336;
     color: white;
     font-size:1.5rem; 
-  }
+}
 
-  .closebtn {
+.closebtn {
     margin-left: 15px;
     color: white;
     font-weight: bold;
@@ -99,8 +105,8 @@
     line-height: 20px;
     cursor: pointer;
     transition: 0.3s;
-  }
-  
-  .closebtn:hover {
+}
+
+.closebtn:hover {
     color: black;
-  }
+}

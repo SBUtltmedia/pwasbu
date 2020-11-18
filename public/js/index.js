@@ -185,7 +185,7 @@ function saveCurrentUserData() {
 }
 
 function updateOnlineStatus() {
-    console.log("updateOnlineStatus called.");
+    // console.log("updateOnlineStatus called.");
     onlineStatus = 'Online';
 
     if (!navigator.onLine) {
@@ -196,7 +196,7 @@ function updateOnlineStatus() {
     let displayEvaluationWarning = false;
     if (window.location.hash) {
         urlSegments = window.location.hash.split("#");
-        console.log(urlSegments);
+        // console.log(urlSegments);
         if (urlSegments.length < 1 || urlSegments[1] == "" || urlSegments[1] == "login") {
             tooltiptext = "Important: when device is offline you are unable to login or reset password";
         } else if (urlSegments[1] == "evaluation") {
@@ -209,7 +209,7 @@ function updateOnlineStatus() {
         tooltiptext = "Important: when device is offline you are unable to login or reset password";
     }
 
-    $('.offline-ready').html(
+    $('#offline-message').html(
         `<span>${onlineStatus}</span>
         <span class="tooltip">
             <img class="infobutton" src="img/infobutton.png" alt="i">
@@ -220,16 +220,29 @@ function updateOnlineStatus() {
     if (onlineStatus == 'Online') {
         $('.offline-ready').addClass("online");
         $('.offline-ready').removeClass("offline");
-        $('.offline-save-warning').addClass("hiddenElement");
+        $('#offline-warnings').addClass("hiddenElement");
     } else {
         $('.offline-ready').addClass("offline");
         $('.offline-ready').removeClass("online");
+        $('#offline-warnings').removeClass("hiddenElement");
+    
         if (displayEvaluationWarning) {
-            $('.offline-ready').append(
-                `<div class="offline-save-warning">
+            $('#offline-warnings').html(
+                `<div class="logoff-warning">
+                    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                    Warning: Do NOT log out when offline. Changes made while offline will not be saved if you log out.
+                </div>
+                <div class="offline-save-warning">
+                    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
                     Warning: Your assessments won't be visible to the administrator until you return online
                 </div>`
             );
+        } else {
+            $('#offline-warnings').html(
+                `<div class="logoff-warning">
+                    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                    Warning: Do NOT log out when offline. Changes made while offline will not be saved if you log out.
+                </div>`);
         }
     }
 }

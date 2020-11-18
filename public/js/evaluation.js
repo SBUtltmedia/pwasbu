@@ -28,6 +28,19 @@ class Evaluation {
 
 const currEval = new Evaluation(); //Current Evaluation Object
 
+function getAge(dateString) {
+    var today = new Date();
+    var birthDate = new Date(dateString);
+    var age = today.getFullYear() - birthDate.getFullYear();
+    var m = today.getMonth() - birthDate.getMonth();
+
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+
+    return age;
+}
+
 function initCampersEvalTable() {
     let user = firebase.auth().currentUser;
     let email = user.email;
@@ -50,7 +63,7 @@ function initCampersEvalTable() {
                                 res.forEach(doc => {
                                     let row = {
                                         name: doc.data()['firstName'] + " " + doc.data()['lastName'],
-                                        age: parseInt(((new Date()) - (new Date(doc.data()["birthdate"]))) / (1000 * 60 * 60 * 24 * 365)) || 0,
+                                        age: getAge(doc.data()["birthdate"]) || 0,
                                         gender: doc.data()["gender"],
                                         pronouns: doc.data()["pronoun"],
                                         // team: "Purple Team", // This field needs to be added to the database
@@ -269,6 +282,11 @@ function loadNewEval(docID = currEval.actID, _callback = () => { }) {
                                             <option value="I">Independent</option>
                                             <option value="V.Cue">Visual Cue</option>
                                             </select>
+                                        </td>
+                                        <td>
+                                            <button class="modal-info-pic" onclick="document.getElementById('skillDropdownInfo').style.display = 'block'">
+                                                <img class="modal-info-pic" src="img/infobutton.png">
+                                            </button>
                                         </td>
                                     </tr>
                                     <tr>
@@ -542,7 +560,7 @@ function submitEval(evalID = "DEFAULT") {
             if (currEval.evalMode == "add") {
                 console.log("EVAL SUBMIT ATTEMPT 1");
                 fs.collection("Evaluations").add(evalDoc).then(() => {
-                    alert("Evaluation updated successfully!");
+                    alert("Assessment updated successfully!");
                     // router.loadRoute("home");
                 }).catch((e) => {
                     console.log("Could not successfully update this assessment: " + e);
@@ -553,10 +571,10 @@ function submitEval(evalID = "DEFAULT") {
                 fs.collection("Evaluations").doc(currEval.evalID).set(evalDoc).then(() => {
                     console.log("EVAL SUBMIT ATTEMPT 2");
                     if(onlineStatus = 'Online') { 
-                        alert("Evaluation updated successfully!"); 
+                        alert("Assessment updated successfully!"); 
                     }
                     else { 
-                        alert("Evaluation saved locally. Changes will be updated once internet connection resumes."); 
+                        alert("Assessment saved locally. Changes will be updated once internet connection resumes."); 
                     }
                     // router.loadRoute("home");
                 }).catch((e) => {

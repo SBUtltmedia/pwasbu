@@ -57,9 +57,6 @@ li{
 
 .red-btn{
     background-color: red !important;
-    position: -webkit-sticky;
-    position: sticky;
-    bottom: 5%;
 }
 
 #activities, #evaluations{
@@ -277,4 +274,17 @@ button.hiddenElement {
 .autosave-offline {
     background-color: darkgoldenrod;
     color: black;
+}
+
+.modal-info-pic {
+    width: 25px;
+    border: none;
+    background-color: transparent;
+}
+
+.modal-info-pic:hover,
+.modal-info-pic:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
 }
