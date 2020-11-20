@@ -12,6 +12,7 @@ function controlpanel_template() {
     initActivitiesTable();
     initActModal(false);
     initActModal(true);
+    initEditSkillDropdownInfoTextModal();
     initNavBar();
     initCampersTable();
     initGroupsTable();
@@ -25,10 +26,15 @@ function controlpanel_template() {
                 document.getElementById('addActivityModal').style.display = 'none';
                 initActModal(true);
             }
-        } else if (event.target.classList.contains("adminConsoleModal")) {
+        } else if (event.target.id === "editActivityModal") {
             if(confirm('Are you sure you want to leave the Edit Activity Modal? The edits to the activity that you are currently working on will not be saved.')) {
                 document.getElementById('editActivityModal').style.display = 'none';
                 initActModal(false);
+            }
+        } else if (event.target.id === "editSkillDropdownInfoTextModal") {
+            if(confirm('Are you sure you want to leave the Edit Skill Dropdown Info Text Modal? Any changes that you have made will not be saved.')) {
+                document.getElementById('editSkillDropdownInfoTextModal').style.display = 'none';
+                initEditSkillDropdownInfoTextModal();
             }
         } else if (event.target.classList.contains("adminConsoleModal")) {
             event.target.style.display = "none";
@@ -99,6 +105,25 @@ function evaluation_template() {
         .catch((err) => { console.log("Could not get camper with id " + currEval.camperID + ": " + err) });
 
     actEvalInit();
+
+    document.getElementById("submitEval").disabled= currEval.evalMode === "admin";
+
+    window.onclick = function (event) {
+        if (event.target == document.getElementById("skillDropdownInfo")) {
+            document.getElementById("skillDropdownInfo").style.display = "none";
+        }
+    }
+
+    fs.collection("InfoTexts").where("location", "==", "skillDropdownInfoText").get().then( (res) => {
+        res.docs[0].ref.get().then(doc => {
+            text = doc.data()["text"];
+            document.getElementById("skillDropdownInfoText").innerHTML = text;
+        }).catch( (err) => {
+            document.getElementById("skillDropdownInfoText").innerHTML = "Could not get the info text for the Skill Dropdown";
+        });
+    }).catch( (err) => {
+        document.getElementById("skillDropdownInfoText").innerHTML = "Could not get the info text for the Skill Dropdown";
+    });
 
     updateOnlineStatus();
 }

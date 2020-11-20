@@ -1,17 +1,12 @@
 <template>
     <div>
-        <!-- Adding the infobutton messages here for now  -->
-        <!-- <div>
-            <div class="tooltip">
-                <img class="infobutton" src="img/infobutton.png" alt="infobutton">
-                <span class="tooltiptext"> When offline your changes should still be saved</span>
-            </div>
-        </div> -->
-
         <div class="menu">
             <h2 id="menu-user"></h2>
+
             <div id="camp-quote">"Believe you can achieve."</div>
-            <p id="yearPickerContainer">Year: <select id="yearPicker" onchange="initCampersEvalTable()"></select></p>
+            <p id="yearPickerContainer">Year: <select id="yearPicker" onchange="initCampersEvalTable()"></select>
+            </p>
+
             <h4 class="ath-hd">ATHLETE'S INFORMATION:</h4>
             <table id="campers" class="table table-bordered"></table>
         </div>

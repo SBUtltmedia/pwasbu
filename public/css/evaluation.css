@@ -55,6 +55,10 @@ li{
     margin-bottom: 10px;
 }
 
+.red-btn{
+    background-color: red !important;
+}
+
 #activities, #evaluations{
     display: table; 
     text-align: center;
@@ -242,4 +246,45 @@ button.hiddenElement {
 .tooltip:hover .tooltiptext {
   visibility: visible;
   opacity: 1;
+}
+
+.autosave {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0%;
+    width: 100%;
+    text-align: center;
+    border-top: 1px black solid;
+    color: white;
+    opacity: 0;
+}
+
+.autosave-successful {
+    background-color: gray;
+    color: white;
+    border: none;
+}
+
+.autosave-unsuccessful {
+    background-color: red;
+    color: white;
+    border: none;
+}
+
+.autosave-offline {
+    background-color: darkgoldenrod;
+    color: black;
+}
+
+.modal-info-pic {
+    width: 25px;
+    border: none;
+    background-color: transparent;
+}
+
+.modal-info-pic:hover,
+.modal-info-pic:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
 }

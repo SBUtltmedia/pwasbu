@@ -28,6 +28,19 @@ class Evaluation {
 
 const currEval = new Evaluation(); //Current Evaluation Object
 
+function getAge(dateString) {
+    var today = new Date();
+    var birthDate = new Date(dateString);
+    var age = today.getFullYear() - birthDate.getFullYear();
+    var m = today.getMonth() - birthDate.getMonth();
+
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+
+    return age;
+}
+
 function initCampersEvalTable() {
     let user = firebase.auth().currentUser;
     let email = user.email;
@@ -50,7 +63,7 @@ function initCampersEvalTable() {
                                 res.forEach(doc => {
                                     let row = {
                                         name: doc.data()['firstName'] + " " + doc.data()['lastName'],
-                                        age: parseInt(((new Date()) - (new Date(doc.data()["birthdate"]))) / (1000 * 60 * 60 * 24 * 365)) || 0,
+                                        age: getAge(doc.data()["birthdate"]) || 0,
                                         gender: doc.data()["gender"],
                                         pronouns: doc.data()["pronoun"],
                                         // team: "Purple Team", // This field needs to be added to the database
@@ -270,6 +283,11 @@ function loadNewEval(docID = currEval.actID, _callback = () => { }) {
                                             <option value="V.Cue">Visual Cue</option>
                                             </select>
                                         </td>
+                                        <td>
+                                            <button class="modal-info-pic" onclick="document.getElementById('skillDropdownInfo').style.display = 'block'">
+                                                <img class="modal-info-pic" src="img/infobutton.png">
+                                            </button>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td class="skll-comm padded-td">
@@ -287,9 +305,31 @@ function loadNewEval(docID = currEval.actID, _callback = () => { }) {
             console.log("Skills does not exist in this activity: ", err);
         }
 
+        
         let checkForDisable = document.getElementsByClassName('disable-for-admin');
-        for (let elem of checkForDisable) {
-            elem.disabled = (currEval.evalMode === "admin");
+        if(currEval.evalMode === "admin") {
+            for (let elem of checkForDisable) {
+                elem.disabled = true;
+            }
+        } else {
+            let timeoutId;
+            for (let elem of checkForDisable) {
+                elem.addEventListener("click", () => {
+                    console.log("Got to onclick of " + elem + "\nwith timeoutId: " + timeoutId);
+                    if(timeoutId) clearTimeout(timeoutId);
+                    timeoutId = setTimeout(() => {
+                        autoSave();
+                    }, 1000);
+                });
+
+                elem.addEventListener("keydown", () => {
+                    console.log("Got to onkeydown of " + elem + "\nwith timeoutId: " + timeoutId);
+                    if(timeoutId) clearTimeout(timeoutId);
+                    timeoutId = setTimeout(() => {
+                        autoSave();
+                    }, 1000);
+                });
+            }
         }
 
         _callback();
@@ -310,7 +350,7 @@ function addDay(docID, _callback = (dates, day) => {}, dates = [], day = 0) {
                 `<li class="checklist-item" id="checklist-item-${day}">
                     <ul>
                         <button class="btn bdrlessBtn evaluation-but day-btn" onclick="toggleHide('checklist-day-${day}');">
-                            <input id="day-${day}-date" type="date" class="disable-for-admin"></input>
+                            <input id="day-${day}-date" type="date" class="disable-for-admin" value="${(new Date()).toISOString().split('T')[0]}"></input>
                         </button>
                     </ul>
                     <ul>
@@ -358,8 +398,29 @@ function addDay(docID, _callback = (dates, day) => {}, dates = [], day = 0) {
         }
 
         let checkForDisable = document.getElementsByClassName('disable-for-admin');
-        for (let elem of checkForDisable) {
-            elem.disabled = (currEval.evalMode === "admin");
+        if(currEval.evalMode === "admin") {
+            for (let elem of checkForDisable) {
+                elem.disabled = true;
+            }
+        } else {
+            let timeoutId;
+            for (let elem of checkForDisable) {
+                elem.addEventListener("click", () => {
+                    console.log("Got to onclick of " + elem + "\nwith timeoutId: " + timeoutId);
+                    if(timeoutId) clearTimeout(timeoutId);
+                    timeoutId = setTimeout(() => {
+                        autoSave();
+                    }, 1000);
+                });
+
+                elem.addEventListener("keydown", () => {
+                    console.log("Got to onkeydown of " + elem + "\nwith timeoutId: " + timeoutId);
+                    if(timeoutId) clearTimeout(timeoutId);
+                    timeoutId = setTimeout(() => {
+                        autoSave();
+                    }, 1000);
+                });
+            }
         }
     });
 }
@@ -397,22 +458,45 @@ function addTrial(day, itemID, itemName, units, _callback = (day, itemID, items,
     });
 
     let checkForDisable = document.getElementsByClassName('disable-for-admin');
-    for (let elem of checkForDisable) {
-        elem.disabled = (currEval.evalMode === "admin");
+    if(currEval.evalMode === "admin") {
+        for (let elem of checkForDisable) {
+            elem.disabled = true;
+        }
+    } else {
+        let timeoutId;
+        for (let elem of checkForDisable) {
+            elem.addEventListener("click", () => {
+                console.log("Got to onclick of " + elem + "\nwith timeoutId: " + timeoutId);
+                if(timeoutId) clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => {
+                    autoSave();
+                }, 1000);
+            });
+
+            elem.addEventListener("keydown", () => {
+                console.log("Got to onkeydown of " + elem + "\nwith timeoutId: " + timeoutId);
+                if(timeoutId) clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => {
+                    autoSave();
+                }, 1000);
+            });
+        }
     }
 }
 
 function removeTrial(itemID, day, trial) {
-    document.getElementById('checklist' + itemID + '-' + day + '-' + trial).remove();
-    let trials = document.getElementsByClassName('checklist' + itemID + '-' + day + "-trial");
-    let trialNum = parseInt(trial);
-    for(i = trialNum + 1; i <= trials.length + 1; i++) {
-        document.getElementById('checklist' + itemID + '-' + day + '-' + i)
-            .getElementsByClassName("chcklst-tit")[0].innerHTML = "Trial #" + (i - 1);
-        document.getElementById('checklist' + itemID + '-' + day + '-' + i)
-            .getElementsByClassName("remove-btn")[0].setAttribute("onclick", `removeTrial(${itemID}, ${day}, ${"" + (i - 1)});`);
-        document.getElementById(`${'checklist' + itemID + '-' + day + '-' + i}-input`).id = `${'checklist' + itemID + '-' + day + '-' + (i - 1)}-input`;
-        document.getElementById('checklist' + itemID + '-' + day + '-' + i).id = 'checklist' + itemID + '-' + day + '-' + (i - 1);
+    if(confirm("Are you sure you want to delete this trial? NOTE: this action cannot be reversed.")) {
+        document.getElementById('checklist' + itemID + '-' + day + '-' + trial).remove();
+        let trials = document.getElementsByClassName('checklist' + itemID + '-' + day + "-trial");
+        let trialNum = parseInt(trial);
+        for(i = trialNum + 1; i <= trials.length + 1; i++) {
+            document.getElementById('checklist' + itemID + '-' + day + '-' + i)
+                .getElementsByClassName("chcklst-tit")[0].innerHTML = "Trial #" + (i - 1);
+            document.getElementById('checklist' + itemID + '-' + day + '-' + i)
+                .getElementsByClassName("remove-btn")[0].setAttribute("onclick", `removeTrial(${itemID}, ${day}, ${"" + (i - 1)});`);
+            document.getElementById(`${'checklist' + itemID + '-' + day + '-' + i}-input`).id = `${'checklist' + itemID + '-' + day + '-' + (i - 1)}-input`;
+            document.getElementById('checklist' + itemID + '-' + day + '-' + i).id = 'checklist' + itemID + '-' + day + '-' + (i - 1);
+        }
     }
 }
 
@@ -476,36 +560,165 @@ function submitEval(evalID = "DEFAULT") {
             if (currEval.evalMode == "add") {
                 console.log("EVAL SUBMIT ATTEMPT 1");
                 fs.collection("Evaluations").add(evalDoc).then(() => {
-                    alert("Evaluation updated successfully!");
-                    router.loadRoute("home");
-                }).catch((e) => console.log(e)); //catch add() error;
+                    alert("Assessment updated successfully!");
+                    // router.loadRoute("home");
+                }).catch((e) => {
+                    console.log("Could not successfully update this assessment: " + e);
+                    alert("Could not successfully update this assessment");
+                }); //catch add() error;
             } else {
                 console.log("CHECKPOINT A");
                 fs.collection("Evaluations").doc(currEval.evalID).set(evalDoc).then(() => {
                     console.log("EVAL SUBMIT ATTEMPT 2");
                     if(onlineStatus = 'Online') { 
-                        alert("Evaluation updated successfully!"); 
+                        alert("Assessment updated successfully!"); 
                     }
                     else { 
-                        alert("Evaluation saved locally. Changes will be updated once internet connection resumes."); 
+                        alert("Assessment saved locally. Changes will be updated once internet connection resumes."); 
                     }
-                    router.loadRoute("home");
-                }).catch((e) => console.log(e)); //catch set() error
+                    // router.loadRoute("home");
+                }).catch((e) => {
+                    console.log("Could not successfully update this assessment: " + e);
+                    alert("Could not successfully update this assessment");
+                }); //catch set() error
             }
-            console.log("CHECKPOINT B");
-            console.log("System is " + onlineStatus);
-            ////////
-            if(onlineStatus = 'Online') { 
-                alert("Evaluation updated successfully!"); 
-            }
-            else { 
-                alert("Evaluation saved locally. Changes will be updated once internet connection resumes."); 
-            }
-            router.loadRoute("home");
-            //////////
         } catch (err) {
-            console.log("CHECKPOINT C");
-            alert("Could not successfully update this assessment: " + err);
+            console.log("Could not successfully update this assessment: " + err);
+            alert("Could not successfully update this assessment");
+        }
+    });
+}
+
+function adjustAutosaveIndicator(status="autosave-successful", message="Autosaved Successfully") {
+    elem = document.getElementById("autosave-indicator");
+
+    elem.innerHTML = message;
+    elem.className = "autosave";
+    elem.classList.add(status);
+
+    if (Number(elem.style.opacity) <= 0) {
+        elem.style.opacity = 1;
+    }
+
+    let indicatorTimeoutId;
+    if(indicatorTimeoutId) clearTimeout(indicatorTimeoutId);
+    indicatorTimeoutId = setTimeout(() => {
+        let opacityIntervalId;
+        if(opacityIntervalId) clearTimeout(opacityIntervalId);
+        opacityIntervalId = setInterval(() => {
+            let opacity = Number(elem.style.opacity);
+            if(opacity > 0) {
+                opacity = opacity - 0.1;
+                elem.style.opacity = opacity;
+            } else {
+                clearInterval(opacityIntervalId);
+            }
+        }, 50);
+    }, 3000);
+}
+
+function autoSave(evalID = "DEFAULT") {
+    console.log("autoSave Called");
+    let evalDoc = {};
+    fs.collection("Activities").doc(currEval.actID).get().then(doc => {
+        evalDoc['activityName'] = doc.data()['name'];
+        evalDoc['camper'] = currEval.camperID;
+        evalDoc['dailyCheckList'] = {};
+        evalDoc['skills'] = {};
+        evalDoc['date'] = currEval.date;
+        evalDoc['year'] = currEval.selectedYear;
+        evalDoc['instructor'] = currEval.instrID;
+        try {
+            // console.log("CHECKPOINT 2: try clause to autoSave");
+            let checkLen = doc.data()['checklist'].length;
+            let days = document.getElementsByClassName("checklist-item");
+            for (let checklistItem of days) {
+                let day = checklistItem.id.split("-")[2];
+                let evalDate = document.getElementById(`day-${day}-date`).value;
+                if(evalDate) {
+                    if(evalDate.split("-")[0] == evalDoc['year']) {
+                        if(!(evalDate in evalDoc['dailyCheckList'])) {
+                            evalDoc['dailyCheckList'][evalDate] = {};
+                            let itemID = 1;
+                            while (itemID <= checkLen) {
+                                evalDoc['dailyCheckList'][evalDate][itemID] = [];
+                                let trials = document.getElementsByClassName(`trial-input-${itemID}-${day}`);
+                                for (let trial = 1; trial <= trials.length; trial++) {
+                                    evalDoc['dailyCheckList'][evalDate][itemID].push(document.getElementById(`${'checklist' + itemID + '-' + day + '-' + trial}-input`).value);
+                                }
+                                itemID++;
+                            }
+                        } else {
+                            throw "There are multiple assessments on " + evalDate;
+                        }
+                    } else {
+                        throw evalDate + " is not within the selected year of " + evalDoc['year'];
+                    }
+                } else {
+                    throw "Every assessment must be filled out with a valid date";
+                }
+            }
+            let skillsLen = doc.data()['skills'].length;
+            let skillCount = 1;
+            while (skillCount < skillsLen + 1) {
+                evalDoc['skills']['skill_' + skillCount] = [];
+                let subSkillCount = 1;
+                let subSkillsLen = doc.data()['skills'][skillCount - 1]['subSkills'].length;
+                while (subSkillCount < subSkillsLen + 1) {
+                    evalDoc['skills']['skill_' + skillCount].push({
+                        score: document.getElementById(`skill-${skillCount}-${subSkillCount}-select`).value,
+                        comment: document.getElementById(`skill-${skillCount}-${subSkillCount}-comment`).value
+                    })
+                    subSkillCount++;
+                }
+                skillCount++;
+            }
+            // console.log("CHECKPOINT 3: if evaluation mode is add or not");
+            if (currEval.evalMode == "add") {
+                // console.log("EVAL SUBMIT ATTEMPT 1");
+                fs.collection("Evaluations").add(evalDoc).then((docRef) => {
+                    if(onlineStatus = 'Online') {
+                        console.log("Evaluation updated successfully via autosave!");
+                        
+                        // The assessment now exists in Firestore database so need to update currEval
+                        currEval.evalMode = "get";
+                        currEval.evalID = docRef.id;
+                        currEval.evalDoc = evalDoc;
+
+                        adjustAutosaveIndicator("autosave-successful", "Autosaved Successfully");
+                    } else { 
+                        console.log("Evaluation saved locally. Changes will be updated once internet connection resumes via autosave.");
+                        adjustAutosaveIndicator("autosave-offline", "Assessment saved locally. Changes will be updated once internet connection resumes.");
+                    }
+                }).catch((e) => {
+                    console.log("Could not autosave eval: " + e);
+
+                    adjustAutosaveIndicator("autosave-unsuccessful", "Failed to autosave");
+                }); //catch add() error;
+            } else {
+                // console.log("CHECKPOINT A");
+                fs.collection("Evaluations").doc(currEval.evalID).set(evalDoc).then(() => {
+                    // console.log("EVAL SUBMIT ATTEMPT 2");
+                    if(onlineStatus = 'Online') { 
+                        console.log("Evaluation updated successfully via autoSave!");
+
+                        adjustAutosaveIndicator("autosave-successful", "Autosaved Successfully");
+                    } else { 
+                        console.log("Evaluation saved locally. Changes will be updated once internet connection resumes via autosave.");
+                        adjustAutosaveIndicator("autosave-offline", "Assessment saved locally. Changes will be updated once internet connection resumes.");
+                    }
+                    // router.loadRoute("home");
+                }).catch((e) => {
+                    console.log("Could not autosave eval: " + e);
+
+                    adjustAutosaveIndicator("autosave-unsuccessful", "Failed to autosave");
+                }); //catch set() error
+            }
+        } catch (err) {
+            // console.log("CHECKPOINT C");
+            console.log("Could not autosave eval: " + err);
+
+            adjustAutosaveIndicator("autosave-unsuccessful", "Failed to autosave: " + err);
         }
     });
 }
