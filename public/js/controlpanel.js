@@ -572,6 +572,7 @@ function initCampersTable() {
 
             //made gender, dob, pronouns , 'visible': false so they vamoosed
             $('#campers').DataTable({
+                // destroy: true,
                 columns: [
                     { "title": "Picture", 'searchable': false },
                     { "title": "First Name", 'searchable': false },
@@ -814,6 +815,7 @@ function initGroupsTable() {
                         }
                     });
                     $('#groups').DataTable({
+                        // destroy: true,
                         columns: [
                             { "title": "Coach Name" },
                             {
@@ -963,6 +965,7 @@ function initUsersTable() {
                 }
             });
             $('#users').DataTable({
+                // destroy: true,
                 columns: [
                     {
                         "title": "Picture",
@@ -1033,6 +1036,51 @@ function loadEditUserButton(docId, email, gender, priv) {
     document.getElementById("edit-user-gender").value = gender;
     document.getElementById("edit-user-priv").value = priv;
     document.getElementById("edit-user-email").value = email;
+    document.getElementById("edit-user-delete").onclick = (evt) => {
+        let userData = JSON.parse(localStorage.getItem("userData"));
+        if (userData['priv'] == 'admin') {
+            if (confirm('Are you sure you want to delete the user with email ' + email + "?")) {
+                const deleteUser = firebase.functions().httpsCallable('deleteUser');
+                deleteUser({ email: email }).then( (res) => {
+                    // console.log(res.data);
+                    if (res.data == "SUCCESS") {
+                        fs.collection("users").where("email", "==", email.trim().toLowerCase()).get().then( (querySnapshot) => {
+                            clearProfilePictures(email);
+                            user_id = email;
+                            querySnapshot.forEach(function(doc) {
+                                user_id = doc.data()['id'];
+                                doc.ref.delete();
+                            });
+                            fs.collection("Groups").where("coach", "==", user_id).get().then( (querySnapshot) => {
+                                querySnapshot.forEach(function(doc) {
+                                    doc.ref.delete();
+                                });
+                                fs.collection("Evaluations").where("instructor", "==", user_id).get().then( (querySnapshot) => {
+                                    querySnapshot.forEach(function(doc) {
+                                        doc.ref.delete();
+                                    });
+                                    alert("Successfully deleted user with email " + email);
+                                    updateCamperTable();
+                                    updateGroupsTable();
+                                    updateUsersTable();
+                                    initUserModal();
+                                });
+                            });
+                        }).catch( (err) => {
+                            alert("Successfully deleted user with email " + email);
+                            router.loadRoute('controlpanel');
+                        });
+                    } else {
+                        alert("Could not delete user with email " + email + ". Refresh the page and if the user still exists then try again.");
+                    }
+                }).catch( (err) => {
+                    alert("Could not delete user with email " + email + ". Refresh the page and if the user still exists then try again.");
+                });
+            }
+        } else {
+            alert("Cannot make administrative changes since the user currently logged in does not have administrative status. Please refresh the page and try logging in to an admin account.");
+        }
+    };
     document.getElementById("edit-user-reset-password").onclick = (evt) => {
         if (confirm('Are you sure you want to send a password reset email to ' + email + "?")) {
             firebase.auth().sendPasswordResetEmail(email)
@@ -1049,7 +1097,7 @@ function loadEditUserButton(docId, email, gender, priv) {
 function newAccountPasswordReset(firstName, email) {
     firebase.auth().sendPasswordResetEmail(email).then(function () {
         $("#modal-user").modal("hide");
-        updateUsersTable();
+        // updateUsersTable();
         alert(`${firstName} has been added successfully! Password reset has been sent to the ${email}`);
     }).catch(function (error) {
         var errorMessage = error.message;
@@ -1095,7 +1143,8 @@ function addModalUser() {
                 updateUsersTable();
                 updateGroupsTable();
             }).catch((err) => {
-                alert("Could not add new user to database: " + err);
+                console.log("Could not add new user to database: " + err);
+                alert("Could not add new user to database");
             });
         }).catch(function (error) {
             var errorMessage = error.message;
@@ -1107,7 +1156,6 @@ function addModalUser() {
 }
 
 function editModalUser() {
-    document.getElementById("edit-user-error").style = "display: none";
     let docId = document.getElementById("edit-user-uid").value;
     let file = document.getElementById(`edit-user-pic`).files[0];
     let firstName = document.getElementById("edit-user-first").value;
@@ -1164,6 +1212,8 @@ function initUserModal() {
     document.getElementById("modal-user-save").onclick = addModalUser;
     document.getElementById("edit-user-save").onclick = editModalUser;
     document.getElementById("modal-user-error").style = "display: none";
+    document.getElementById("addUserModal").style.display = "none";
+    document.getElementById("editUserModal").style.display = "none";
 }
 
 //** MISCELLANEOUS Functions */

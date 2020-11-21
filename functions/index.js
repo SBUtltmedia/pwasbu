@@ -1,8 +1,15 @@
 const functions = require('firebase-functions');
+const admin = require('firebase-admin');
 
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-//
-// exports.helloWorld = functions.https.onRequest((request, response) => {
-//  response.send("Hello from Firebase!");
-// });
+admin.initializeApp();
+
+exports.deleteUser = functions.https.onCall( async (data, context) => {
+    let email = data.email;
+    try {
+        userRecord = await admin.auth().getUserByEmail(email);
+        await admin.auth().deleteUser(userRecord.uid);
+        return "SUCCESS";
+    } catch(err) {
+        throw err;
+    }
+});
