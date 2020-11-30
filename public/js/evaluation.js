@@ -216,6 +216,8 @@ function parse_eval(data_object) {
   var comment_col = ["Comment"];
   var score_col = ["Score"];
 
+  var checklist_items = [];
+
   // SKILLS
   // Get Activities
   fs.collection("Activities")
@@ -226,9 +228,13 @@ function parse_eval(data_object) {
         var eval_activity_name = data_object["activityName"]; //name of activity for current eval
         // Get Skills
         if (activity_name == eval_activity_name) {
+          console.log("Activity: " + eval_activity_name);
+          doc.data()["checklist"].forEach((item) => {
+            checklist_items.push(item.name);
+          });
           var skill_count = 0;
           doc.data()["skills"].forEach((skill) => {
-            skill_col.push(skill["skillName"]);
+            skill_col.push(skill["skillName"].toUpperCase());
             // Get Subskills
             skill_count += 1;
             var subskill_count = 0;
@@ -243,6 +249,9 @@ function parse_eval(data_object) {
               subskill_count += 1;
             });
           });
+          // console.log("Skills + SubSkills Column: " + skill_col);
+          // console.log("Comments Column: " + comment_col);
+          // console.log("Scores Column: " + score_col);
         }
       });
 
@@ -253,7 +262,9 @@ function parse_eval(data_object) {
       two_d_array = two_d_array.map(function (c, i) {
         return [c, score_col[i]];
       });
-      console.log(two_d_array);
+
+      console.log("Skill Subpart Export: " + two_d_array);
+
       var csv = [];
       two_d_array.forEach(function (row) {
         csv += row.join(",");
@@ -271,6 +282,7 @@ function parse_eval(data_object) {
       var daily_checklist_main_col = [];
       console.log(data_object["dailyCheckList"]);
       var dates = [];
+
       // Get the Dates
       Object.keys(data_object["dailyCheckList"]).forEach(function (key) {
         dates.push(key);
@@ -281,16 +293,16 @@ function parse_eval(data_object) {
         var check_row = [];
         daily_checklist_main_col.push(date);
         var all_trials = data_object["dailyCheckList"][date];
-        var checklist_activity_count = 1;
+        var checklist_activity_count = 0;
         Object.keys(all_trials).forEach(function (checkListActivity) {
           daily_checklist_main_col.push(
-            "Checklist Activity" + checklist_activity_count
+            checklist_items[checklist_activity_count]
           );
           all_trials_2d.push(all_trials[checkListActivity]);
           checklist_activity_count += 1;
         });
       });
-      console.log(all_trials_2d);
+      // console.log(all_trials_2d);
 
       var two_d_array2 = [];
       var num_cols = all_trials_2d[0].length;
@@ -305,20 +317,33 @@ function parse_eval(data_object) {
           });
         }
       }
-      console.log(two_d_array2);
 
+      console.log(two_d_array2);
       var csv2 = csv;
       two_d_array2.forEach(function (row) {
-        csv2 += row.join(",");
-        csv2 += "\n";
+        if (typeof row != "string") {
+          console.log(typeof row);
+          csv2 += Array.prototype.join.call(row, ",");
+          csv2 += "\n";
+        } else {
+          csv2 += row;
+          csv2 += "\n";
+        }
       });
 
-      // Export to CSV
-      var hiddenElement = document.createElement("a");
-      hiddenElement.href = "data:text/csv;charset=utf-8," + encodeURI(csv2);
-      hiddenElement.target = "_blank";
-      hiddenElement.download = "test.csv";
-      hiddenElement.click();
+      var zip = new JSZip();
+      zip.file("hello.txt", "Hello World\n");
+      zip.generateAsync({ type: "blob" }).then(function (content) {
+        // see FileSaver.js
+        saveAs(content, "example.zip");
+      });
+
+      // // Export to CSV
+      // var hiddenElement = document.createElement("a");
+      // hiddenElement.href = "data:text/csv;charset=utf-8," + encodeURI(csv2);
+      // hiddenElement.target = "_blank";
+      // hiddenElement.download = "" + data_object["activityName"] + ".csv";
+      // hiddenElement.click();
 
       // Get the data
       // var activity_name = data_object["activityName"];
@@ -342,7 +367,6 @@ function parse_all_activity_evals(all_evals) {
     .then((res) => {
       listElements = {};
       res.forEach((doc) => {
-        console.log("hihihi");
         if (
           doc.data()["year"] == currEval.selectedYear &&
           (currEval.evalMode == "admin" ||
@@ -378,7 +402,7 @@ function actEvalInit() {
               res.forEach((doc) => {
                 //
                 console.log("hihihi");
-                parse_eval(doc);
+                parse_eval(doc.data());
                 //
                 // if(doc.data()['date'].split("-")[0] == currEval.selectedYear) {
                 if (
