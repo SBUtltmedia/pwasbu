@@ -2,18 +2,21 @@
     <div>
         <div id="user">Account Settings</div>
         <div class="center-pg">
-            <div class="change-info">To change your password, click the button below and you will receive a password reset email</div>
+            <div class="change-info">To change your password, click the button below and you will receive a password
+                reset email</div>
             <button type="button" class="btn btn-secondary btn-lg btn-space" onclick="changePassword()">Password
                 Change</button>
             <div class="change-info">
-                To change your email, type the new email address in the textbox below, enter your current password to verify
+                To change your email, type the new email address in the textbox below, enter your current password to
+                verify
                 identity, then click <b>Submit Email Change</b></div>
             <div class="ac-set">Email: </div>
             <input type="email" class="input" id="user-email"><br />
             <div class="ac-set">Password (must be entered to change account email address): </div>
             <input type="password" class="input" id="user-password"><br />
             <div id="loader"></div>
-            <button type="button" class="btn btn-secondary btn-lg btn-space" onclick="updateEmail()">Submit Email
+            <button type="button" class="btn btn-secondary btn-lg btn-space red-btn" onclick="updateEmail()">Submit
+                Email
                 Change</button>
             <br>
             <button type="button" class="btn btn-secondary btn-lg btn-space"

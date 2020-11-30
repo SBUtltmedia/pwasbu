@@ -22,9 +22,10 @@ div.editProfile
     margin-top: 30px;
 }
 
-#user-first-name, #user-last-name, #user-gender, #user-email{
+#user-first-name, #user-last-name, #user-gender, #user-email, #user-password{
     font-size: 1.5rem;
     padding: 10px;
+    margin-bottom: 15px;
 }
 
 #profile-pic
