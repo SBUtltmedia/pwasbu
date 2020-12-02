@@ -2,12 +2,20 @@ let clearProfilePictures = (email, callback) => {
     listRef = storageRef.child(`users/${email}/profile-picture/`);    
     listRef.listAll().then(function(res) {
         res.items.forEach(function(itemRef) {
-          itemRef.delete().then(()=>{console.log("deleted " + itemRef);})
-          .catch((err)=>{console.log(err)});})
-          .then(() => {callback();});
+          itemRef.delete().then( () => {
+              console.log("deleted " + itemRef);
+            }).catch( (err) => {
+                console.log(err)
+            });
+        })
+        if (callback) {
+            callback();
+        }
       }).catch(function(error) {
         console.log(error);
-        callback();
+        if (callback) {
+            callback();
+        }
       });
 };
 
