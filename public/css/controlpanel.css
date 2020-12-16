@@ -231,3 +231,12 @@ table.block th {
 .nameis{
     font-size: 2.0rem;
 }
+
+/* Skills dropdown css */
+
+#edit-info-text-input{
+    width: 90%;
+    height: 300px;
+    padding: 20px;
+    margin: 10px;
+}
