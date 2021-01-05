@@ -1,5 +1,5 @@
-const staticCacheName = 'site-static-v7.6';
-const dynamicCacheName = 'site-dynamic-v7.6';
+const staticCacheName = 'site-static-v7.7';
+const dynamicCacheName = 'site-dynamic-v7.7';
 // // TODO: Add firebase js files in assets locally and locally to index.html
 const assets = [
     '/',
