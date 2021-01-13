@@ -51,30 +51,26 @@ function initCampersEvalTable() {
     fs.collection("users").where("email", "==", email).get().then(res => {
         res.docs[0].ref.get().then(doc => {
             fs.collection("Groups").where("coach", "==", doc.data()['id']).get().then(res => {
-                currEval.selectedYear = document.getElementById("yearPicker").value;
-                // console.log("Selected Year: ", currEval.selectedYear);
                 res.docs.forEach(doc => {
-                    if(doc.data()['year'] == currEval.selectedYear) {
-                        doc.data()['campers'].sort().forEach(camper => {
-                            let rowElem = document.createElement("tr");
-                            athletesTable.appendChild(rowElem);
+                    doc.data()['campers'].sort().forEach(camper => {
+                        let rowElem = document.createElement("tr");
+                        athletesTable.appendChild(rowElem);
 
-                            fs.collection('users').where("id", "==", camper).orderBy("firstName", "desc").get().then(res => {
-                                res.forEach(doc => {
-                                    let row = {
-                                        name: doc.data()['firstName'] + " " + doc.data()['lastName'],
-                                        age: getAge(doc.data()["birthdate"]) || 0,
-                                        gender: doc.data()["gender"],
-                                        pronouns: doc.data()["pronoun"],
-                                        // team: "Purple Team", // This field needs to be added to the database
-                                        id: doc.data()["id"],
-                                        email: doc.data()["id"]
-                                    };
-                                    createUserDetailsItem(rowElem, row);
-                                });
+                        fs.collection('users').where("id", "==", camper).orderBy("firstName", "desc").get().then(res => {
+                            res.forEach(doc => {
+                                let row = {
+                                    name: doc.data()['firstName'] + " " + doc.data()['lastName'],
+                                    age: getAge(doc.data()["birthdate"]) || 0,
+                                    gender: doc.data()["gender"],
+                                    pronouns: doc.data()["pronoun"],
+                                    // team: "Purple Team", // This field needs to be added to the database
+                                    id: doc.data()["id"],
+                                    email: doc.data()["id"]
+                                };
+                                createUserDetailsItem(rowElem, row);
                             });
                         });
-                    }
+                    });
                 });
             }).catch(err => { console.log(err); });
         });
