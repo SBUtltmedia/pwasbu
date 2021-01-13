@@ -1,5 +1,5 @@
-const staticCacheName = 'site-static-v7.6';
-const dynamicCacheName = 'site-dynamic-v7.6';
+const staticCacheName = 'site-static-v7.7';
+const dynamicCacheName = 'site-dynamic-v7.7';
 // // TODO: Add firebase js files in assets locally and locally to index.html
 const assets = [
     '/',
@@ -25,7 +25,7 @@ const assets = [
     '/js/bluetooth.js',
     '/js/controlpanel.js',
     '/js/evaluation.js',
-    '/js/navbar.js',   
+    '/js/navbar.js',
     '/js/settings.js',
     '/css/controlpanel.css',
     '/css/evaluation.css',
@@ -49,7 +49,7 @@ const assets = [
 const limitCacheSize = (name, size) => {
     caches.open(name).then(cache => {
         cache.keys().then(keys => {
-            if(keys.length > size){
+            if (keys.length > size) {
                 cache.delete(keys[0]).then(limitCacheSize(name, size));
             }
         });
@@ -62,7 +62,7 @@ self.addEventListener('install', evt => {
     evt.waitUntil(
         caches.open(staticCacheName).then((cache) => {
             console.log('Caching Assets');
-            cache.addAll(assets.map(function(asset){
+            cache.addAll(assets.map(function (asset) {
                 return new Request(asset, { mode: 'no-cors' });
             }));
         })
@@ -86,7 +86,7 @@ self.addEventListener('activate', evt => {
 // Fetch
 self.addEventListener('fetch', evt => {
     // console.log('Fetch Event', evt);
-    if(evt.request.url.indexOf('firestore.googleapis.com') === -1) {
+    if (evt.request.url.indexOf('firestore.googleapis.com') === -1) {
         evt.respondWith(
             caches.match(evt.request).then(cacheRes => {
                 return cacheRes || fetch(evt.request).then(fetchRes => {
@@ -99,7 +99,7 @@ self.addEventListener('fetch', evt => {
                     }).catch((e) => console.log(e)); //catch cache() error
                 }).catch((e) => console.log(e)); //catch fetch() error
             }).catch((e) => console.log(e)) //catch match() error
-            );
+        );
     }
-    
+
 });

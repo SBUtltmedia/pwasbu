@@ -235,3 +235,10 @@ table.block th {
 #edit-user-delete {
     background-color: red;
 }
+
+#edit-info-text-input
+{
+   padding:15px; 
+   width: 90%;
+   height: 300px;
+}
