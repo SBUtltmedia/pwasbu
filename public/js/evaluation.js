@@ -1,3 +1,19 @@
+//////////////////////////////////////////////////////////////////////////////////////////////////
+/* 
+READ ME
+- All export csv code is in evaluation.js under parse_all_activity_evals
+- What works
+    - Clicking assessment button triggers export
+    - Zip file is made and named as FirstName_LastName_camperid
+    - Creates a csv for each activity (may or may not make one for an empty activity, not sure)
+    - Inputs the daily activities and skills into the csv’s
+- What needs to be fixed
+    - Commas in the sub skills create new rows —> need to accommodate for commas
+    - When a sub skill is left blank, need to input either a space or dash to keep the correct spacing (otherwise the rest of the rows will be off)
+    - Soccer / Fitness creates a folder instead of a csv file 
+    - Dealing with async currently by setTimeout, should probably correct this with promises
+*/
+//////////////////////////////////////////////////////////////////////////////////////////////////
 class Evaluation {
   // Just an object to hold global variables
   constructor(
@@ -210,15 +226,15 @@ function getCol(matrix, col) {
   return column;
 }
 
-function parse_eval(data_object) {
+function parse_eval(data_object, zip) {
   var eval_skills = data_object["skills"];
   var skill_col = ["Skills"];
   var comment_col = ["Comment"];
   var score_col = ["Score"];
-
   var checklist_items = [];
 
   // SKILLS
+
   // Get Activities
   fs.collection("Activities")
     .get()
@@ -240,47 +256,30 @@ function parse_eval(data_object) {
             var subskill_count = 0;
             skill["subSkills"].forEach((subskill) => {
               skill_col.push(subskill);
-              comment_col.push(
-                eval_skills["skill_" + skill_count][subskill_count]["comment"]
-              );
-              score_col.push(
-                eval_skills["skill_" + skill_count][subskill_count]["score"]
-              );
+              comment_col.push(eval_skills["skill_" + skill_count][subskill_count]["comment"]);
+              score_col.push(eval_skills["skill_" + skill_count][subskill_count]["score"]);
               subskill_count += 1;
             });
           });
-          // console.log("Skills + SubSkills Column: " + skill_col);
-          // console.log("Comments Column: " + comment_col);
-          // console.log("Scores Column: " + score_col);
         }
       });
 
-      // Combine Columns
+      // Combine Skill, Comment and Score columns / Compile CSV
       two_d_array = skill_col.map(function (c, i) {
         return [c, comment_col[i]];
       });
       two_d_array = two_d_array.map(function (c, i) {
         return [c, score_col[i]];
       });
-
-      console.log("Skill Subpart Export: " + two_d_array);
-
       var csv = [];
       two_d_array.forEach(function (row) {
         csv += row.join(",");
         csv += "\n";
       });
 
-      // // Export to CSV
-      // var hiddenElement = document.createElement("a");
-      // hiddenElement.href = "data:text/csv;charset=utf-8," + encodeURI(csv);
-      // hiddenElement.target = "_blank";
-      // hiddenElement.download = "test.csv";
-      // hiddenElement.click();
-
       // DAILY CHECKLIST
+
       var daily_checklist_main_col = [];
-      console.log(data_object["dailyCheckList"]);
       var dates = [];
 
       // Get the Dates
@@ -302,27 +301,26 @@ function parse_eval(data_object) {
           checklist_activity_count += 1;
         });
       });
-      // console.log(all_trials_2d);
-
       var two_d_array2 = [];
-      var num_cols = all_trials_2d[0].length;
-      for (var i = -1; i < num_cols; i++) {
-        if (i == -1) {
-          two_d_array2 = daily_checklist_main_col;
-        } else {
-          two_d_array2 = two_d_array2.map(function (c, j) {
-            var col = getCol(all_trials_2d, i);
-            col.unshift(" ");
-            return [c, col[j]];
-          });
+      if (all_trials_2d.length != 0) {
+        var num_cols = all_trials_2d[0].length;
+        for (var i = -1; i < num_cols; i++) {
+          if (i == -1) {
+            two_d_array2 = daily_checklist_main_col;
+          } else {
+            two_d_array2 = two_d_array2.map(function (c, j) {
+              var col = getCol(all_trials_2d, i);
+              col.unshift(" ");
+              return [c, col[j]];
+            });
+          }
         }
       }
 
-      console.log(two_d_array2);
+      // Compile CSV
       var csv2 = csv;
       two_d_array2.forEach(function (row) {
         if (typeof row != "string") {
-          console.log(typeof row);
           csv2 += Array.prototype.join.call(row, ",");
           csv2 += "\n";
         } else {
@@ -330,51 +328,208 @@ function parse_eval(data_object) {
           csv2 += "\n";
         }
       });
-
-      var zip = new JSZip();
-      zip.file("hello.txt", "Hello World\n");
-      zip.generateAsync({ type: "blob" }).then(function (content) {
-        // see FileSaver.js
-        saveAs(content, "example.zip");
-      });
-
-      // // Export to CSV
-      // var hiddenElement = document.createElement("a");
-      // hiddenElement.href = "data:text/csv;charset=utf-8," + encodeURI(csv2);
-      // hiddenElement.target = "_blank";
-      // hiddenElement.download = "" + data_object["activityName"] + ".csv";
-      // hiddenElement.click();
-
-      // Get the data
-      // var activity_name = data_object["activityName"];
-      // var camper_id = data_object["camper"];
-      // var daily_checklist_str = JSON.stringify(data_object["dailyCheckList"]);
-      // var daily_checklist_ob = data_object["dailyCheckList"];
-      // var date_init = data_object["date"];
-      // var instructor_id = data_object["instructor"];
-      // var skills = JSON.stringify(data_object["skills"]);
+      
     });
 }
 
-function parse_all_activity_evals(all_evals) {
-  let activities = {};
-  res.forEach((doc) => {
-    activities[doc.data()["name"]] = doc.id;
-  });
-  fs.collection("Evaluations")
-    .where("camper", "==", currEval.camperID)
+function get_camper_name(camper_id) {
+  var name = [];
+  var index = 0;
+  fs.collection("users")
+    .where("id", "==", camper_id)
     .get()
     .then((res) => {
-      listElements = {};
+      console.log(res);
       res.forEach((doc) => {
-        if (
-          doc.data()["year"] == currEval.selectedYear &&
-          (currEval.evalMode == "admin" ||
-            doc.data()["instructor"] == currEval.instrID)
-        ) {
-        }
+        var camper = doc.data();
+        name.push(camper.firstName);
+        name.push(camper.lastName);
       });
-    });
+      console.log(name);
+    })
+
+  // Wait?
+  setTimeout(function(){
+    return name;
+  }, 1000);
+}
+
+function parse_all_activity_evals() {
+  // Init Zip and CSV 
+  var zip = new JSZip();
+  var csv_list = [];
+  var activity_name_list = []
+
+
+  // Get Camper Name
+  var name = [];
+  fs.collection("users")
+    .where("id", "==", currEval.camperID)
+    .get()
+    .then((res) => {
+      console.log(res);
+      res.forEach((doc) => {
+        var camper = doc.data();
+        name.push(camper.firstName);
+        name.push(camper.lastName);
+      });
+      var firstName = name[0];
+      var lastName = name[1];
+    
+      // Get All Activity Names
+      let activities = {};
+      fs.collection("Activities")
+        .get()
+        .then((res) => {
+          res.forEach((doc) => {
+            activities[doc.data()["name"]] = doc.id;
+          });
+        });
+    
+      // Parse Camper's Evaluations
+      fs.collection("Evaluations")
+      .where("camper", "==", currEval.camperID)
+      .get()
+      .then((res) => {
+        listElements = {};
+        res.forEach((doc) => {
+    
+          // Set up CSV
+          var data_object = doc.data();
+          var eval_skills = data_object["skills"];
+          var skill_col = ["Skills"];
+          var comment_col = ["Comment"];
+          var score_col = ["Score"];
+          var checklist_items = [];
+        
+          //////////////////////////////////////////////// SKILLS //////////////////////////////////////////////// 
+        
+          // Get Activities
+          fs.collection("Activities")
+            .get()
+            .then((res) => {
+              res.forEach((doc) => {
+                var activity_name = doc.data()["name"]; // iterated activity name
+                var eval_activity_name = data_object["activityName"]; // name of activity for current eval
+                // Get Skills
+                if (activity_name == eval_activity_name) {
+                  activity_name_list.push(activity_name);
+                  console.log(activity_name_list);
+                  console.log("Activity: " + eval_activity_name);
+                  doc.data()["checklist"].forEach((item) => {
+                    checklist_items.push(item.name);
+                  });
+                  var skill_count = 0;
+                  doc.data()["skills"].forEach((skill) => {
+                    skill_col.push(skill["skillName"].toUpperCase());
+                    // Get Subskills
+                    skill_count += 1;
+                    var subskill_count = 0;
+                    skill["subSkills"].forEach((subskill) => {
+                      skill_col.push(subskill);
+                      comment_col.push(eval_skills["skill_" + skill_count][subskill_count]["comment"]);
+                      score_col.push(eval_skills["skill_" + skill_count][subskill_count]["score"]);
+                      subskill_count += 1;
+                    });
+                  });
+                }
+              });
+        
+              // Combine Skill, Comment and Score columns / Compile CSV
+              two_d_array = skill_col.map(function (c, i) {
+                return [c, comment_col[i]];
+              });
+              two_d_array = two_d_array.map(function (c, i) {
+                return [c, score_col[i]];
+              });
+              var csv = [];
+              two_d_array.forEach(function (row) {
+                csv += row.join(",");
+                csv += "\n";
+              });
+        
+              //////////////////////////////////////////////// DAILY CHECKLIST //////////////////////////////////////////////// 
+        
+              var daily_checklist_main_col = [];
+              var dates = [];
+        
+              // Get the Dates
+              Object.keys(data_object["dailyCheckList"]).forEach(function (key) {
+                dates.push(key);
+              });
+        
+              var all_trials_2d = [];
+              dates.forEach((date) => {
+                var check_row = [];
+                daily_checklist_main_col.push(date);
+                var all_trials = data_object["dailyCheckList"][date];
+                var checklist_activity_count = 0;
+                Object.keys(all_trials).forEach(function (checkListActivity) {
+                  daily_checklist_main_col.push(
+                    checklist_items[checklist_activity_count]
+                  );
+                  all_trials_2d.push(all_trials[checkListActivity]);
+                  checklist_activity_count += 1;
+                });
+              });
+              var two_d_array2 = [];
+              if (all_trials_2d.length != 0) {
+                var num_cols = all_trials_2d[0].length;
+                for (var i = -1; i < num_cols; i++) {
+                  if (i == -1) {
+                    two_d_array2 = daily_checklist_main_col;
+                  } else {
+                    two_d_array2 = two_d_array2.map(function (c, j) {
+                      var col = getCol(all_trials_2d, i);
+                      col.unshift(" ");
+                      return [c, col[j]];
+                    });
+                  }
+                }
+              }
+        
+              // Compile CSV
+              var csv2 = csv;
+              csv2 += "\n";
+              csv2 += "\n";
+              csv2 += "Daily Activities";
+              csv2 += "\n";
+              two_d_array2.forEach(function (row) {
+                if (typeof row != "string") {
+                  csv2 += Array.prototype.join.call(row, ",");
+                  csv2 += "\n";
+                } else {
+                  csv2 += row;
+                  csv2 += "\n";
+                }
+              });
+              csv_list.push(csv2);
+            });  
+        });
+      });  
+    
+      
+      setTimeout(function(){
+        // Finish Zip
+        console.log(csv_list);
+        for(var i = 0; i < csv_list.length; i++){
+          console.log(csv_list[i]);
+          zip.file(activity_name_list[i]+".csv", csv_list[i]);     
+        }
+
+        zip.generateAsync({type: "base64"})
+        .then(function(content) {
+          var link = document.createElement('a');
+          link.href = "data:application/zip;base64," + content;
+          link.download = firstName + "_" + lastName + "_" + currEval.camperID + ".zip";
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+      });
+      }, 1500);    
+    })
+
+  
 }
 
 function actEvalInit() {
@@ -387,6 +542,9 @@ function actEvalInit() {
       resCoach.forEach((doc) => {
         coaches[doc.data()["id"]] = doc.data();
       });
+
+      parse_all_activity_evals();
+
       fs.collection("Activities")
         .get()
         .then((res) => {
@@ -394,6 +552,7 @@ function actEvalInit() {
           res.forEach((doc) => {
             activities[doc.data()["name"]] = doc.id;
           });
+
           fs.collection("Evaluations")
             .where("camper", "==", currEval.camperID)
             .get()
@@ -401,10 +560,8 @@ function actEvalInit() {
               listElements = {};
               res.forEach((doc) => {
                 //
-                console.log("hihihi");
-                parse_eval(doc.data());
+                // parse_eval(doc.data());
                 //
-                // if(doc.data()['date'].split("-")[0] == currEval.selectedYear) {
                 if (
                   doc.data()["year"] == currEval.selectedYear &&
                   (currEval.evalMode == "admin" ||
