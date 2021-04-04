@@ -340,18 +340,25 @@ function addDay(docID, _callback = (dates, day) => {}, dates = [], day = 0) {
             while(document.getElementById("checklist-item-" + day)) {
                 day++;
             }
+
+            let day_label = document.getElementsByClassName("day-label").length + 1;
             
             let itemID = 1;
             $("#checklist").append(
                 `<li class="checklist-item" id="checklist-item-${day}">
                     <ul>
                         <button class="btn bdrlessBtn evaluation-but day-btn" onclick="toggleHide('checklist-day-${day}');">
-                            <input id="day-${day}-date" type="date" class="disable-for-admin" value="${(new Date()).toISOString().split('T')[0]}"></input>
+                            <span id="day-${day_label}-label" class="day-label">Day ${day_label}</span>
                         </button>
                     </ul>
                     <ul>
-                        <table id="checklist-day-${day}" class="hiddenElement sk-box">
-                            <tr class="chcklst-sec bordered-row">
+                        <table id="checklist-day-${day}" class="hiddenElement sk-box checklist-table">
+                            <tr class="chcklst-sec bordered-row-no-bottom">
+                                <td>
+                                    <input id="day-${day}-date" type="date" class="disable-for-admin" value="${(new Date()).toISOString().split('T')[0]}"></input>
+                                </td>
+                            </tr>
+                            <tr class="chcklst-sec bordered-row-no-top">
                                 <td>
                                     <button class="remove-btn disable-for-admin" onclick="removeDay(${day})">Delete Day</button>
                                 </td>
@@ -424,9 +431,20 @@ function addDay(docID, _callback = (dates, day) => {}, dates = [], day = 0) {
 function removeDay(day) {
     if(confirm("Are you sure you want to delete this day? NOTE: this action cannot be reversed.")) {
         // console.log("YES: " + day);
+        let day_label = parseInt(document.getElementById('checklist-item-' + day).getElementsByClassName('day-label')[0].id.split('-')[1]);
         document.getElementById('checklist-item-' + day).remove();
+        fixDayLabels(day_label);
     } else {
         // console.log("NO: " + day);
+    }
+}
+
+function fixDayLabels(day) {
+    while (document.getElementById(`day-${day + 1}-label`) != null) {
+        document.getElementById(`day-${day + 1}-label`).innerHTML = `Day ${day}`;
+        // document.getElementById(`day-${day + 1}-label`).onclick = () => { removeDay(day); };
+        document.getElementById(`day-${day + 1}-label`).id = `day-${day}-label`;
+        day += 1;
     }
 }
 
