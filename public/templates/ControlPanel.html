@@ -15,6 +15,7 @@
             <button class="tablinks" onclick="openSection(event, 'campers-control')">Athletes</button>
             <button class="tablinks" onclick="openSection(event, 'groups-control')">Coaches</button>
             <button class="tablinks" onclick="openSection(event, 'users-control')">Users</button>
+            <button class="tablinks" onclick="openSection(event, 'delete-control')">Delete</button>
         </div>
 
         <div id="activities-control" class="tabcontent adminheader">
@@ -351,16 +352,23 @@
                     <input autocomplete="false" type="email" class="form-control user-modal-input" id="edit-user-email"
                         placeholder="Email" disabled>
                     <br />
-                    <button id="edit-user-delete" class="add-athlete-btn">Delete User</button>
+                    <button id="edit-user-delete" class="add-athlete-btn">Disable Account</button>
                     <br />
-                    <button id="edit-user-reset-password" class="add-athlete-btn">Reset User's Password</button>
+                    <button id="edit-user-reset-password" class="add-athlete-btn">Reset Password</button>
                     <br />
-                    <button id="edit-user-save" class="add-athlete-btn" onclick="editModalUser()">SUBMIT
-                        CHANGES</button>
+                    <button id="edit-user-save" class="add-athlete-btn" onclick="editModalUser()">
+                        SUBMIT CHANGES
+                    </button>
                 </div>
             </div>
 
             <table id="users" class="block cp-table row-border"> </table>
+        </div>
+
+        <div id="delete-control" class="tabcontent adminheader">
+            <button class="btn" onclick="deleteAllDisabledAccounts()">Delete All Disabled Accounts</button>
+            <div class="cp-subTitle">Disabled Accounts</div>
+            <table id="disabled-users" class="block cp-table row-border"></table>
         </div>
     </div>
 </template>

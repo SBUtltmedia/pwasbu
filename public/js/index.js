@@ -370,40 +370,30 @@ function makeid(length) {
     }
     return result;
 }
-/**
- * This function is purely used for signing the user up.
- * @param {} payload 
- */
-// function addUser(payload, _callback = ()=> {}){
-//     fs.collection("users").where('email', '==', payload['email']).get()
-//     .then(res=> {
-//         if(res.docs.length > 0) {
-//             console.log("attempting to add a user that already exists");
-//         } else {
-//             fs.collection("users").get().then((res) => {
-//                 let id = makeid(3);
-//                 if (payload['email'] == "") {
-//                     payload['email'] = id;
-//                 }
-//                 payload['id'] = id + (res.docs.length + 1);
-//                 fs.collection("users").add(payload).then(function(){
-//                     console.log("Added user successfully");
-//                     alert("Added user successfully");
-//                     _callback();
-//                 }).catch(function(error) { console.log(error)});
-//             });
-//         }
-//     });
-// }
 
-function addUser(payload, _callback = () => { }) {
+function addUser(uid=undefined, payload, _callback = () => { }) {
     var def = $.Deferred();
-    fs.collection("users").where('email', '==', payload['email']).get()
-        .then(res => {
-            if (res.docs.length > 0) {
-                console.log("attempting to add a user that already exists");
-            } else {
-                fs.collection("users").get().then((res) => {
+    fs.collection("users").where('email', '==', payload['email']).get().then( (res) => {
+        if (res.docs.length > 0) {
+            console.log("ERROR: Attempting to add a user that already exists");
+        } else {
+            fs.collection("users").get().then((res) => {
+                if (uid) {
+                // Adding Coach or Admin
+                    if (payload['email'] == "") {
+                        payload['email'] = uid;
+                    }
+                    payload['id'] = uid;
+                    def.resolve(payload['id']);
+                    fs.doc(`users/${uid}`).set(payload).then( (res) => {
+                        console.log("Added user successfully");
+                        _callback();
+                        // return def;
+                    }).catch(function (error) {
+                        console.log(error)
+                    });
+                } else {
+                // Adding athlete (No email or entry in authentication)
                     let id = makeid(3);
                     if (payload['email'] == "") {
                         payload['email'] = id;
@@ -413,10 +403,15 @@ function addUser(payload, _callback = () => { }) {
                     fs.collection("users").add(payload).then(function () {
                         console.log("Added user successfully");
                         _callback();
-                    }).catch(function (error) { console.log(error) });
-                });
-            }
-        });
+                        // return def;
+                    }).catch(function (error) {
+                        console.log(error)
+                    });
+                }
+            });
+        }
+    });
+    console.log(def);
     return def;
 }
 
@@ -427,22 +422,6 @@ function toy() {
     }, 3000);
     return def;
 }
-
-/**
- * This function returns a JSON Object for adding a user to the "users" collection
- * @param {*} email The email of the user. Cannot be a duplicate of an email already in use.
- */
-// function generateUser(email, firstName="", lastName="", gender ="Female", priv = "."){
-//     return {
-//         email: email,
-//         birthdate : "1999-07-04", //Needs to be implemented with field
-//         creationDate : new Date().toDateInputValue(),
-//         firstName: firstName,
-//         lastName : lastName, 
-//         gender: gender, // Needs to be implemented with field`
-//         priv: priv
-//     };   
-// }
 
 function generateUser(email, firstName = "", lastName = "", gender = "", birthdate = "", priv = ".", pronoun = "They/Them/Theirs") {
     return {
@@ -516,9 +495,10 @@ function signup() {
         $(".loader").show();
         alert("User signup was successful!");
         firebase.auth().createUserWithEmailAndPassword(email, password)
-            .then(() => {
+            .then((userCredential) => {
+                let uid = userCredential.user.uid;
                 console.log("Attempting to register user into DB");
-                addUser(generateUser(email, firstName, lastName, "", birthdate, "."));
+                addUser(uid, generateUser(email, firstName, lastName, "", birthdate, "."));
                 firebase.auth().currentUser.updateProfile({
                     displayName: name,
                 }).then(function () {
@@ -528,8 +508,7 @@ function signup() {
                     console.log(error.message);
                     signIn(email, password);
                 });
-            })
-            .catch(function (error) {
+            }).catch(function (error) {
                 $(".btn").show();
                 $(".loader").hide();
                 document.getElementById("pass_error").innerHTML = error.message;
@@ -549,54 +528,54 @@ function signout() {
         console.log(error.message + " with error code : " + error.code);
     });
 }
-function googleSignIn() {
-    $(".btn").hide();
-    $(".loader").show();
-    firebase.auth().signInWithPopup(provider).then(function (result) {
-        // This gives you a Google Access Token. You can use it to access the Google API.
-        let token = result.credential.accessToken;
-        // The signed-in user info.
-        let user = result.user;
-        // Not using all of the fields above yet
-        fs.collection("users").where('email', '==',).get().then(function (querySnapshot) {
-            if (querySnapshot.length > 0) {
-                console.log("User exist in the database!");
-                getUserData(user.email);
-            } else {
-                console.log("User does not exist in the database. Adding the user now");
-                let name = user.displayName.split(" ");
-                if (name.length > 1) {
-                    addUser(generateUser(user.email, name[0], name[1]));
-                } else {
-                    addUser(generateUser(user.email, name[0]));
-                }
-            }
-        }).catch(function (error) {
-            console.log("Error getting document:", error);
-            console.log("User does not exist in the database. Adding the user now");
-            let name = user.displayName.split(" ");
-            if (name.length > 1) {
-                addUser(generateUser(user.email, name[0], name[1]));
-            } else {
-                addUser(generateUser(user.email, name[0]));
-            }
-        });
+// function googleSignIn() {
+//     $(".btn").hide();
+//     $(".loader").show();
+//     firebase.auth().signInWithPopup(provider).then(function (result) {
+//         // This gives you a Google Access Token. You can use it to access the Google API.
+//         let token = result.credential.accessToken;
+//         // The signed-in user info.
+//         let user = result.user;
+//         // Not using all of the fields above yet
+//         fs.collection("users").where('email', '==',).get().then(function (querySnapshot) {
+//             if (querySnapshot.length > 0) {
+//                 console.log("User exist in the database!");
+//                 getUserData(user.email);
+//             } else {
+//                 console.log("User does not exist in the database. Adding the user now");
+//                 let name = user.displayName.split(" ");
+//                 if (name.length > 1) {
+//                     addUser(generateUser(user.email, name[0], name[1]));
+//                 } else {
+//                     addUser(generateUser(user.email, name[0]));
+//                 }
+//             }
+//         }).catch(function (error) {
+//             console.log("Error getting document:", error);
+//             console.log("User does not exist in the database. Adding the user now");
+//             let name = user.displayName.split(" ");
+//             if (name.length > 1) {
+//                 addUser(generateUser(user.email, name[0], name[1]));
+//             } else {
+//                 addUser(generateUser(user.email, name[0]));
+//             }
+//         });
 
-    }).catch(function (error) {
-        $(".btn").show();
-        $(".loader").hide();
-        // Handle Errors here.
-        let errorCode = error.code;
-        let errorMessage = error.message;
-        // The email of the user's account used.
-        let email = error.email;
-        // The firebase.auth.AuthCredential type that was used.
-        let credential = error.credential;
-        // Not using all of the fields yet
-        document.getElementById("pass_error").innerHTML = errorMessage;
-        $("#pass_error").show();
-    });
-}
+//     }).catch(function (error) {
+//         $(".btn").show();
+//         $(".loader").hide();
+//         // Handle Errors here.
+//         let errorCode = error.code;
+//         let errorMessage = error.message;
+//         // The email of the user's account used.
+//         let email = error.email;
+//         // The firebase.auth.AuthCredential type that was used.
+//         let credential = error.credential;
+//         // Not using all of the fields yet
+//         document.getElementById("pass_error").innerHTML = errorMessage;
+//         $("#pass_error").show();
+//     });
+// }
 
 //STORAGE Functions
 const storageRef = firebase.storage().ref();
