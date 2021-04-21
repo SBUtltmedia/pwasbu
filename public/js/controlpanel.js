@@ -628,7 +628,7 @@ function addCamperFromModal() {
         alert("Could not add camper successfully, please make sure all New Athlete Info is filled out.");
     } else {
         let userPayload = generateUser("", firstName, lastName, gender, birthday, "camper", pronouns);
-        addUser(userPayload, updateCamperTable).then((camperId) => {
+        addUser(undefined, userPayload, updateCamperTable).then((camperId) => {
             console.log("Added camper with ID of " + camperId);
             if (file) {
                 storageRef.child(`users/${camperId}/profile-picture/` + file.name).put(file).then(() => {
@@ -1007,26 +1007,6 @@ function updateUsersTable() {
     initUsersTable();
 }
 
-// function updateUser(docid) {
-//     let priv = document.getElementById("users-priv-" + docid).value;
-//     let file = document.getElementById(`user-upload-${docid}`).files[0];
-//     fs.collection("users").doc(docid).get().then(doc => {
-//         try {
-//             clearProfilePictures(doc.data()['email'],
-//                 storageRef.child(`users/${doc.data()['email']}/profile-picture/` + file.name).put(file));
-//         } catch (err) {
-//             console.log(`The user ${doc.data()['firstName']} ${doc.data()['lastName']} does not have a profile picture`);
-//         }
-//     });
-
-//     fs.collection("users").doc(docid).update({
-//         priv: priv
-//     }).then(() => {
-//         alert("User has been updated!");
-//         updateGroupsTable();
-//     });
-// }
-
 function loadEditUserButton(docId, email, gender, priv) {
     document.getElementById("edit-user-uid").value = docId;
     document.getElementById('editUserModal').style.display = 'block';
@@ -1039,42 +1019,26 @@ function loadEditUserButton(docId, email, gender, priv) {
     document.getElementById("edit-user-delete").onclick = (evt) => {
         let userData = JSON.parse(localStorage.getItem("userData"));
         if (userData['priv'] == 'admin') {
-            if (confirm('Are you sure you want to delete the user with email ' + email + "?")) {
-                const deleteUser = firebase.functions().httpsCallable('deleteUser');
-                deleteUser({ email: email }).then( (res) => {
-                    // console.log(res.data);
-                    if (res.data == "SUCCESS") {
-                        fs.collection("users").where("email", "==", email.trim().toLowerCase()).get().then( (querySnapshot) => {
-                            clearProfilePictures(email);
-                            user_id = email;
-                            querySnapshot.forEach(function(doc) {
-                                user_id = doc.data()['id'];
-                                doc.ref.delete();
-                            });
-                            fs.collection("Groups").where("coach", "==", user_id).get().then( (querySnapshot) => {
-                                querySnapshot.forEach(function(doc) {
-                                    doc.ref.delete();
-                                });
-                                fs.collection("Evaluations").where("instructor", "==", user_id).get().then( (querySnapshot) => {
-                                    querySnapshot.forEach(function(doc) {
-                                        doc.ref.delete();
-                                    });
-                                    alert("Successfully deleted user with email " + email);
-                                    updateCamperTable();
-                                    updateGroupsTable();
-                                    updateUsersTable();
-                                    initUserModal();
-                                });
-                            });
-                        }).catch( (err) => {
-                            alert("Successfully deleted user with email " + email);
-                            router.loadRoute('controlpanel');
+            if (confirm('Are you sure you want to disable the account with email ' + email + "?")) {
+                userID = docId;
+                // updateField = `users.${userID}`;
+                fs.collection('users').doc(userID).get().then( (doc) => {
+                    userInfo = doc.data();
+                    let updateObj = {};
+                    updateObj[`users.${userID}`] = userInfo;
+                    fs.collection('UsersToDelete').doc('users').update(updateObj).then( (res) => {
+                        doc.ref.delete().then( (res) => {
+                            alert("Successfully disabled account with email " + email);
+                            updateCamperTable();
+                            updateGroupsTable();
+                            updateUsersTable();
+                            initUserModal();
+                            updateDisabledUsersTable();
                         });
-                    } else {
-                        alert("Could not delete user with email " + email + ". Refresh the page and if the user still exists then try again.");
-                    }
+                    });
                 }).catch( (err) => {
-                    alert("Could not delete user with email " + email + ". Refresh the page and if the user still exists then try again.");
+                    alert("Could not disable the account with email " + email + ". Refresh the page and if the account is still active then try again.");
+                    console.log("Failed to delete user with email " + email + ":\n" + err);
                 });
             }
         } else {
@@ -1122,10 +1086,13 @@ function addModalUser() {
         if (password.length == 0) {
             password = "password123";
         }
-        signUpFB.auth().createUserWithEmailAndPassword(email, password).then(() => {
+        signUpFB.auth().createUserWithEmailAndPassword(email, password).then((userCredential) => {
+            let uid = userCredential.user.uid;
             console.log("The user has successfully been signed up!");
             let userPayload = generateUser(email, firstName, lastName, gender, "", priv);
-            addUser(userPayload, newAccountPasswordReset(firstName, email)).then((camperId) => {
+            addUser(uid, userPayload).then((uid) => {
+                console.log("Got Here");
+                newAccountPasswordReset(firstName, email);
                 if (file) {
                     storageRef.child(`users/${email}/profile-picture/` + file.name).put(file).then(() => {
                         console.log("Added user successfully.");
@@ -1140,8 +1107,11 @@ function addModalUser() {
                 }
                 document.getElementById("modal-user-profile-pic").src = "../img/user/default/user-480.png";
                 document.getElementById('addUserModal').style.display = 'none';
-                updateUsersTable();
+                updateCamperTable();
                 updateGroupsTable();
+                updateUsersTable();
+                initUserModal();
+                updateDisabledUsersTable();
             }).catch((err) => {
                 console.log("Could not add new user to database: " + err);
                 alert("Could not add new user to database");
@@ -1153,6 +1123,30 @@ function addModalUser() {
             document.getElementById("modal-user-error").innerHTML = errorMessage;
         });
     }
+}
+
+function afterAddUser(firstName, email, file) {
+    newAccountPasswordReset(firstName, email);
+    console.log("Got Here");
+    if (file) {
+        storageRef.child(`users/${email}/profile-picture/` + file.name).put(file).then(() => {
+            console.log("Added user successfully.");
+        }).catch(err => {
+            console.log("Could not upload profile picture successfully.");
+        });
+    } else {
+        console.log("Added user successfully.");
+    }
+    for (elem of document.getElementsByClassName("user-modal-input")) {
+        elem.value = "";
+    }
+    document.getElementById("modal-user-profile-pic").src = "../img/user/default/user-480.png";
+    document.getElementById('addUserModal').style.display = 'none';
+    updateCamperTable();
+    updateGroupsTable();
+    updateUsersTable();
+    initUserModal();
+    updateDisabledUsersTable();
 }
 
 function editModalUser() {
@@ -1216,8 +1210,139 @@ function initUserModal() {
     document.getElementById("editUserModal").style.display = "none";
 }
 
-//** MISCELLANEOUS Functions */
+/////////////////////////////////// DELETE FUNCTIONS ////////////////////////////////////////////////////
+function initDisabledUsersTable() {
+    $(document).ready(function () {
+        fs.collection("UsersToDelete").doc('users').get().then( (doc) => {
+            let users = {}
+            if(doc.exists) {
+                users = doc.data()["users"];
+                let uids = Object.keys(users)
+                for (let uid of uids) {
+                    user = users[uid]
+                    let insertedRow = document.getElementById('disabled-users').insertRow();
+                    // Insert a cell in the row at cell index 0
+                    insertedRow.insertCell().innerHTML =
+                        `<input type="file" id="disabled-user-upload-${uid}" style="display:none" accept="image/*" capture="camera"/> 
+                        <img id="disabled-user-profile-pic-${uid}" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left" width="100" height="100">`;
+                    insertedRow.insertCell().innerHTML = `<span class="nameis" id="${"disabled-user-first" + uid}">${user['firstName']}</span>`;
+                    insertedRow.insertCell().innerHTML = `<span class="nameis" id="${"disabled-user-last" + uid}">${user['lastName']}</span>`;
+                    insertedRow.insertCell().innerHTML = user['gender'];
+                    insertedRow.insertCell().innerHTML = user['email'];
+                    insertedRow.insertCell().innerHTML = user['creationDate'];
+                    insertedRow.insertCell().innerHTML = user['priv'];
+                    // insertedRow.insertCell().innerHTML = select.outerHTML;
+                    insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn' onclick='loadRecoverUserButton("${uid}", "${user['email']}")'>Recover</button>`;
 
+                    //Loading images
+                    try {
+                        // document.getElementById(`user-pic-button-${doc.id}`).onclick = () => { $(`#user-upload-${doc.id}`).trigger('click'); };
+                        loadCamperImage(`disabled-user-profile-pic-${uid}`, user['email']);
+                        $(`#disabled-user-upload-${uid}`).on("change", function () {
+                            readURL(this, `disabled-user-profile-pic-${uid}`);
+                        });
+                    } catch (err) {
+                        console.log(`Something wrong with user : ${user['firstName']} ${user['lastName']}`);
+                    }
+                }
+            } else {
+                // Creating document if it doesn't already exist
+                fs.doc("UsersToDelete/users").set({
+                    users: {}
+                });
+            }
+
+            $('#disabled-users').DataTable({
+                // destroy: true,
+                columns: [
+                    {
+                        "title": "Picture",
+                        "searchable": false
+                    },
+                    { "title": "First Name" },
+                    { "title": "Last Name" },
+                    {
+                        "title": "Gender",
+                        "visible": false
+                    },
+                    { "title": "Email" },
+                    {
+                        "title": "Created",
+                        "visible": false
+                    },
+                    { "title": "Role" },
+                    {
+                        "title": "",
+                        "searchable": false
+                    }
+                ]
+            });
+        }).catch( (error) => {
+            console.log('Failed to retrieve list of disabled accounts: ' + error);
+            alert('Failed to retrieve list of disabled accounts')
+        });
+    });
+}
+
+function updateDisabledUsersTable() {
+    $('#disabled-users').DataTable().clear();
+    $('#disabled-users').DataTable().destroy();
+    $("#disabled-users tr").remove();
+    initDisabledUsersTable();
+}
+
+function deleteAllDisabledAccounts() {
+    if (confirm('Are you sure you want to delete all disabled accounts?\nNOTE: This action cannot be reversed')) {
+        deleteEndpoint = 'https://pwasbu-delete-users.herokuapp.com/delete';
+        $.get(deleteEndpoint, (data, status, xhr) => {
+            console.log(status + ":" + data);
+            if (status == "success") {
+                alert("Successfully deleted all disabled accounts");
+                updateCamperTable();
+                updateGroupsTable();
+                updateUsersTable();
+                initUserModal();
+                updateDisabledUsersTable();
+            } else {
+                alert("Experienced some errors while trying to delete disabled accounts");
+            }
+        });
+    }
+}
+
+function loadRecoverUserButton(docId, email) {
+    if(confirm(`Are you sure you want to recover the account with email ${email}?`)) {
+        fs.collection('UsersToDelete').doc('users').get().then( (doc) => {
+            if (doc) {
+                recoveredUserData = doc.data().users[docId];
+                fs.collection('users').doc(docId).set(recoveredUserData).then( (res) => {
+                    let users = doc.data().users;
+                    delete users[docId];
+                    fs.doc('UsersToDelete/users/').set({
+                        users: users
+                    }).then( (res) => {
+                        alert(`Successfully recovered account with email ${email}`);
+                        updateCamperTable();
+                        updateGroupsTable();
+                        updateUsersTable();
+                        initUserModal();
+                        updateDisabledUsersTable();
+                    });
+                });
+            } else {
+                // Creating document if it doesn't already exist
+                fs.doc("UsersToDelete/users").set({
+                    users: {}
+                });
+            }
+        }).catch( (err) => {
+            alert(`Could not recover the account with email ${email}. Refresh the page and if the account still isn't active then try again.`);
+            console.log(`Failed to recover user with email ${email}\n:` + err);
+        });
+    }
+}
+
+/* MISCELLANEOUS Functions */
 function togglePrimaryColor(id) {
     let classes = document.getElementById(id).classList;
     if (classes.contains("cp-toggleColor")) {
@@ -1235,5 +1360,3 @@ function resetSelectrs() {
     }
     console.log("I am resetting selectrIDs");
 }
-
-
