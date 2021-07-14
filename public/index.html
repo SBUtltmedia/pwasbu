@@ -41,36 +41,52 @@
   <script src="js/controlpanel.js" defer></script>
   <script src="js/evaluation.js" defer></script>
   <script src="js/thirdParty/processing.min.js"></script>
+  <!-- For exporting data to CSV files -->
+  <script src="js/thirdParty/jszip.js" type="text/javascript"></script>
+  <script src="js/thirdParty/FileSaver.js" type="text/javascript"></script>
   <!-- Selector for control panel -->
   <!-- <link href="https://unpkg.com/mobius1-selectr@latest/dist/selectr.min.css" rel="stylesheet" type="text/css">
   <script src="https://unpkg.com/mobius1-selectr@latest/dist/selectr.min.js" type="text/javascript"></script> -->
-  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
-  
-  <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="css/app.css">
-  <!-- <link rel="stylesheet" href="css/bootstrap-suggest.css"> -->
-  <link rel="stylesheet" id="app-style" href="css/login.css">
-  <link rel="stylesheet" href="css/home.css">
-  <link rel="stylesheet" id="app-style" href="css/editProfile.css">
-  <!-- <link rel="stylesheet" href="css/dataTables.bootstrap4.min.css"> -->
-  <link rel="stylesheet" href="css/evaluation.css">
-  <link rel="stylesheet" href="css/home.css">
-  <link rel="stylesheet" href="css/menu.css">
-  <link rel="stylesheet" href="css/navbar.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap">
-  <link rel="stylesheet" href="css/table.css">
-  <link rel="stylesheet" href="css/controlpanel.css">
+    <link
+      href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 
-  <link rel="manifest" href="manifest.webmanifest">
-</head>
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="css/app.css" />
+    <!-- <link rel="stylesheet" href="css/bootstrap-suggest.css"> -->
+    <link rel="stylesheet" id="app-style" href="css/login.css" />
+    <link rel="stylesheet" href="css/home.css" />
+    <link rel="stylesheet" id="app-style" href="css/editProfile.css" />
+    <!-- <link rel="stylesheet" href="css/dataTables.bootstrap4.min.css"> -->
+    <link rel="stylesheet" href="css/evaluation.css" />
+    <link rel="stylesheet" href="css/home.css" />
+    <link rel="stylesheet" href="css/menu.css" />
+    <link rel="stylesheet" href="css/navbar.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap"
+    />
+    <link rel="stylesheet" href="css/table.css" />
+    <link rel="stylesheet" href="css/controlpanel.css" />
 
-<body onoffline="updateOnlineStatus()" ononline="updateOnlineStatus()">
-  <header>
-    <div data-router-header></div>
-  </header>
+    <link rel="manifest" href="manifest.webmanifest" />
+  </head>
+
+  <body onoffline="updateOnlineStatus()" ononline="updateOnlineStatus()">
+    <header>
+      <div data-router-header></div>
+    </header>
 
   <!-- <div id='signed-in', style='display: none;'> -->
   <div class="offline-ready" id="offline-message"> </div>
@@ -81,7 +97,6 @@
   <div data-router-outlet id="data-router-outlet"> </div>
   <!-- <input id='name'>
     <button class="add-button">Add to home screen</button>  -->
-  <div data-router-outlet id="data-router-outlet"></div>
-  
-</body>
+    <div data-router-outlet id="data-router-outlet"></div>
+  </body>
 </html>
