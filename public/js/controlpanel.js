@@ -713,7 +713,6 @@ function addCoachGroup(coachID) {
     let data = {
         campers: [],
         coach: coachID,
-        year: document.getElementById("yearPicker").value
     };
     fs.collection("Groups").add(data);
 }
@@ -739,8 +738,9 @@ function initGroupsTable() {
                     coaches[doc.data()['id']] = doc.data();
                     coaches[doc.data()['id']]['hasGroup'] = false;
                 });
-                fs.collection("Groups").where("year", "==", document.getElementById("yearPicker").value).get().then(res => {
-                    let data = [];
+                // fs.collection("Groups").where("year", "==", document.getElementById("yearPicker").value).get().then(res => {
+                fs.collection("Groups").get().then(res => {
+                        let data = [];
                     res.forEach(doc => {
                         let changedDoc = false;
                         let docData = JSON.parse(JSON.stringify(doc.data()));
@@ -868,29 +868,6 @@ function removeGroup(docid) {
     fs.collection('Groups').doc(docid).delete().then(() => {
         updateGroupsTable();
     });
-}
-function initYearPicker() {
-    let years = ['2020'];
-    // years.sort();
-    for (i = 0; i < years.length; i++) {
-        $("#yearPicker").append(`<option value="${years[i]}">${years[i]}</option>`);
-    }
-    document.getElementById("yearPicker").value = '2020';
-    // fs.collection("Groups").get().then(res => {
-    //     res.docs.forEach(group => {
-    //         if(!years.includes(group.data()['year'])) {
-    //             years.push(group.data()['year']);
-    //         }
-    //     });
-    //     years.sort();
-    //     for(i = 0; i < years.length; i++) {
-    //         $("#yearPicker").append(`<option value="${years[i]}">${years[i]}</option>`);
-    //     }
-    //     if(years.indexOf(new Date().getFullYear()) < 0){
-    //         $("#yearPicker").append(`<option value="${new Date().getFullYear()}">${new Date().getFullYear()}</option>`);
-    //     }
-    //     document.getElementById("yearPicker").value = new Date().getFullYear();
-    // });
 }
 // function addGroup(){
 //     let payload = {

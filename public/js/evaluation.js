@@ -1284,37 +1284,6 @@ function removeEval(docID) {
     });
 }
 
-function populateYearPicker() {
-  let email = firebase.auth().currentUser.email;
-
-  fs.collection("users")
-    .where("email", "==", email)
-    .get()
-    .then((res) => {
-      let coach = res.docs[0].data()["id"];
-      let years = [];
-      fs.collection("Groups")
-        .where("coach", "==", coach)
-        .get()
-        .then((res) => {
-          res.docs.forEach((group) => {
-            if (!years.includes(group.data()["year"])) {
-              years.push(group.data()["year"]);
-            }
-          });
-          years.sort();
-          for (i = 0; i < years.length; i++) {
-            $("#yearPicker").append(
-              `<option value="${years[i]}">${years[i]}</option>`
-            );
-          }
-          document.getElementById(
-            "yearPicker"
-          ).value = new Date().getFullYear();
-        });
-    });
-}
-
 // fs.collection("Evaluations").get().then(function(querySnapshot) {
 //     querySnapshot.forEach(function(doc) {
 //         let checklistData = doc.data()['dataCheckList'];

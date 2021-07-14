@@ -72,10 +72,6 @@
     text-align: center;
 }
 
-#yearPickerContainer {
-    margin: 5px;
-}
-
 #offline-warnings {
     position: -webkit-sticky;
     position: sticky;
