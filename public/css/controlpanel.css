@@ -242,3 +242,8 @@ table.block th {
    width: 90%;
    height: 300px;
 }
+
+.reset-all-camp-data {
+    float: right;
+    background-color: #f44336;
+}

@@ -50,11 +50,7 @@ class RoutesObj {
       {
         path: '/controlpanel',
         getTemplate: (params) => this.template.load('ControlPanel'),
-      },
-      {
-        path: '/products/:productId',
-        getTemplate:  (params) => this.template.load('Product',params),
-      },
+      }
     ];
   }
 }
