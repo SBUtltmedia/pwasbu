@@ -518,20 +518,8 @@ function initCampersTable() {
 
                 let insertedRow = document.getElementById('campers').insertRow();
                 // Insert a cell in the row at cell index 0
-                insertedRow.insertCell().innerHTML =
-
-                    // Disbaled the following inputs:
-                    // `<input type="file" id="camper-upload-${doc.id}" style="display:none" accept="image/*" capture="camera"/> 
-                    // <button id="camper-pic-button-${doc.id}">
-                    //     <img id="camper-profile-pic-${doc.id}" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left" width="100" height="100">
-                    // </button>`;
-
-                    // insertedRow.insertCell().innerHTML = `<input type="text" id="${"camper-first" + doc.id}" class="form-control" value="${doc.data()['firstName']}">`;
-                    // insertedRow.insertCell().innerHTML = `<input type="text" id="${"camper-last" + doc.id}" class="form-control" value="${doc.data()['lastName']}">`;
-
-                    // Replaced the inputs with:
-                    `<input type="file" id="camper-upload-${doc.id}" style="display:none" accept="image/*" capture="camera"/> 
-                <img id="camper-profile-pic-${doc.id}" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left" width="100" height="100">`;
+                insertedRow.insertCell().innerHTML = `<input type="file" id="camper-upload-${doc.id}" style="display:none" accept="image/*" capture="camera"/> 
+                    <img id="camper-profile-pic-${doc.id}" src="../img/user/default/user-480.png" class="img-thumbnail rounded float-left" width="100" height="100">`;
 
                 insertedRow.insertCell().innerHTML = `<span id="${"camper-first" + doc.id}" class="form-control">${doc.data()['firstName']}</span>`;
                 insertedRow.insertCell().innerHTML = `<span id="${"camper-last" + doc.id}" class="form-control">${doc.data()['lastName']}</span>`;
@@ -554,6 +542,7 @@ function initCampersTable() {
                 insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn' onclick='loadEditCamperButton("${doc.id}", "${doc.data()['id']}", "${birthdate}", "${gender}", "${pronoun}")'>Edit</button>`;
                 insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn btn-danger' onclick='if(confirm("Are you sure you want to delete this camper? NOTE: THIS ACTION CANNOT BE REVERSED")) { removeCamper("${doc.id}") }'>Remove</button>`;
                 insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn' onclick='loadAssessments("${camperId}")'>Assessments</button>`;
+                insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn' onclick='parse_all_activity_evals("${camperId}")'>Export</button>`;
                 insertedRow.insertCell().innerHTML = doc.data()['firstName'];
                 insertedRow.insertCell().innerHTML = doc.data()['lastName'];
                 insertedRow.insertCell().innerHTML = birthdate;
@@ -581,6 +570,7 @@ function initCampersTable() {
                     { "title": "DoB", 'searchable': false, 'visible': false },
                     { "title": "Pronouns", 'searchable': false, 'visible': false },
                     { "title": "UID" },
+                    { "title": "" },
                     { "title": "" },
                     { "title": "" },
                     { "title": "" },
@@ -644,6 +634,9 @@ function addCamperFromModal() {
             }
             document.getElementById("add-camper-profile-pic").src = "../img/user/default/user-480.png";
             document.getElementById('addAthleteModal').style.display = 'none';
+
+            updateCamperTable();
+            updateGroupsTable();
         }).catch(err => {
             alert("Could not add camper successfully.");
         });
@@ -740,7 +733,7 @@ function initGroupsTable() {
                 });
                 // fs.collection("Groups").where("year", "==", document.getElementById("yearPicker").value).get().then(res => {
                 fs.collection("Groups").get().then(res => {
-                        let data = [];
+                    let data = [];
                     res.forEach(doc => {
                         let changedDoc = false;
                         let docData = JSON.parse(JSON.stringify(doc.data()));
@@ -776,36 +769,45 @@ function initGroupsTable() {
                                     // Camper doesn't exist
                                 }
                             });
-                            let coachName = "Coach no longer exist"
+                            let coachName = "Coach no longer exists";
+                            let coachEmail = "Coach no longer exists";
+                            let coachExists = true;
                             try {
-                                coachName = coaches[doc.data()['coach']]['firstName'] + " " + coaches[doc.data()['coach']]['lastName'] + `(id:${doc.data()['coach']})`;
+                                // coachName = coaches[doc.data()['coach']]['firstName'] + " " + coaches[doc.data()['coach']]['lastName'] + ` (id:${doc.data()['coach']})`;
+                                coachName = coaches[doc.data()['coach']]['firstName'] + " " + coaches[doc.data()['coach']]['lastName'];
+                                coachEmail = coaches[doc.data()['coach']]['email'];
                                 coaches[doc.data()['coach']]['hasGroup'] = true;
                             } catch (err) {
                                 // Coach no longer exists
+                                coachExists = false;
                             }
-                            // let select = document.createElement("select"); 
-                            // select.id = '#group-'+ doc.id;
-                            // select.classList.add('form-control');
-                            let insertedRow = document.getElementById('groups').insertRow();
-                            // Insert a cell in the row at cell index 0
-                            insertedRow.insertCell().innerHTML = coachName;
-                            insertedRow.insertCell().innerHTML = `<select class="coach-group-athletes" id="${"group-" + doc.id}" multiple="multiple">${camperOptionHTML}</select>`;
-                            insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn' onclick='updateGroupSelectr("${doc.id}")'>Update</button>`;
-                            insertedRow.insertCell().innerHTML = camperNames;
-                            $("#group-" + doc.id).select2({ width: "100%" });
-                            // if(!(doc.id in selectrIDs)) {
-                            //     let sObj = new Selectr("#group-" + doc.id, {
-                            //         data: camperSelection,
-                            //         multiple:true
-                            //     });
-                            //     sObj.mobileDevice = false;
-                            //     selectrIDs[doc.id] = sObj;
-                            // } else {
-                            //     let sObj = selectrIDs[doc.id];
-                            //     sObj.removeAll();
-                            //     sObj.add(camperSelection);
-                            // }
-                            passed = false;
+                            if (coachExists) {
+                                // let select = document.createElement("select"); 
+                                // select.id = '#group-'+ doc.id;
+                                // select.classList.add('form-control');
+                                let insertedRow = document.getElementById('groups').insertRow();
+                                // Insert a cell in the row at cell index 0
+                                insertedRow.insertCell().innerHTML = coachName;
+                                insertedRow.insertCell().innerHTML = coachEmail;
+                                insertedRow.insertCell().innerHTML = `<select class="coach-group-athletes" id="${"group-" + doc.id}" multiple="multiple">${camperOptionHTML}</select>`;
+                                insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn' onclick='updateGroupSelectr("${doc.id}")'>Update</button>`;
+                                insertedRow.insertCell().innerHTML = camperNames;
+                                $("#group-" + doc.id).select2({ width: "100%" });
+                                // if(!(doc.id in selectrIDs)) {
+                                //     let sObj = new Selectr("#group-" + doc.id, {
+                                //         data: camperSelection,
+                                //         multiple:true
+                                //     });
+                                //     sObj.mobileDevice = false;
+                                //     selectrIDs[doc.id] = sObj;
+                                // } else {
+                                //     let sObj = selectrIDs[doc.id];
+                                //     sObj.removeAll();
+                                //     sObj.add(camperSelection);
+                                // }
+                                passed = false;
+                            }
+                            
                         } catch (err) {
                             console.log(err);
                             // DO nothing. Not a valid group.
@@ -818,6 +820,7 @@ function initGroupsTable() {
                         // destroy: true,
                         columns: [
                             { "title": "Coach Name" },
+                            { "title": "Coach Email" },
                             {
                                 "title": "Athletes",
                                 "searchable": false
@@ -838,9 +841,10 @@ function initGroupsTable() {
                     let reset = false;
                     Object.keys(coaches).forEach(coachId => {
                         if (!coaches[coachId]['hasGroup']) {
-                            let coachName = "Coach no longer exist"
+                            let coachName = "Coach no longer exists"
                             try {
-                                coachName = coaches[coachId]['firstName'] + " " + coaches[coachId]['lastName'] + `(id:${coachId})`;
+                                coachName = coaches[coachId]['firstName'] + " " + coaches[coachId]['lastName'] + ` (id:${coachId})`;
+                                coachEmail = coaches[coachId]['email'];
                                 coaches[doc.data()]['hasGroup'] = true;
                             } catch (err) {
                                 // Coach no longer exists
@@ -1270,21 +1274,90 @@ function updateDisabledUsersTable() {
 
 function deleteAllDisabledAccounts() {
     if (confirm('Are you sure you want to delete all disabled accounts?\nNOTE: This action cannot be reversed')) {
-        deleteEndpoint = 'https://pwasbu-delete-users.herokuapp.com/delete';
-        $.get(deleteEndpoint, (data, status, xhr) => {
-            console.log(status + ":" + data);
-            if (status == "success") {
-                alert("Successfully deleted all disabled accounts");
-                updateCamperTable();
-                updateGroupsTable();
-                updateUsersTable();
-                initUserModal();
-                updateDisabledUsersTable();
-            } else {
-                alert("Experienced some errors while trying to delete disabled accounts");
-            }
-        });
+        executeDeleteAllDisabledAccounts();
     }
+}
+
+function executeDeleteAllDisabledAccounts() {
+    deleteEndpoint = 'https://pwasbu-delete-users.herokuapp.com/delete';
+    $.get(deleteEndpoint, (data, status, xhr) => {
+        console.log(status + ":" + data);
+        if (status == "success") {
+            alert("Successfully deleted all disabled accounts");
+            updateCamperTable();
+            updateGroupsTable();
+            updateUsersTable();
+            initUserModal();
+            updateDisabledUsersTable();
+        } else {
+            alert("Experienced some errors while trying to delete disabled accounts");
+        }
+    });
+}
+
+function resetAllCampData() {
+    // Two layers of confirmation since this an enormously risky operation
+    if (confirm('Are you sure you want to reset all camp data?\n\n' +
+        'NOTE: All evaluations, athletes, and coach groups will be deleted and all non-admin accounts will be disabled.' +
+        'This action should be only executed when camp is finished and a new year of camp is starting.\n\n' +
+        'NOTE: If you want to save the evaluations from this camp then you should export all evaluations to CSV files before resetting all camp data.\n\n' +
+        'NOTE: This action cannot be reversed.')) {
+        // Forcing user to type in a confirmation prompt
+        let confirmationPrompt = 'I confirm that I want to reset all camp data';
+        let confirmationInput = prompt('To confirm that you want to reset all camp data, type out the following text into the input below:\n\n' +
+            confirmationPrompt);
+        if (confirmationInput === confirmationPrompt) {
+            console.log('CONFIRMED TO RESET ALL CAMP DATA');
+            executeResetAllCampData();
+        } else {
+            alert('CANCELED: You have chosen to not reset all camp data.');
+        }
+    }
+}
+
+function executeResetAllCampData() {
+    // Deleting all evaluations
+    fs.collection("Evaluations").get().then( (querySnapshot) => {
+        querySnapshot.forEach( (doc) => {
+            doc.ref.delete();
+        });
+        // Deleting all groups
+        fs.collection("Groups").get().then( (querySnapshot) => {
+            querySnapshot.forEach( (doc) => {
+                doc.ref.delete();
+            });
+            // Deleting all athletes and non-admin users
+            fs.collection("users").get().then( (querySnapshot) => {
+                let nonAdminUsers = [];
+                querySnapshot.forEach( (doc) => {
+                    let currPriv = doc.data()['priv'];
+                    if (currPriv == "camper") {
+                        // Athletes can be deleted directly from the collection since they do not have an authentication profile
+                        doc.ref.delete();
+                    } else if (currPriv != "admin") {
+                        // Non-admin accounts must first be disabled and then the user must delete all disabled accounts
+                        nonAdminUsers.push(doc);
+                    }
+                });
+                // Disabling all non-admin accounts
+                let numNonAdminAccounts = nonAdminUsers.length;
+                let numDisabledAccounts = 0;
+                nonAdminUsers.forEach( (doc) => {
+                    userInfo = doc.data();
+                    let updateObj = {};
+                    updateObj[`users.${doc.id}`] = userInfo;
+                    fs.collection('UsersToDelete').doc('users').update(updateObj).then( (res) => {
+                        doc.ref.delete().then( (res) => {
+                            numDisabledAccounts = numDisabledAccounts + 1;
+                            if (numDisabledAccounts >= numNonAdminAccounts) {
+                                executeDeleteAllDisabledAccounts();
+                            }
+                        });
+                    });
+                });
+            });
+        });
+    });
 }
 
 function loadRecoverUserButton(docId, email) {

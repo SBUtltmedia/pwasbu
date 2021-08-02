@@ -8,9 +8,7 @@ READ ME
     - Creates a csv for each activity (may or may not make one for an empty activity, not sure)
     - Inputs the daily activities and skills into the csv’s
 - What needs to be fixed
-    - Commas in the sub skills create new rows —> need to accommodate for commas
     - When a sub skill is left blank, need to input either a space or dash to keep the correct spacing (otherwise the rest of the rows will be off)
-    - Soccer / Fitness creates a folder instead of a csv file 
     - Dealing with async currently by setTimeout, should probably correct this with promises
 */
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -336,7 +334,7 @@ function get_camper_name(camper_id) {
   }, 1000);
 }
 
-function parse_all_activity_evals() {
+function parse_all_activity_evals(camperID) {
   // Init Zip and CSV 
   var zip = new JSZip();
   var csv_list = [];
@@ -346,7 +344,7 @@ function parse_all_activity_evals() {
   // Get Camper Name
   var name = [];
   fs.collection("users")
-    .where("id", "==", currEval.camperID)
+    .where("id", "==", camperID)
     .get()
     .then((res) => {
       console.log(res);
@@ -370,7 +368,7 @@ function parse_all_activity_evals() {
     
       // Parse Camper's Evaluations
       fs.collection("Evaluations")
-      .where("camper", "==", currEval.camperID)
+      .where("camper", "==", camperID)
       .get()
       .then((res) => {
         listElements = {};
@@ -507,7 +505,7 @@ function parse_all_activity_evals() {
         .then(function(content) {
           var link = document.createElement('a');
           link.href = "data:application/zip;base64," + content;
-          link.download = firstName + "_" + lastName + "_" + currEval.camperID + ".zip";
+          link.download = firstName + "_" + lastName + "_" + camperID + ".zip";
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
@@ -529,7 +527,8 @@ function actEvalInit() {
         coaches[doc.data()["id"]] = doc.data();
       });
 
-      parse_all_activity_evals();
+      // parse_all_activity_evals();
+      // parse_all_activity_evals(currEval.camperID);
 
       fs.collection("Activities")
         .get()
@@ -1137,7 +1136,7 @@ function autoSave(evalID = "DEFAULT") {
 
       adjustAutosaveIndicator("autosave-unsuccessful", "Failed to autosave: " + err);
     }
-    router.loadRoute("home");
+    // router.loadRoute("home");
     //////////
   });
 }

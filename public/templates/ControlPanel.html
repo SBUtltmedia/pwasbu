@@ -291,7 +291,6 @@
                     <label for="modal-user-priv">User Access Level</label><br />
                     <select class="form-control" id="modal-user-priv">
                         <option value=".">Basic</option>
-                        <option value="parent">Parent</option>
                         <option value="coach">Coach</option>
                         <option value="admin">Admin</option>
                     </select>
@@ -366,6 +365,7 @@
 
         <div id="delete-control" class="tabcontent adminheader">
             <button class="btn" onclick="deleteAllDisabledAccounts()">Delete All Disabled Accounts</button>
+            <button class="btn reset-all-camp-data" onclick="resetAllCampData()">Reset All Camp Data</button>
             <div class="cp-subTitle">Disabled Accounts</div>
             <table id="disabled-users" class="block cp-table row-border"></table>
         </div>

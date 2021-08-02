@@ -9,28 +9,28 @@ NodeList.prototype.remove = HTMLCollection.prototype.remove = function() {
     }
 }
 function initNavBar(){
-    try{
-          let userData = JSON.parse(localStorage.getItem("userData"));
-          if(userData['priv'] != 'admin') {
+    try {
+        let userData = JSON.parse(localStorage.getItem("userData"));
+        if(userData['priv'] != 'admin') {
             document.getElementById("nav-act").remove();
-          }
-        } catch(error){
-            let user = firebase.auth().currentUser;
-            fs.collection("users").where('email', '==', user.email).get().then(function(res) {
-                if(res.docs.length > 0) {
-                    res.docs[0].ref.get().then(doc=> {
-                      if(doc.data()['priv'] != "admin") {
+        }
+    } catch(error) {
+        let user = firebase.auth().currentUser;
+        fs.collection("users").where('email', '==', user.email).get().then( function(res) {
+            if(res.docs.length > 0) {
+                res.docs[0].ref.get().then( doc => {
+                    if(doc.data()['priv'] != "admin") {
                         if(document.getElementById("nav-act")) {
                             document.getElementById("nav-act").remove();
                         }
-                      }
-                    });
-                } else {
-                    document.getElementById("nav-act").remove();
-                }
-            }).catch((error)=>{
-                console.log(error);
+                    }
+                });
+            } else {
                 document.getElementById("nav-act").remove();
-            });
-        }
+            }
+        }).catch( (error) => {
+            console.log(error);
+            document.getElementById("nav-act").remove();
+        });
+    }
   }
