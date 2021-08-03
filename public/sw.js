@@ -5,8 +5,8 @@
  *     PUSH => Update everytime a branch is merged into master
  *     BUILD => Update as necessary for local development
  */
-const staticCacheName = 'site-static-v1.0.1.0';
-const dynamicCacheName = 'site-dynamic-v1.0.1.0';
+const staticCacheName = 'site-static-v1.1.0.0';
+const dynamicCacheName = 'site-dynamic-v1.1.0.0';
 
 // // TODO: Add firebase js files in assets locally and locally to index.html
 const assets = [

@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////
-/* 
+/*
 READ ME
 - All export csv code is in evaluation.js under parse_all_activity_evals
 - What works
@@ -308,7 +308,7 @@ function parse_eval(data_object, zip) {
           csv2 += "\n";
         }
       });
-      
+
     });
 }
 
@@ -335,7 +335,7 @@ function get_camper_name(camper_id) {
 }
 
 function parse_all_activity_evals(camperID) {
-  // Init Zip and CSV 
+  // Init Zip and CSV
   var zip = new JSZip();
   var csv_list = [];
   var activity_name_list = []
@@ -355,7 +355,7 @@ function parse_all_activity_evals(camperID) {
       });
       var firstName = name[0];
       var lastName = name[1];
-    
+
       // Get All Activity Names
       let activities = {};
       fs.collection("Activities")
@@ -365,7 +365,7 @@ function parse_all_activity_evals(camperID) {
             activities[doc.data()["name"]] = doc.id;
           });
         });
-    
+
       // Parse Camper's Evaluations
       fs.collection("Evaluations")
       .where("camper", "==", camperID)
@@ -373,7 +373,7 @@ function parse_all_activity_evals(camperID) {
       .then((res) => {
         listElements = {};
         res.forEach((doc) => {
-    
+
           // Set up CSV
           var data_object = doc.data();
           var eval_skills = data_object["skills"];
@@ -381,9 +381,9 @@ function parse_all_activity_evals(camperID) {
           var comment_col = ["Comment"];
           var score_col = ["Score"];
           var checklist_items = [];
-        
-          //////////////////////////////////////////////// SKILLS //////////////////////////////////////////////// 
-        
+
+          //////////////////////////////////////////////// SKILLS ////////////////////////////////////////////////
+
           // Get Activities
           fs.collection("Activities")
             .get()
@@ -418,7 +418,7 @@ function parse_all_activity_evals(camperID) {
                   });
                 }
               });
-        
+
               // Combine Skill, Comment and Score columns / Compile CSV
               two_d_array = skill_col.map(function (c, i) {
                 return [c, comment_col[i]];
@@ -431,17 +431,17 @@ function parse_all_activity_evals(camperID) {
                 csv += row.join(",");
                 csv += "\n";
               });
-        
-              //////////////////////////////////////////////// DAILY CHECKLIST //////////////////////////////////////////////// 
-        
+
+              //////////////////////////////////////////////// DAILY CHECKLIST ////////////////////////////////////////////////
+
               var daily_checklist_main_col = [];
               var dates = [];
-        
+
               // Get the Dates
               Object.keys(data_object["dailyCheckList"]).forEach(function (key) {
                 dates.push(key);
               });
-        
+
               var all_trials_2d = [];
               dates.forEach((date) => {
                 var check_row = [];
@@ -471,7 +471,7 @@ function parse_all_activity_evals(camperID) {
                   }
                 }
               }
-        
+
               // Compile CSV
               var csv2 = csv;
               csv2 += "\n";
@@ -488,17 +488,17 @@ function parse_all_activity_evals(camperID) {
                 }
               });
               csv_list.push(csv2);
-            });  
+            });
         });
-      });  
-    
-      
+      });
+
+
       setTimeout(function(){
         // Finish Zip
         console.log(csv_list);
         for(var i = 0; i < csv_list.length; i++){
           console.log(csv_list[i]);
-          zip.file(activity_name_list[i]+".csv", csv_list[i]);     
+          zip.file(activity_name_list[i]+".csv", csv_list[i]);
         }
 
         zip.generateAsync({type: "base64"})
@@ -510,10 +510,10 @@ function parse_all_activity_evals(camperID) {
           link.click();
           document.body.removeChild(link);
       });
-      }, 1500);    
+      }, 1500);
     })
 
-  
+
 }
 
 function actEvalInit() {
@@ -646,7 +646,7 @@ function loadNewEval(docID = currEval.actID, _callback = () => {}) {
         let skillCount = 1;
         doc.data()["skills"].forEach((skill) => {
           $("#skills").append(`<li>
-                    <button class="btn bdrlessBtn evaluation-but" 
+                    <button class="btn bdrlessBtn evaluation-but"
                         onclick="toggleHide('skill-${skillCount}');">
                         ${skill["skillName"]}
                     </button>
@@ -697,7 +697,7 @@ function loadNewEval(docID = currEval.actID, _callback = () => {}) {
         console.log("Skills does not exist in this activity: ", err);
       }
 
-        
+
         let checkForDisable = document.getElementsByClassName('disable-for-admin');
         if(currEval.evalMode === "admin") {
             for (let elem of checkForDisable) {
@@ -738,7 +738,7 @@ function addDay(docID, _callback = (dates, day) => {}, dates = [], day = 0) {
             }
 
             let day_label = document.getElementsByClassName("day-label").length + 1;
-            
+
             let itemID = 1;
             $("#checklist").append(
                 `<li class="checklist-item" id="checklist-item-${day}">
@@ -967,40 +967,70 @@ function submitEval(evalID = "DEFAULT") {
                   }
                   itemID++;
                 }
-                skillCount++;
-              }
-              console.log("CHECKPOINT 3: if evaluation mode is add or not");
-              if (currEval.evalMode == "add") {
-                console.log("EVAL SUBMIT ATTEMPT 1");
-                fs.collection("Evaluations").add(evalDoc).then(() => {
-                    alert("Assessment updated successfully!");
-                    // router.loadRoute("home");
-                }).catch((e) => {
-                    console.log("Could not successfully update this assessment: " + e);
-                    alert("Could not successfully update this assessment");
-                }); //catch add() error;
               } else {
-                console.log("CHECKPOINT A");
-                fs.collection("Evaluations").doc(currEval.evalID).set(evalDoc).then(() => {
-                    console.log("EVAL SUBMIT ATTEMPT 2");
-                    if(onlineStatus = 'Online') { 
-                        alert("Assessment updated successfully!"); 
-                    }
-                    else { 
-                        alert("Assessment saved locally. Changes will be updated once internet connection resumes."); 
-                    }
-                    // router.loadRoute("home");
-                }).catch((e) => {
-                    console.log("Could not successfully update this assessment: " + e);
-                    alert("Could not successfully update this assessment");
-                }); //catch set() error
+                throw "There are multiple assessments on " + evalDate;
               }
+            } else {
+              throw evalDate + " is not within the selected year of " + evalDoc['year'];
             }
+          } else {
+            throw "Every assessment must be filled out with a valid date";
           }
         }
+        let skillsLen = doc.data()['skills'].length;
+        let skillCount = 1;
+        while (skillCount < skillsLen + 1) {
+          evalDoc['skills']['skill_' + skillCount] = [];
+          let subSkillCount = 1;
+          let subSkillsLen = doc.data()['skills'][skillCount - 1]['subSkills'].length;
+          while (subSkillCount < subSkillsLen + 1) {
+            evalDoc['skills']['skill_' + skillCount].push({
+              score: document.getElementById(`skill-${skillCount}-${subSkillCount}-select`).value,
+              comment: document.getElementById(`skill-${skillCount}-${subSkillCount}-comment`).value
+            });
+            subSkillCount++;
+          }
+          skillCount++;
+        }
+        console.log("CHECKPOINT 3: if evaluation mode is add or not");
+        if (currEval.evalMode == "add") {
+          console.log("EVAL SUBMIT ATTEMPT 1");
+          fs.collection("Evaluations").add(evalDoc).then(() => {
+            if(onlineStatus = 'Online') {
+              console.log("Evaluation updated successfully via Submit button!");
+
+              // The assessment now exists in Firestore database so need to update currEval
+              currEval.evalMode = "get";
+              currEval.evalID = docRef.id;
+              currEval.evalDoc = evalDoc;
+
+              alert("Assessment updated successfully!");
+            } else {
+              console.log("Evaluation saved locally. Changes will be updated once internet connection resumes via Submit button.");
+              alert("Assessment saved locally. Changes will be updated once internet connection resumes.");
+            }
+          }).catch((e) => {
+              console.log("Could not successfully update this assessment: " + e);
+              alert("Could not successfully update this assessment");
+          }); //catch add() error;
+        } else {
+          console.log("CHECKPOINT A");
+          fs.collection("Evaluations").doc(currEval.evalID).set(evalDoc).then(() => {
+              console.log("EVAL SUBMIT ATTEMPT 2");
+              if(onlineStatus = 'Online') {
+                  alert("Assessment updated successfully!");
+              } else {
+                  alert("Assessment saved locally. Changes will be updated once internet connection resumes."); 
+              }
+              // router.loadRoute("home");
+          }).catch((e) => {
+              console.log("Could not successfully update this assessment: " + e);
+              alert("Could not successfully update this assessment");
+          }); //catch set() error
+        }
       } catch (err) {
-          console.log("Could not successfully update this assessment: " + err);
-          alert("Could not successfully update this assessment");
+        console.log("Could not successfully update this assessment: " + err);
+        alert("Could not successfully update this assessment");
       }
     });
 }
@@ -1095,14 +1125,14 @@ function autoSave(evalID = "DEFAULT") {
         fs.collection("Evaluations").add(evalDoc).then((docRef) => {
           if(onlineStatus = 'Online') {
             console.log("Evaluation updated successfully via autosave!");
-            
+
             // The assessment now exists in Firestore database so need to update currEval
             currEval.evalMode = "get";
             currEval.evalID = docRef.id;
             currEval.evalDoc = evalDoc;
 
             adjustAutosaveIndicator("autosave-successful", "Autosaved Successfully");
-          } else { 
+          } else {
             console.log("Evaluation saved locally. Changes will be updated once internet connection resumes via autosave.");
             adjustAutosaveIndicator("autosave-offline", "Assessment saved locally. Changes will be updated once internet connection resumes.");
           }
@@ -1115,11 +1145,11 @@ function autoSave(evalID = "DEFAULT") {
         // console.log("CHECKPOINT A");
         fs.collection("Evaluations").doc(currEval.evalID).set(evalDoc).then(() => {
           // console.log("EVAL SUBMIT ATTEMPT 2");
-          if(onlineStatus = 'Online') { 
+          if(onlineStatus = 'Online') {
             console.log("Evaluation updated successfully via autoSave!");
 
             adjustAutosaveIndicator("autosave-successful", "Autosaved Successfully");
-          } else { 
+          } else {
             console.log("Evaluation saved locally. Changes will be updated once internet connection resumes via autosave.");
             adjustAutosaveIndicator("autosave-offline", "Assessment saved locally. Changes will be updated once internet connection resumes.");
           }
