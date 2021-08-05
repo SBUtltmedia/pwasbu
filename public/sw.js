@@ -5,8 +5,8 @@
  *     PUSH => Update everytime a branch is merged into master
  *     BUILD => Update as necessary for local development
  */
-const staticCacheName = 'site-static-v1.2.0.0';
-const dynamicCacheName = 'site-dynamic-v1.2.0.0';
+const staticCacheName = 'site-static-v1.3.0.0';
+const dynamicCacheName = 'site-dynamic-v1.3.0.0';
 
 // // TODO: Add firebase js files in assets locally and locally to index.html
 const assets = [
@@ -40,6 +40,7 @@ const assets = [
     // Static JavaScript files to cache
     '/js/controlpanel.js',
     '/js/evaluation.js',
+    '/js/export.js',
     '/js/index.js',
     '/js/login.js',
     '/js/navbar.js',
@@ -57,6 +58,7 @@ const assets = [
     '/js/thirdParty/jszip.js',
     '/js/thirdParty/micromodal.min.js',
     '/js/thirdParty/processing.min.js',
+    '/js/thirdParty/xlsx.full.min.js',
     // Static images to cache
     'img/infobutton.png',
     '/img/logobackground.png',
