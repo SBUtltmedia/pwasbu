@@ -247,3 +247,8 @@ table.block th {
     float: right;
     background-color: #f44336;
 }
+
+.export-all-assessment-packets {
+    float: right;
+    background-color: green;
+}

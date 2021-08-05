@@ -1,17 +1,3 @@
-//////////////////////////////////////////////////////////////////////////////////////////////////
-/*
-READ ME
-- All export csv code is in evaluation.js under parse_all_activity_evals
-- What works
-    - Clicking assessment button triggers export
-    - Zip file is made and named as FirstName_LastName_camperid
-    - Creates a csv for each activity (may or may not make one for an empty activity, not sure)
-    - Inputs the daily activities and skills into the csv’s
-- What needs to be fixed
-    - When a sub skill is left blank, need to input either a space or dash to keep the correct spacing (otherwise the rest of the rows will be off)
-    - Dealing with async currently by setTimeout, should probably correct this with promises
-*/
-//////////////////////////////////////////////////////////////////////////////////////////////////
 class Evaluation {
   // Just an object to hold global variables
   constructor(
@@ -83,7 +69,6 @@ function initCampersEvalTable() {
                                     age: getAge(doc.data()["birthdate"]) || 0,
                                     gender: doc.data()["gender"],
                                     pronouns: doc.data()["pronoun"],
-                                    // team: "Purple Team", // This field needs to be added to the database
                                     id: doc.data()["id"],
                                     email: doc.data()["id"]
                                 };
@@ -113,12 +98,12 @@ function createUserDetailsItem(rowElem, row) {
       row.gender;
     userDetailsItem.content.querySelectorAll(".user-pronouns")[0].innerHTML =
       row.pronouns;
-    // userDetailsItem.content.querySelectorAll(".user-team")[0].innerHTML = row.team;
 
-    userDetailsItem.content.querySelectorAll(".add-evals")[0].onclick = (
-      event
-    ) => {
+    userDetailsItem.content.querySelectorAll(".add-evals")[0].onclick = (event) => {
       eval(row["id"], "get");
+    };
+    userDetailsItem.content.querySelectorAll(".export-evals")[0].onclick = (event) => {
+      exportAssessmentPacket(row["id"]);
     };
 
     let imgCol = document.createElement("td");
@@ -206,316 +191,6 @@ function getCol(matrix, col) {
   return column;
 }
 
-function parse_eval(data_object, zip) {
-  var eval_skills = data_object["skills"];
-  var skill_col = ["Skills"];
-  var comment_col = ["Comment"];
-  var score_col = ["Score"];
-  var checklist_items = [];
-
-  // SKILLS
-
-  // Get Activities
-  fs.collection("Activities")
-    .get()
-    .then((res) => {
-      res.forEach((doc) => {
-        var activity_name = doc.data()["name"];
-        var eval_activity_name = data_object["activityName"]; //name of activity for current eval
-        // Get Skills
-        if (activity_name == eval_activity_name) {
-          console.log("Activity: " + eval_activity_name);
-          doc.data()["checklist"].forEach((item) => {
-            checklist_items.push(item.name);
-          });
-          var skill_count = 0;
-          doc.data()["skills"].forEach((skill) => {
-            skill_col.push(skill["skillName"].toUpperCase());
-            // Get Subskills
-            skill_count += 1;
-            var subskill_count = 0;
-            skill["subSkills"].forEach((subskill) => {
-              skill_col.push(subskill);
-              comment_col.push(eval_skills["skill_" + skill_count][subskill_count]["comment"]);
-              score_col.push(eval_skills["skill_" + skill_count][subskill_count]["score"]);
-              subskill_count += 1;
-            });
-          });
-        }
-      });
-
-      // Combine Skill, Comment and Score columns / Compile CSV
-      two_d_array = skill_col.map(function (c, i) {
-        return [c, comment_col[i]];
-      });
-      two_d_array = two_d_array.map(function (c, i) {
-        return [c, score_col[i]];
-      });
-      var csv = [];
-      two_d_array.forEach(function (row) {
-        csv += row.join(",");
-        csv += "\n";
-      });
-
-      // DAILY CHECKLIST
-
-      var daily_checklist_main_col = [];
-      var dates = [];
-
-      // Get the Dates
-      Object.keys(data_object["dailyCheckList"]).forEach(function (key) {
-        dates.push(key);
-      });
-
-      var all_trials_2d = [];
-      dates.forEach((date) => {
-        var check_row = [];
-        daily_checklist_main_col.push(date);
-        var all_trials = data_object["dailyCheckList"][date];
-        var checklist_activity_count = 0;
-        Object.keys(all_trials).forEach(function (checkListActivity) {
-          daily_checklist_main_col.push(
-            checklist_items[checklist_activity_count]
-          );
-          all_trials_2d.push(all_trials[checkListActivity]);
-          checklist_activity_count += 1;
-        });
-      });
-      var two_d_array2 = [];
-      if (all_trials_2d.length != 0) {
-        var num_cols = all_trials_2d[0].length;
-        for (var i = -1; i < num_cols; i++) {
-          if (i == -1) {
-            two_d_array2 = daily_checklist_main_col;
-          } else {
-            two_d_array2 = two_d_array2.map(function (c, j) {
-              var col = getCol(all_trials_2d, i);
-              col.unshift(" ");
-              return [c, col[j]];
-            });
-          }
-        }
-      }
-
-      // Compile CSV
-      var csv2 = csv;
-      two_d_array2.forEach(function (row) {
-        if (typeof row != "string") {
-          csv2 += Array.prototype.join.call(row, ",");
-          csv2 += "\n";
-        } else {
-          csv2 += row;
-          csv2 += "\n";
-        }
-      });
-
-    });
-}
-
-function get_camper_name(camper_id) {
-  var name = [];
-  var index = 0;
-  fs.collection("users")
-    .where("id", "==", camper_id)
-    .get()
-    .then((res) => {
-      console.log(res);
-      res.forEach((doc) => {
-        var camper = doc.data();
-        name.push(camper.firstName);
-        name.push(camper.lastName);
-      });
-      console.log(name);
-    })
-
-  // Wait?
-  setTimeout(function(){
-    return name;
-  }, 1000);
-}
-
-function parse_all_activity_evals(camperID) {
-  // Init Zip and CSV
-  var zip = new JSZip();
-  var csv_list = [];
-  var activity_name_list = []
-
-
-  // Get Camper Name
-  var name = [];
-  fs.collection("users")
-    .where("id", "==", camperID)
-    .get()
-    .then((res) => {
-      console.log(res);
-      res.forEach((doc) => {
-        var camper = doc.data();
-        name.push(camper.firstName);
-        name.push(camper.lastName);
-      });
-      var firstName = name[0];
-      var lastName = name[1];
-
-      // Get All Activity Names
-      let activities = {};
-      fs.collection("Activities")
-        .get()
-        .then((res) => {
-          res.forEach((doc) => {
-            activities[doc.data()["name"]] = doc.id;
-          });
-        });
-
-      // Parse Camper's Evaluations
-      fs.collection("Evaluations")
-      .where("camper", "==", camperID)
-      .get()
-      .then((res) => {
-        listElements = {};
-        res.forEach((doc) => {
-
-          // Set up CSV
-          var data_object = doc.data();
-          var eval_skills = data_object["skills"];
-          var skill_col = ["Skills"];
-          var comment_col = ["Comment"];
-          var score_col = ["Score"];
-          var checklist_items = [];
-
-          //////////////////////////////////////////////// SKILLS ////////////////////////////////////////////////
-
-          // Get Activities
-          fs.collection("Activities")
-            .get()
-            .then((res) => {
-              res.forEach((doc) => {
-                var activity_name = doc.data()["name"]; // iterated activity name
-                var eval_activity_name = data_object["activityName"]; // name of activity for current eval
-                // Get Skills
-                if (activity_name == eval_activity_name) {
-                  activity_name_list.push(activity_name.replace(/[/\\?%*:|"<>]/g, "-"));
-                  console.log(activity_name_list);
-                  console.log("Activity: " + eval_activity_name);
-                  doc.data()["checklist"].forEach((item) => {
-                    checklist_items.push(item.name);
-                  });
-                  var skill_count = 0;
-                  doc.data()["skills"].forEach((skill) => {
-                    skill_col.push(skill["skillName"].toUpperCase());
-                    // Get Subskills
-                    skill_count += 1;
-                    var subskill_count = 0;
-                    skill["subSkills"].forEach((subskill) => {
-                      // Don't want commas to create new columns in csv file
-                      if (subskill.includes(",")) {
-                        subskill = "\"" + subskill + "\"";
-                      }
-                      skill_col.push(subskill);
-                      comment_col.push(eval_skills["skill_" + skill_count][subskill_count]["comment"]);
-                      score_col.push(eval_skills["skill_" + skill_count][subskill_count]["score"]);
-                      subskill_count += 1;
-                    });
-                  });
-                }
-              });
-
-              // Combine Skill, Comment and Score columns / Compile CSV
-              two_d_array = skill_col.map(function (c, i) {
-                return [c, comment_col[i]];
-              });
-              two_d_array = two_d_array.map(function (c, i) {
-                return [c, score_col[i]];
-              });
-              var csv = [];
-              two_d_array.forEach(function (row) {
-                csv += row.join(",");
-                csv += "\n";
-              });
-
-              //////////////////////////////////////////////// DAILY CHECKLIST ////////////////////////////////////////////////
-
-              var daily_checklist_main_col = [];
-              var dates = [];
-
-              // Get the Dates
-              Object.keys(data_object["dailyCheckList"]).forEach(function (key) {
-                dates.push(key);
-              });
-
-              var all_trials_2d = [];
-              dates.forEach((date) => {
-                var check_row = [];
-                daily_checklist_main_col.push(date);
-                var all_trials = data_object["dailyCheckList"][date];
-                var checklist_activity_count = 0;
-                Object.keys(all_trials).forEach(function (checkListActivity) {
-                  daily_checklist_main_col.push(
-                    checklist_items[checklist_activity_count]
-                  );
-                  all_trials_2d.push(all_trials[checkListActivity]);
-                  checklist_activity_count += 1;
-                });
-              });
-              var two_d_array2 = [];
-              if (all_trials_2d.length != 0) {
-                var num_cols = all_trials_2d[0].length;
-                for (var i = -1; i < num_cols; i++) {
-                  if (i == -1) {
-                    two_d_array2 = daily_checklist_main_col;
-                  } else {
-                    two_d_array2 = two_d_array2.map(function (c, j) {
-                      var col = getCol(all_trials_2d, i);
-                      col.unshift(" ");
-                      return [c, col[j]];
-                    });
-                  }
-                }
-              }
-
-              // Compile CSV
-              var csv2 = csv;
-              csv2 += "\n";
-              csv2 += "\n";
-              csv2 += "Daily Activities";
-              csv2 += "\n";
-              two_d_array2.forEach(function (row) {
-                if (typeof row != "string") {
-                  csv2 += Array.prototype.join.call(row, ",");
-                  csv2 += "\n";
-                } else {
-                  csv2 += row;
-                  csv2 += "\n";
-                }
-              });
-              csv_list.push(csv2);
-            });
-        });
-      });
-
-
-      setTimeout(function(){
-        // Finish Zip
-        console.log(csv_list);
-        for(var i = 0; i < csv_list.length; i++){
-          console.log(csv_list[i]);
-          zip.file(activity_name_list[i]+".csv", csv_list[i]);
-        }
-
-        zip.generateAsync({type: "base64"})
-        .then(function(content) {
-          var link = document.createElement('a');
-          link.href = "data:application/zip;base64," + content;
-          link.download = firstName + "_" + lastName + "_" + camperID + ".zip";
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-      });
-      }, 1500);
-    })
-
-
-}
-
 function actEvalInit() {
   let table = document.getElementById("activities");
   fs.collection("users")
@@ -526,9 +201,6 @@ function actEvalInit() {
       resCoach.forEach((doc) => {
         coaches[doc.data()["id"]] = doc.data();
       });
-
-      // parse_all_activity_evals();
-      // parse_all_activity_evals(currEval.camperID);
 
       fs.collection("Activities")
         .get()
@@ -544,9 +216,6 @@ function actEvalInit() {
             .then((res) => {
               listElements = {};
               res.forEach((doc) => {
-                //
-                // parse_eval(doc.data());
-                //
                 if (
                   doc.data()["year"] == currEval.selectedYear &&
                   (currEval.evalMode == "admin" ||
@@ -668,11 +337,11 @@ function loadNewEval(docID = currEval.actID, _callback = () => {}) {
                                         <td><span>Score:</span></td>
                                         <td class="skll-score padded-td">
                                             <select class="form-control padded-input disable-for-admin" id="skill-${skillCount}-${subSkillCount}-select">
-                                            <option value="NA">Not Applicable</option>
+                                            <option value="N/A">Not Applicable</option>
                                             <option value="PA">Partial Assistance</option>
-                                            <option value="TA">Total Assist</option>
-                                            <option value="I">Independent</option>
-                                            <option value="V.Cue">Visual Cue</option>
+                                            <option value="TA">Total Assistance</option>
+                                            <option value="Independent">Independent</option>
+                                            <option value="V. Cue">Visual Cue</option>
                                             </select>
                                         </td>
                                         <td>
@@ -1020,7 +689,7 @@ function submitEval(evalID = "DEFAULT") {
               if(onlineStatus = 'Online') {
                   alert("Assessment updated successfully!");
               } else {
-                  alert("Assessment saved locally. Changes will be updated once internet connection resumes."); 
+                  alert("Assessment saved locally. Changes will be updated once internet connection resumes.");
               }
               // router.loadRoute("home");
           }).catch((e) => {

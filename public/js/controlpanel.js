@@ -542,7 +542,7 @@ function initCampersTable() {
                 insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn' onclick='loadEditCamperButton("${doc.id}", "${doc.data()['id']}", "${birthdate}", "${gender}", "${pronoun}")'>Edit</button>`;
                 insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn btn-danger' onclick='if(confirm("Are you sure you want to delete this camper? NOTE: THIS ACTION CANNOT BE REVERSED")) { removeCamper("${doc.id}") }'>Remove</button>`;
                 insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn' onclick='loadAssessments("${camperId}")'>Assessments</button>`;
-                insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn' onclick='parse_all_activity_evals("${camperId}")'>Export</button>`;
+                insertedRow.insertCell().innerHTML = `<button class='btn bdrlessBtn' onclick='exportAssessmentPacket("${camperId}")'>Export</button>`;
                 insertedRow.insertCell().innerHTML = doc.data()['firstName'];
                 insertedRow.insertCell().innerHTML = doc.data()['lastName'];
                 insertedRow.insertCell().innerHTML = birthdate;
@@ -1296,12 +1296,12 @@ function executeDeleteAllDisabledAccounts() {
 }
 
 function resetAllCampData() {
-    // Two layers of confirmation since this an enormously risky operation
+    // Multiple layers of confirmation since this an enormously risky operation
     if (confirm('Are you sure you want to reset all camp data?\n\n' +
-        'NOTE: All evaluations, athletes, and coach groups will be deleted and all non-admin accounts will be disabled.' +
+        'NOTE: All assessments, athletes, coach groups, and non-admin accounts will be deleted.' +
         'This action should be only executed when camp is finished and a new year of camp is starting.\n\n' +
-        'NOTE: If you want to save the evaluations from this camp then you should export all evaluations to CSV files before resetting all camp data.\n\n' +
-        'NOTE: This action cannot be reversed.')) {
+        'NOTE: It is highly advised that you export all assessments before resetting all camp data.')) {
+
         // Forcing user to type in a confirmation prompt
         let confirmationPrompt = 'I confirm that I want to reset all camp data';
         let confirmationInput = prompt('To confirm that you want to reset all camp data, type out the following text into the input below:\n\n' +
